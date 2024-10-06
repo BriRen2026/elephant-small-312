@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Elephant Title</title>
+    <link rel="stylesheet" href="../css/login.css">
+    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+	</head>
+  
+  <body>
+	<!--------------Header---------------------->
+	  <header>
+		<div class="header"> <!--Here for styling Not useless-->
+			<div class="header-contents">
+				<div class="logo">
+					<img src="../images/elephant-small.jpg" class="container-child">
+					<p class="container-child"> Elephant Fashion Brawl </p>
+				</div>
+				<!--Users shouldn't be logged in if they're on the login page-->
+				<div class="logo" style="display: flex;">
+					<ul>
+						<li><a href="" id="rounded-box">Register</a></li>
+						<li><a href="">Login</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	  </header>
+	  
+    <main>
+		<div class="login-container">
+			<p id="section-header">Enter Login Information</p>
+			<div class="enter-auth">
+               <form action="/register" method="post" enctype="application/x-www-form-urlencoded">
+					<label>Username:
+					<input id="userregister" type="text" name="username" placeholder="username"/>
+					</label>
+					
+					<label>Password:&nbsp;
+					<input id="passregister" type="password" name="password" placeholder="password"/>
+					</label>
+					
+					<input id="submit-button" type="submit" value="Log In">
+               </form>
+			</div>
+			<div class="other-options">
+			   <p>Not registered? <a href="/register">Create an Account</a></p>
+			   <a href="/">Forgot Password?</a>
+			</div>
+		</div>
+    </main>
+	
+	<footer>
+		<div class="footer-container">
+			<div class="top">
+				<ul class="top-child">
+					<li href="#">Support</li>
+					<li> | </li>
+					<li href="#">Contact</li>
+					<li> | </li>
+					<li href="#">-</li>
+				</ul>
+				<ul class="top-child">
+					<li href="#">Insta</li>
+					<li> | </li>
+					<li href="#">Discord</li>
+					<li> | </li>
+					<li href="#">-</li>
+				</ul>
+			</div>
+			<div class="top">
+				<ul class="top-child">
+					<li href="#">Terms of Service</li>
+					<li> | </li>
+					<li href="#">Privacy Policy</li>
+				</ul>
+				<ul class="top-child">
+					<li href="#">Insta</li>
+					<li> | </li>
+					<li href="#">Discord</li>
+					<li> | </li>
+					<li href="#">-</li>
+				</ul>
+			</div>
+		</div>
+	</footer>
+    <script src="index.js"></script>
+  </body>
+</html>

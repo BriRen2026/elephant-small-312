@@ -1,0 +1,172 @@
+@import url('https://fonts.googleapis.com/css2?family=Charm:wght@400;700&family=Cookie&family=Signika+Negative:wght@300..700&display=swap');
+
+*{
+  margin:0;
+  padding:0;
+  font-family: Signika Negative, sans-serif;
+}
+
+body {
+	background-color:#d5eaed;
+}
+
+main{
+	width: 40%;
+	margin: 0 auto;
+}
+
+/*--------------------------Header---------------*/
+
+.header{
+	width: 100%;
+	height: 50px;
+	background-color:#fff;
+	box-shadow: 4px 4px #0000001a;
+}
+
+.header-contents{
+	height: 100%;
+	width: 75%;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+}
+
+/* Styling for a non-logged in user's header ---------------------------------------*/
+/*--- class "logo" is used for both the actual logo, and placement for register/login--*/
+.logo p{
+	font-size: 1.25rem;
+}
+
+.logo{
+	margin: auto 0;
+}
+/*---Register/login specific styling with logo--*/
+.logo li{
+	list-style-type: none;
+    display: inline-block;
+}
+
+.logo a{
+	text-decoration: none;
+}
+
+#rounded-box{
+	color:white;
+	border-radius: 15px;
+	border: 2px solid #ab8fb5;
+	background-color: #ab8fb5;
+	padding: 8px;
+}
+
+#rounded-box:hover{
+	border: 2px solid #8d7296;
+	background-color: #8d7296;
+}
+
+/* ------------------------------------------------------------------------ */
+
+
+
+
+/*----Puts elements side by side----*/
+.container{
+	background-color:pink;
+	display: flex;
+	justify-content: space-between;
+}
+
+.container-child{
+	display: inline-block;
+	vertical-align: middle;
+	margin: auto auto;
+}
+
+
+
+
+/*--------------Style login form-------------------*/
+
+.login-container {
+	margin: 90px auto;
+	max-height: 80vh;
+	background-color:white;
+	border-radius: 10px;
+	box-shadow: 4px 4px #0000001a;
+}
+
+#section-header{
+	border-radius: 10px 10px 0px 0px;
+	border: 2px solid pink;
+	background-color: pink;
+	padding: 5px;
+	text-align: center;
+}
+
+.enter-auth{
+	padding: 20px 0;
+	border-radius: 0px 0px 10px 10px;
+	margin: 0 auto;
+	width: 25%;
+}
+
+.other-options{
+	text-align: center;
+	margin: 0 auto;
+	padding-bottom: 20px;
+	width: 50%;
+}
+
+.other-options p{
+	padding-bottom: 5px;
+}
+
+.other-options a{
+	color: #5d3778;
+}
+
+
+input[type=password], input[type=text]{
+  width: 100%;
+  padding: 5px 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+input[type=submit] {
+  background-color: pink;
+  color: white;
+  margin-top: 5px;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  width: 100%;
+}
+input[type=submit]:hover{
+  background-color: #eda1af;
+  cursor: pointer;
+}
+
+
+/*---------------------------------------*/
+
+
+.footer-container{
+	background-color:#fff;
+	padding: 7px 0px;
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+}
+
+.top{
+	width: 75%;
+	margin: 0 auto;
+	display:flex;
+	justify-content:space-between;
+}
+
+.top li{
+	list-style-type: none;
+    display: inline-block;
+}

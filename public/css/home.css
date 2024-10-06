@@ -1,0 +1,280 @@
+@import url('https://fonts.googleapis.com/css2?family=Charm:wght@400;700&family=Cookie&family=Signika+Negative:wght@300..700&display=swap');
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+*{
+  margin:0;
+  padding:0;
+  font-family: Signika Negative, sans-serif;
+}
+body {
+	background-color:#d5eaed;
+}
+main{
+	width: 60%;
+	margin: 0 auto;
+}
+
+/*--------------------------Header---------------*/
+
+.header{
+	width: 100%;
+	height: 50px;
+	background-color:#fff;
+	box-shadow: 4px 4px #0000001a;
+}
+
+.header-contents{
+	height: 100%;
+	width: 75%;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+}
+
+/* Styling for a non-logged in user's header ---------------------------------------*/
+/*--- Logo is used for both the actual logo, and placement for register/login--*/
+.logo p{
+	font-size: 1.25rem;
+}
+
+.logo{
+	margin: auto 0;
+}
+/*---Register/login specific styling with logo--*/
+.logo li{
+	list-style-type: none;
+    display: inline-block;
+}
+
+.logo a{
+	text-decoration: none;
+}
+
+#rounded-box{
+	color:white;
+	border-radius: 15px;
+	border: 2px solid #ab8fb5;
+	background-color: #ab8fb5;
+	padding: 8px;
+}
+
+#rounded-box:hover{
+	border: 2px solid #8d7296;
+	background-color: #8d7296;
+}
+
+
+/*-----------------------Styling for a logged in user's header------------*/
+
+.logged-in{
+	display: flex;
+	margin: auto 0;
+}
+
+.item{
+	padding-top: 5px;
+	margin: auto 0;
+}
+
+#wardrobe{
+	cursor: pointer;
+}
+
+#header-user{
+	padding: 0px 5px 0px 20px;
+}
+
+#profile-picture img{
+	border-radius: 50px;
+	cursor: pointer;
+}
+
+#profile-picture{
+	position: relative;
+}
+
+#logout{
+	padding-left: 5px;
+}
+
+input[type=submit] {
+  background-color: white;
+  color: black;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* ------------------------------------------------------------------------ */
+
+/*----Puts elements side by side----*/
+.container{
+	display: flex;
+	justify-content: space-between;
+}
+
+.container-child{
+	display: inline-block;
+	vertical-align: middle;
+}
+
+
+/*---------------------------------*/
+/*--------------Style main setup--------*/
+
+.grid-container {
+	display: flex;
+}
+
+.grid-col{
+	border-radius: 10px;
+	margin: 50px auto;
+}
+
+.row{
+	border-radius: 10px;
+	background-color: white;
+	margin-top: 20px;
+	box-shadow: 4px 4px #0000001a;
+}
+
+
+#section-header{
+	border-radius: 10px 10px 0px 0px;
+	border: 2px solid pink;
+	background-color: pink;
+	padding: 5px;
+	text-align: center;
+}
+
+
+
+/*----------------------------Left Top Elephant Side---------------------*/
+
+#top-elephant{
+	background-color:white;
+	padding: 30px;
+	box-shadow: 4px 4px #0000001a;
+}
+
+#top-elephant-info{
+	background-color: pink;
+	border-radius: 0px 0px 10px 10px;
+}
+
+#top-elephant-info p{
+	padding: 5px;
+}
+
+.elephant-pic{
+	text-align: center;
+	border: 2px solid pink;
+	border-style: solid solid none solid;
+}
+
+/*--Keep all images a set size--*/
+.elephant-pic img{
+	width: 350px;
+	height: 350px;
+	overflow: hidden;
+}
+
+
+
+
+/*----------------------------Event Side---------------------*/
+
+/*--Each event in its own div named event--*/
+.event-list ul{
+	overflow:scroll; 
+}
+.event-list{
+	padding: 10px 0;
+}
+
+.event{
+	display: flex;
+	width: 75%;
+	margin: 15px auto;
+	list-style-type: none;
+	background-color: #ffebf5;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+.event-date{
+	width: 50%;
+	border-radius: 10px ;
+	border: 2px solid pink;
+	text-align:center;
+}
+
+.event-date #month{
+	background-color: pink;
+	color: white;
+	border-radius: 8px 8px 0px 0px;
+	border: 2px solid pink;
+}
+
+.event-date #day{
+	color: black;
+}
+
+.event-name{
+	color: black;
+	margin: auto 0;
+	padding-left: 15px;
+}
+
+/*---------------------------------------*/
+
+#non-event{
+	padding: 0px;	
+}
+
+
+.game-name{
+	margin: auto 0;
+	padding: 10px 15px 10px 10px;
+	border-radius: 10px 0px 0px 10px;
+	border: 2px solid pink;
+	background-color: pink;
+	width: 25%;
+	cursor: pointer;
+}
+
+.game-name:hover{
+	background-color: #eda1af;
+	border: 2px solid #eda1af;
+}
+
+/*----------------Footer Style---------*/
+
+.footer-container{
+	background-color:#fff;
+	padding: 7px 0px;
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+}
+
+.top{
+	width: 75%;
+	margin: 0 auto;
+	display:flex;
+	justify-content:space-between;
+}
+
+.top li{
+	list-style-type: none;
+    display: inline-block;
+}
