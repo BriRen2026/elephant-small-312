@@ -180,6 +180,7 @@ input[type=submit] {
 #outfit-button{
 	background-color:pink;
 	padding: 10px;
+	margin: 0px 20px;
 }
 #outfit-button:hover{
 	background-color: #eda1af;
