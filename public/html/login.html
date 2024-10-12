@@ -15,7 +15,7 @@
 		<div class="header"> <!--Here for styling Not useless-->
 			<div class="header-contents">
 				<div class="logo">
-					<img src="../images/elephant-small.jpg" class="container-child">
+					<img src="../images/elephant-small.jpg" style="cursor: pointer" class="container-child" onclick="elephantSound()">
 					<p class="container-child"> Elephant Fashion Brawl </p>
 				</div>
 				<!--Users shouldn't be logged in if they're on the login page-->
@@ -33,7 +33,7 @@
 		<div class="login-container">
 			<p id="section-header">Enter Login Information</p>
 			<div class="enter-auth">
-               <form action="/login" method="post" enctype="application/x-www-form-urlencoded">
+               <form action="/register" method="post" enctype="application/x-www-form-urlencoded">
 					<label>Username:
 					<input id="userregister" type="text" name="username" placeholder="username"/>
 					</label>
@@ -86,6 +86,6 @@
 			</div>
 		</div>
 	</footer>
-    <script src="index.js"></script>
+    <script src="sound.js"></script>
   </body>
 </html>
