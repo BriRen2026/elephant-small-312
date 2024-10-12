@@ -16,7 +16,7 @@
 		<div class="header"> <!--Here for styling Not useless-->
 			<div class="header-contents">
 				<div class="logo">
-					<img src="../images/elephant-small.jpg" class="container-child">
+					<img src="../images/elephant-small.jpg" style="cursor: pointer" class="container-child" onclick="elephantSound()">
 					<p class="container-child"> Elephant Fashion Brawl </p>
 				</div>
 				<!--When logged in, set display: flex"-->
@@ -64,8 +64,19 @@
 						<img src="../images/elephant.png">
 					</div>
 					<div class="container" id="elephant-info">
-						<p class="container-child" id="outfit-button"> Save Outfit </p>
-						<p class="container-child" id="outfit-button"> Submit Outfit</p>
+					<!----------------------------------------------------------------------------------------->
+						<form action="/save-elephant" method="post" enctype="multipart/form-data">
+							<label>
+								<input type="submit" class="container-child" id="outfit-button" value="Save Outfit"></input>
+							</label>
+						</form>
+					<!----------------------------------------------------------------------------------------->
+						<form action="/submit-elephant" method="post" enctype="multipart/form-data">
+							<label>
+								<input type="submit" class="container-child" id="outfit-button" value="Submit Outfit"></input>
+							</label>
+						</form>
+					<!----------------------------------------------------------------------------------------->
 					</div>
 				</div>
 			</div>
@@ -135,6 +146,6 @@
 			</div>
 		</div>
 	</footer>
-    <script src="index.js"></script>
+    <script src="sound.js"></script>
   </body>
 </html>
