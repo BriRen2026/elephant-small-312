@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Elephant Title</title>
-    <link rel="stylesheet" href="../css/maker-style.css">
-    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/maker-style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 	</head>
   
@@ -16,16 +16,18 @@
 		<div class="header"> <!--Here for styling Not useless-->
 			<div class="header-contents">
 				<div class="logo">
-					<img src="../images/elephant-small.jpg" style="cursor: pointer" class="container-child" onclick="elephantSound()">
-					<p class="container-child"> Elephant Fashion Brawl </p>
+					<img src="{{ url_for('static', filename='images/elephant-small.jpg') }}" style="cursor: pointer" class="container-child" onclick="elephantSound()">
+					<p class="container-child"><a href="/" id="link"> Elephant Fashion Brawl </a></p>
 				</div>
 				<!--When logged in, set display: flex"-->
 				<div class="logged-in" style="display: flex;">
 					<div class="item" id="wardrobe">
-						<span class="material-symbols-outlined">checkroom</span>
+						<a href="/elephant-maker">
+							<span class="material-symbols-outlined">checkroom</span>
+						</a>
 					</div>
-					<div class="item" id="header-user">{{username}}</div>
-					<div class="item" id="profile-picture"><img src="../images/test-profile-picture.png"></div>
+					<div class="item" id="header-user">{username}</div>
+					<div class="item" id="profile-picture"><img src="{{ url_for('static', filename='images/test-profile-picture.png') }}"></div>
 					
 					<!--When pressing logout, GET request is made-->
 					<div class="item" id="logout">
@@ -61,7 +63,7 @@
 				<p id="section-header-middle"> Your Elephant </p>
 				<div class="inner-elephant">
 					<div class="elephant-pic">
-						<img src="../images/elephant.png">
+						<img src="{{ url_for('static', filename='images/elephant.png') }}">
 					</div>
 					<div class="container" id="elephant-info">
 					<!----------------------------------------------------------------------------------------->

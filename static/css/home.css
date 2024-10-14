@@ -55,6 +55,7 @@ main{
 
 .logo a{
 	text-decoration: none;
+	color: black;
 }
 
 #rounded-box{
@@ -81,6 +82,11 @@ main{
 .item{
 	padding-top: 5px;
 	margin: auto 0;
+}
+
+.item a{
+	color:black;
+	text-decoration: none;
 }
 
 #wardrobe{
@@ -125,6 +131,11 @@ input[type=submit] {
 .container-child{
 	display: inline-block;
 	vertical-align: middle;
+}
+
+.container-child a{
+	text-decoration: none;
+	color: black;
 }
 
 
@@ -243,13 +254,17 @@ input[type=submit] {
 
 
 .game-name{
-	margin: auto 0;
-	padding: 10px 15px 10px 10px;
+	padding: 10px 0px 10px 10px;
 	border-radius: 10px 0px 0px 10px;
 	border: 2px solid pink;
 	background-color: pink;
-	width: 25%;
+	width: 90%;
 	cursor: pointer;
+}
+
+.event a {
+	text-decoration: none;
+	color: black;
 }
 
 .game-name:hover{

@@ -3,6 +3,7 @@ function staticJS() {
 }
 
 function elephantSound(){
+	console.log("hi")
 	const sound = new Audio("../elephant.mp3");
 	sound.play();
 }

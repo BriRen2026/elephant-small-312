@@ -83,6 +83,11 @@ main{
 	cursor: pointer;
 }
 
+.item a{
+	color:black;
+	text-decoration: none;
+}
+
 #header-user{
 	padding: 0px 5px 0px 20px;
 }
@@ -122,6 +127,10 @@ input[type=submit] {
 	margin: auto auto;
 }
 
+.container-child a{
+	text-decoration: none;
+	color: black;
+}
 /*---------------------------------*/
 /* Styling for the grid system */
 
