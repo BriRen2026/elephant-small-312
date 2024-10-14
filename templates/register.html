@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Elephant Title</title>
-    <link rel="stylesheet" href="../css/register.css">
-    <link rel="icon" href="../favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 	</head>
   
   <body>
@@ -15,14 +15,14 @@
 		<div class="header"> <!--Here for styling Not useless-->
 			<div class="header-contents">
 				<div class="logo">
-					<img src="../images/elephant-small.jpg" style="cursor: pointer" class="container-child" onclick="elephantSound()">
-					<p class="container-child"> Elephant Fashion Brawl </p>
+					<img src="{{ url_for('static', filename='images/elephant-small.jpg') }}" style="cursor: pointer" class="container-child" onclick="elephantSound()">
+					<p class="container-child"><a href="/" id="link"> Elephant Fashion Brawl </a></p>
 				</div>
 				<!--Users shouldn't be logged in if they're on the login page-->
 				<div class="logo" style="display: flex;">
 					<ul>
-						<li><a href="" id="rounded-box">Register</a></li>
-						<li><a href="">Login</a></li>
+						<li><a href="/register" id="rounded-box">Register</a></li>
+						<li><a href="/login">Login</a></li>
 					</ul>
 				</div>
 			</div>
@@ -46,7 +46,7 @@
                </form>
 			</div>
 			<div class="other-options">
-			   <p>Already Have An Account? <a href="/register">Login</a></p>
+			   <p>Already Have An Account? <a href="/login">Login</a></p>
 			</div>
 		</div>
     </main>
@@ -85,6 +85,6 @@
 			</div>
 		</div>
 	</footer>
-  <script src="../javascript/function.js"></script>
+  <script src="{{ url_for('static', filename='javascript/function.js') }}"></script>
   </body>
 </html>

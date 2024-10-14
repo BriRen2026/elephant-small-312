@@ -49,6 +49,7 @@ main{
 
 .logo a{
 	text-decoration: none;
+	color: black;
 }
 
 #rounded-box{
@@ -82,7 +83,10 @@ main{
 	margin: auto auto;
 }
 
-
+.container-child a{
+	text-decoration: none;
+	color: black;
+}
 
 
 /*--------------Style login form-------------------*/
