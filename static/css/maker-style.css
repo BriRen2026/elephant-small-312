@@ -181,20 +181,24 @@ input[type=submit] {
 	text-align: center;
 }
 
-/*----------------------------Dressup Elephant Side---------------------*/
-#elephant{
-	background-color:white;
-}
-
 #outfit-button{
 	background-color:pink;
 	padding: 10px;
 	margin: 0px 20px;
+	display: inline-block;
+	vertical-align: middle;
+	margin: auto auto;
 }
 #outfit-button:hover{
 	background-color: #eda1af;
 	padding: 10px;
 }
+
+/*----------------------------Dressup Elephant Side---------------------*/
+#elephant{
+	background-color:white;
+}
+
 
 .item-list{
 	background-color:#fff5f7;
@@ -219,11 +223,88 @@ input[type=submit] {
 	border-style: none solid solid solid;
 }
 
-/*--Keep all images a set size--*/
+/*--Keep all images a set size--. Styling for the form submissions. Dialog boxes/shadows behind*/
 .elephant-pic img{
 	width: 350px;
 	height: 350px;
 	overflow: hidden;
+}
+
+#shadow{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 1;
+    visibility:hidden;
+    display:none;
+    background-color: rgba(22,22,22,0.5);
+}
+
+.dialog-button-save, .dialog-button-submit{
+	background-color:pink;
+	padding: 10px;
+	border: none;
+	display: inline-block;
+	vertical-align: middle;
+	margin: auto auto;
+	cursor: pointer;
+}
+
+.dialog-button-save:hover, .dialog-button-submit:hover{
+	background-color: #eda1af;
+	padding: 10px;
+}
+
+#dialog-save, #dialog-submit{
+	position: absolute;
+	top: 25%;
+	margin: 0 auto;
+	padding: 25px;
+	z-index: 5;
+	background-color: white;
+	border-radius: 15px;
+	border-color: white;
+	box-shadow: 4px 4px #0000001a;
+	display: none;
+}
+
+#dialog-save h1, #dialog-submit h1{
+	font-size: 1.5rem;
+	padding-bottom: 10px;
+}
+
+#close, #close2{
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	background: none;
+	border: none;
+	font-size: 16px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+#title{
+	margin-bottom: 5px;
+	font-size: 16px;
+}
+
+#outfit-button-submit{
+	display: inline-block;
+	vertical-align: middle;
+	margin: auto auto;
+	margin-top: 15px;
+	background-color: pink;
+	color: black;
+	border: none;
+	border-radius: 4px;
+	width: 100%;
+}
+#outfit-button-submit:hover{
+  background-color: #eda1af;
+  cursor: pointer;
 }
 
 /*----------------------------Closet Side---------------------*/

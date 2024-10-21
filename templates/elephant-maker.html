@@ -66,18 +66,59 @@
 						<img src="{{ url_for('static', filename='images/elephant.png') }}">
 					</div>
 					<div class="container" id="elephant-info">
-					<!----------------------------------------------------------------------------------------->
+					<!---------------------------------------------SAVE ELEPHANT-------------------------------------------->
+						<button class="dialog-button-save" onclick="openDialog2()">Save Elephant</button>
 						<form action="/save-elephant" method="post" enctype="multipart/form-data">
-							<label>
-								<input type="submit" class="container-child" id="outfit-button" value="Save Outfit"></input>
-							</label>
+							<dialog id="dialog-save">
+								<button id="close2" onclick="closeDialog2()" type="button">X</button>
+								<h1>Save Elephant to Your Closet</h1>
+								Title:<br/>
+								<label>
+									  <input id="title" type="text" name="title" placeholder="Name your elephant"/>
+								</label>
+										<br/>
+								<label>
+									<input id="elephant" type="text" name="file" value="{{ url_for('static', filename='images/elephant.png') }}" hidden/>
+								</label>
+								<!-- Close dialog and submit at the same time -->
+								<input type="submit" class="container-child" id="outfit-button-submit" value="Submit Outfit"/>
+
+							</dialog>
 						</form>
 					<!----------------------------------------------------------------------------------------->
-						<form action="/submit-elephant" method="post" enctype="multipart/form-data">
-							<label>
-								<input type="submit" class="container-child" id="outfit-button" value="Submit Outfit"></input>
-							</label>
+						<button class="dialog-button-submit" onclick="openDialog()">Submit Elephant</button>
+						<div id="shadow">
+						<form action="/submit-elephant" method="post" enctype="multipart/form-data" id="elephant-submission">
+							<dialog id="dialog-submit">
+								<button id="close" onclick="closeDialog()" type="button">X</button>
+								<h1>Post Your Elephant</h1>
+								Title:<br/>
+								<label>
+									  <input id="title" type="text" name="title" placeholder="Name your elephant"/>
+								</label>
+								<br/>
+								Description:
+								<br/>
+								<label>
+									  <textarea id="title" type="text" name="description" rows="4" cols="50" placeholder="Give your elephant a description"></textarea>
+								</label>
+								<br/> <!-- As a placeholder, saving the url to our static elephant image-->
+									  <!-- In the future, I imagine the saving of elements to paths -->
+									<input id="elephant" type="text" name="file" value="{{ url_for('static', filename='images/elephant.png') }}" hidden/>
+								<!-- Close dialog and submit at the same time -->
+								Select Event to Submit For:
+								<label>
+									<select form="elephant-submission" name="event">
+										<option value="Event-A">EventA</option>
+										<option value="Event-B">EventB</option>
+										<option value="Event-C">EventC</option>
+									</select>
+								</label>
+								<input type="submit" class="container-child" id="outfit-button-submit" value="Submit Outfit"/>
+							</dialog>
 						</form>
+						</div>
+
 					<!----------------------------------------------------------------------------------------->
 					</div>
 				</div>
@@ -149,5 +190,6 @@
 		</div>
 	</footer>
   <script src="{{ url_for('static', filename='javascript/function.js') }}"></script>
+  <script src="{{ url_for('static', filename='javascript/submissions.js') }}"></script>
   </body>
 </html>
