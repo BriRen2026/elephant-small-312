@@ -7,7 +7,8 @@
     <title>Elephant Title</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-	</head>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  </head>
   
   <body>
 	<!--------------Header---------------------->
@@ -21,6 +22,8 @@
 				<!--Users shouldn't be logged in if they're on the login page-->
 				<div class="logo" style="display: flex;">
 					<ul>
+						<li><a href="/elephant-feed">View Posted Elephants</a></li>
+						<li><a href="/elephant-feed"><span class="fa-solid fa-bars" id="feed"></span></a></li>
 						<li><a href="/register" id="rounded-box">Register</a></li>
 						<li><a href="/login">Login</a></li>
 					</ul>
@@ -33,7 +36,7 @@
 		<div class="login-container">
 			<p id="section-header">Enter Login Information</p>
 			<div class="enter-auth">
-               <form action="/loginForm" method="post" enctype="application/x-www-form-urlencoded">
+				<form action="/loginForm" method="post" enctype="application/x-www-form-urlencoded">
 					<label>Username:
 					<input id="userregister" type="text" name="username" placeholder="username"/>
 					</label>
@@ -59,33 +62,23 @@
 					<li href="#">Support</li>
 					<li> | </li>
 					<li href="#">Contact</li>
-					<li> | </li>
-					<li href="#">-</li>
-				</ul>
-				<ul class="top-child">
-					<li href="#">Insta</li>
-					<li> | </li>
-					<li href="#">Discord</li>
-					<li> | </li>
-					<li href="#">-</li>
 				</ul>
 			</div>
 			<div class="top">
 				<ul class="top-child">
-					<li href="#">Terms of Service</li>
-					<li> | </li>
 					<li href="#">Privacy Policy</li>
+					<li> | </li>
+					<li href="#">Copyright</li>
 				</ul>
 				<ul class="top-child">
-					<li href="#">Insta</li>
+					<li><a href="https://www.instagram.com/elephant_small.jpg?igsh=MXYxNWJndmE1ZGljcw==">Instagram <i class="fa-brands fa-instagram"></i></a></li>
 					<li> | </li>
-					<li href="#">Discord</li>
+					<li><a href="#">Discord <i class="fa-brands fa-discord"></i></a></li>
 					<li> | </li>
-					<li href="#">-</li>
 				</ul>
 			</div>
 		</div>
 	</footer>
-  <script src="../javascript/function.js"></script>
+   <script src="../javascript/function.js"></script>
   </body>
 </html>

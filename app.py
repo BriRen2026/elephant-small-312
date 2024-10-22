@@ -1,29 +1,11 @@
 from flask import Flask, render_template, request, make_response, redirect, flash
+import bcrypt
 import mysql.connector
 import hashlib
 from utilities import *
 import uuid
-
+mydb = mysql.connector.connect(host = "localhost", user = "root", password = "iloveelephantsmalls", database = "credentials")
 app=Flask(__name__)
-app.secret_key = "elephantsmalls"
-
-# Create credentials database if it doesn't exist at startup.
-def createDatabase():
-    try:
-        myServer = mysql.connector.connect(host = 'mysql', user='root', password='iloveelephantsmalls')
-        cursor = myServer.cursor()
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {'credentials'}")
-        myServer.commit()
-        cursor.close()
-        myServer.close()
-    except Exception:
-        print("Database create failed.")
-
-# Create the database on app startup
-createDatabase()
-
-mydb = mysql.connector.connect(host = "mysql", user = "root", password = "iloveelephantsmalls", database = "credentials")
-
 @app.route('/', methods = ["POST", "GET"])
 def home():
     cursor = mydb.cursor()
@@ -55,7 +37,6 @@ def home():
             response.content_length = len(body.encode('utf-8'))
             return response
 
-    cursor.close()
     #If there is no authToken -> No user is logged in.
     return render_template("home.html")
 
@@ -119,19 +100,16 @@ def registerForm():
             # Save changes to database.
             mydb.commit()
 
-            cursor.close()
             return response
 
         #If password & repassword don't match, return register form.
         else:
-            print("Passwords don't match!")
-            cursor.close()
+            print("Passwords don't match")
             return render_template("register.html")
 
     #If the usernane is already taken, return register form.
     else:
         print("Username is already taken!")
-        cursor.close()
         return render_template("register.html")
 
 
@@ -160,12 +138,6 @@ def loginForm():
     statement = "SELECT hashedPass FROM logins WHERE username ='" + username + "'"
     cursor.execute(statement)
     result = cursor.fetchall()
-
-    if (len(result) == 0):
-        flash("Invalid username/password.")
-        return render_template("login.html")
-
-
     record = result[0][0]
 
     #Verify the given password and stored password.
@@ -182,13 +154,11 @@ def loginForm():
         #Create homeLoggedIn.html with injected username for response.
         createHomePage(username)
 
-        cursor.close()
         return response
 
     #If the passwords do not match, don't authenticate.
     else:
         flash("Invalid username/password.")
-        cursor.close()
         return render_template("login.html")
 
 
@@ -208,7 +178,6 @@ def logOut():
     statement = "DELETE FROM authTokens WHERE hashedToken='" + hashedToken+"'"
     cursor.execute(statement)
 
-    cursor.close()
     #Redirect to home page.
     return redirect("/", code = 302)
 
@@ -240,5 +209,9 @@ def submit_elephant():
     #Redirect back to the elephant maker page
     return render_template("elephant-maker.html")
 
+@app.route("/elephant-feed")
+def elephantFeed():
+    return render_template("elephant-feed.html")
+
 if __name__=='__main__':
-    app.run(host="0.0.0.0",port=8080)
+    app.run(host="localhost",port=8080)

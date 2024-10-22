@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Elephant Site</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/elephant-feed.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  </head>
+
+  <body>
+	<!--------------Header---------------------->
+	  <header>
+		<div class="header"> <!--Here for styling Not useless-->
+			<div class="header-contents">
+				<div class="logo">
+					<img src="{{ url_for('static', filename='images/elephant-small.jpg') }}" style="cursor: pointer" class="container-child" onclick="elephantSound()">
+					<p class="container-child"><a href="/" id="link"> Elephant Fashion Brawl </a></p>
+				</div>
+
+
+				<!--When logged in, set display: none"-->
+				<div class="logo" style="display: flex;">
+					<ul>
+						<li><a href="/elephant-feed">View Posted Elephants</a></li>
+						<li><a href="/elephant-feed"><span class="fa-solid fa-bars" id="feed"></span></a></li>
+						<li><a href="/register" id="rounded-box">Register</a></li>
+						<li><a href="/login">Login</a></li>
+					</ul>
+				</div>
+
+				<!--When logged in, set display: flex-->
+				<div class="logged-in" style="display: none;">
+					<div class="item" id="wardrobe">
+						<a href="/elephant-maker">
+							<span class="material-symbols-outlined">checkroom</span>
+						</a>
+					</div>
+					<div class="item" id="header-user">{username}</div>
+					<div class="item" id="profile-picture"><img src="{{ url_for('static', filename='images/test-profile-picture.png') }}"></div>
+
+					<div class="item" id="logout">
+						<form action="/logout" method="get">
+							<label><input type="submit" value="Log Out"></label>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	  </header>
+
+	<!-------------------------- Main Begins ---------------------------------------------->
+
+    <main>
+		<div class="grid-container">
+
+			<div class="grid-col1" id="top-elephant">
+				<p id="section-header" style="font-size: 1.2rem;"> Submitted Fashionable Elephants </p>
+
+				<!-- Listing of all elephants posted -->
+				<div class="feed-collection">
+
+					<!-- Posted elephants should receive their own elephant-post divs with all child containers-->
+					<!-- Create new divs everytime an elephant is posted. <div id="elephant-post.{CurrPostNumber}> -->
+					<!-- These div ids "{CurrPostNumbers}" must increment in order for the js to work -->
+					<!-- when the likeElephant() and openDesc JS is run, it will send the current PARENT elephant-post parent div to the function -->
+					<!-- This stops things like other posts from being liked/descriptions being opened by mistake, since they have the same formatting-->
+					<!-- I can change this if its weird.... can't think of anything else atm-->
+
+					<!-- READ THIS IF NOTHING ELSE vvvvvvvvvvvvvvvvvvvvvvvv -->
+					<!-- I have 2 elephant-post.{CurrPostNumber}s in place for example purposes. Check out what the onclick() functions use a parameter -->
+
+					<div id="elephant-post.1">
+						<div class="split" id="section-header">
+							<h1 class="elephant-post-child">{elephant-title}</h1>
+							<div class="elephant-post-child" id="profile-picture">{username}<img src="{{ url_for('static', filename='images/test-profile-picture.png') }}"></div>
+						</div>
+						<div class="post-container">
+						<!-- Image should be what's stored in the database-->
+							<img class="submitted-elephant" src="{{ url_for('static', filename='images/elephant.png') }}" style="width: 300px; height: 300px;">
+							<div id="like-button">
+								<button type="button"  onclick="likeElephant('elephant-post.1')" class="button-like"><i class="fa-regular fa-heart" id="like-child" style="display: block"></i></button>
+								<!-- When liked, should increment like counter shown on page. Can do this in JS easily, but idk how it will work w the database..
+								It might be easier to pretend that this like counter incremented up for the user.
+								It will still happen in the background, but having the page refresh to show this change is probably bad UI since user will be taken to top of page-->
+								<button type="button"  onclick="unlikeElephant('elephant-post.1')" class="button-unlike"  style="display: none"><i class="fa-solid fa-heart" id="like-child"></i></button>
+								<p class="like-child" id="like-counter">{like-count} Likes</p>
+							</div>
+							<button type="button" id="view-description" onclick="openDesc('elephant-post.1')">View Description</button>
+						</div>
+						<div id="description" style="display: none;">
+							{description}
+						</div>
+					</div>
+		<!-------------------------------------------------------------------------------------------------------------->
+
+					<div id="elephant-post.2">
+						<div class="split" id="section-header">
+							<h1 class="elephant-post-child">{elephant-title}</h1>
+							<div class="elephant-post-child" id="profile-picture">{username}<img src="{{ url_for('static', filename='images/test-profile-picture.png') }}"></div>
+						</div>
+
+						<div class="post-container">
+						<!-- Image should be what's stored in the database-->
+							<img class="submitted-elephant" src="{{ url_for('static', filename='images/elephant.png') }}" style="width: 300px; height: 300px;">
+							<div id="like-button">
+								<button type="button"  onclick="likeElephant('elephant-post.2')" class="button-like"><i class="fa-regular fa-heart" id="like-child" style="display: block"></i></button>
+								<button type="button"  onclick="unlikeElephant('elephant-post.2')" class="button-unlike"  style="display: none"><i class="fa-solid fa-heart" id="like-child"></i></button>
+								<p class="like-child" id="like-counter">{like-count} Likes</p>
+							</div>
+							<button type="button" id="view-description" onclick="openDesc('elephant-post.2')">View Description</button>
+						</div>
+
+						<div id="description" style="display: none;">
+							{description}
+						</div>
+					</div>
+		<!-------------------------------------------------------------------------------------------------------------->
+
+				</div>
+			</div>
+
+			<!-- Filtering for the elephants -->
+			<div class="grid-col" id="top-elephant">
+					<p id="section-header" style="font-size: 1.2rem;"> Filter Elephants </p>
+				<div class="row">
+					Lorem
+				</div>
+			</div>
+
+		</div>
+    </main>
+
+
+
+
+	<footer>
+		<div class="footer-container">
+			<div class="top">
+				<ul class="top-child">
+					<li href="#">Support</li>
+					<li> | </li>
+					<li href="#">Contact</li>
+				</ul>
+			</div>
+			<div class="top">
+				<ul class="top-child">
+					<li href="#">Privacy Policy</li>
+					<li> | </li>
+					<li href="#">Copyright</li>
+				</ul>
+				<ul class="top-child">
+					<li><a href="https://www.instagram.com/elephant_small.jpg?igsh=MXYxNWJndmE1ZGljcw==">Instagram <i class="fa-brands fa-instagram"></i></a></li>
+					<li> | </li>
+					<li><a href="#">Discord <i class="fa-brands fa-discord"></i></a></li>
+					<li> | </li>
+				</ul>
+			</div>
+		</div>
+	</footer>
+  <script src="{{ url_for('static', filename='javascript/function.js') }}"></script>
+  </body>
+</html>

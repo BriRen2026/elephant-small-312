@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/maker-style.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-	</head>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  </head>
   
   <body>
 	<!--------------Header---------------------->
@@ -21,6 +22,8 @@
 				</div>
 				<!--When logged in, set display: flex"-->
 				<div class="logged-in" style="display: flex;">
+					<a class="item" href="/elephant-feed" style="padding-right: 5px;">View Posted Elephants</a>
+					<a class="item" href="/elephant-feed"><span style="padding-right: 20px;" class="fa-solid fa-bars" id="feed"></span></a>
 					<div class="item" id="wardrobe">
 						<a href="/elephant-maker">
 							<span class="material-symbols-outlined">checkroom</span>
@@ -109,9 +112,9 @@
 								Select Event to Submit For:
 								<label>
 									<select form="elephant-submission" name="event">
+										<option value="None" selected>No Event! Just For Fun :)</option>
 										<option value="Event-A">EventA</option>
 										<option value="Event-B">EventB</option>
-										<option value="Event-C">EventC</option>
 									</select>
 								</label>
 								<input type="submit" class="container-child" id="outfit-button-submit" value="Submit Outfit"/>
@@ -160,31 +163,19 @@
 					<li href="#">Support</li>
 					<li> | </li>
 					<li href="#">Contact</li>
-					<li> | </li>
-					<li href="#">-</li>
-				</ul>
-				<ul class="top-child">
-					<li href="#">Insta</li>
-					<li> | </li>
-					<li href="#">Discord</li>
-					<li> | </li>
-					<li href="#">-</li>
 				</ul>
 			</div>
 			<div class="top">
 				<ul class="top-child">
-					<li href="#">Support</li>
+					<li href="#">Privacy Policy</li>
 					<li> | </li>
-					<li href="#">-</li>
-					<li> | </li>
-					<li href="#">-</li>
+					<li href="#">Copyright</li>
 				</ul>
 				<ul class="top-child">
-					<li href="#">Insta</li>
+					<li><a href="https://www.instagram.com/elephant_small.jpg?igsh=MXYxNWJndmE1ZGljcw==">Instagram <i class="fa-brands fa-instagram"></i></a></li>
 					<li> | </li>
-					<li href="#">Discord</li>
+					<li><a href="#">Discord <i class="fa-brands fa-discord"></i></a></li>
 					<li> | </li>
-					<li href="#">-</li>
 				</ul>
 			</div>
 		</div>

@@ -8,8 +8,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-	</head>
-
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  </head>
+  
   <body>
 	<!--------------Header---------------------->
 	  <header>
@@ -20,9 +21,12 @@
 					<p class="container-child"><a href="/" id="link"> Elephant Fashion Brawl </a></p>
 				</div>
 
+
 				<!--When logged in, set display: none"-->
 				<div class="logo" style="display: flex;">
 					<ul>
+						<li><a href="/elephant-feed">View Posted Elephants</a></li>
+						<li><a href="/elephant-feed"><span class="fa-solid fa-bars" id="feed"></span></a></li>
 						<li><a href="/register" id="rounded-box">Register</a></li>
 						<li><a href="/login">Login</a></li>
 					</ul>
@@ -30,6 +34,9 @@
 
 				<!--When logged in, set display: flex"-->
 				<div class="logged-in" style="display: none;">
+
+					<a class="item" href="/elephant-feed" style="padding-right: 5px;">View Posted Elephants</a>
+					<a class="item" href="/elephant-feed"><span style="padding-right: 20px;" class="fa-solid fa-bars" id="feed"></span></a>
 					<div class="item" id="wardrobe">
 						<a href="/elephant-maker">
 							<span class="material-symbols-outlined">checkroom</span>
@@ -49,22 +56,28 @@
 	  </header>
 
 
-
     <main>
 		<div class="grid-container">
-
+		
 			<div class="grid-col" id="top-elephant">
 					<p id="section-header"> This Week's Top Elephant </p>
 					<div class="elephant-pic">
 						<img src="{{ url_for('static', filename='images/elephant.png') }}">
 					</div>
 					<div class="container" id="top-elephant-info">
+						<div id="like-button">
+							<!-- When liked, Maybe increment like counter on page? idk how it will work w the database..
+							It might be easier to pretend that this like counter incremented up for the user.
+							It will still happen in the background, but having the page refresh to show this change
+							is probably bad UI since user will be taken to top of page-->
+							<button type="button"  onclick="likeElephant('like-button')" class="button-like"><i class="fa-regular fa-heart" id="like-child" style="display: block"></i></button>
+							<button type="button"  onclick="unlikeElephant('like-button')" class="button-unlike"  style="display: none"><i class="fa-solid fa-heart" id="like-child"></i></button>
+							<p class="container-child" id="like-counter"> {upvotecount} Likes</p>
+						</div>
 						<p class="container-child"> {topusername}</p>
-						<p class="container-child"> {upvotecount}</p>
-						<svg class = "container-child" xmlns="http://www.w3.org/2000/svg" height="15px" viewBox="0 -960 960 960" width="15px" fill="#000"><path d="M440-501Zm0 381L313-234q-72-65-123.5-116t-85-96q-33.5-45-49-87T40-621q0-94 63-156.5T260-840q52 0 99 22t81 62q34-40 81-62t99-22q81 0 136 45.5T831-680h-85q-18-40-53-60t-73-20q-51 0-88 27.5T463-660h-46q-31-45-70.5-72.5T260-760q-57 0-98.5 39.5T120-621q0 33 14 67t50 78.5q36 44.5 98 104T440-228q26-23 61-53t56-50l9 9 19.5 19.5L605-283l9 9q-22 20-56 49.5T498-172l-58 52Zm280-160v-120H600v-80h120v-120h80v120h120v80H800v120h-80Z"/></svg>
 					</div>
 			</div>
-
+			
 			<div class="grid-col">
 				<div class="row">
 					<p id = "section-header"> Current Events </p>
@@ -84,25 +97,22 @@
 								<div id="day"> 23 </div>
 							</div>
 							<div class="event-name">
-								Masquerade
+								Masquerade 
 							</div>
 						</li>
 					</ul>
 				</div>
-
+				
 				<div class="row">
 				<!--When logged out, user's should be redirected to login-->
 					<p id= "section-header">Design an Elephant!</p>
 					<div class="event-list">
-						<div class= "event" id="non-event">
+						<div class= "closet" id="non-event">
 							<a href="/elephant-maker">
-								<div class="game-name">
-										Freeplay
+								<div class="to-closet">
+										Visit Your Closet
 								</div>
 							</a>
-							<div class="event-name">
-								Made for chillers
-							</div>
 						</div>
 						<div class="event" id="non-event">
 							<a href="/PlaceHolder">
@@ -117,13 +127,13 @@
 					</div>
 				</div>
 			</div>
-
+			
 		</div>
     </main>
-
-
-
-
+	
+	
+	
+	
 	<footer>
 		<div class="footer-container">
 			<div class="top">
@@ -131,15 +141,6 @@
 					<li href="#">Support</li>
 					<li> | </li>
 					<li href="#">Contact</li>
-					<li> | </li>
-					<li href="#">-</li>
-				</ul>
-				<ul class="top-child">
-					<li href="#">Insta</li>
-					<li> | </li>
-					<li href="#">Discord</li>
-					<li> | </li>
-					<li href="#">-</li>
 				</ul>
 			</div>
 			<div class="top">
@@ -147,15 +148,12 @@
 					<li href="#">Privacy Policy</li>
 					<li> | </li>
 					<li href="#">Copyright</li>
-					<li> | </li>
-					<li href="#">-</li>
 				</ul>
 				<ul class="top-child">
-					<li href="#">Insta</li>
+					<li><a href="https://www.instagram.com/elephant_small.jpg?igsh=MXYxNWJndmE1ZGljcw==">Instagram <i class="fa-brands fa-instagram"></i></a></li>
 					<li> | </li>
-					<li href="#">Discord</li>
+					<li><a href="#">Discord <i class="fa-brands fa-discord"></i></a></li>
 					<li> | </li>
-					<li href="#">-</li>
 				</ul>
 			</div>
 		</div>

@@ -18,7 +18,11 @@ body {
 }
 main{
 	width: 60%;
-	margin: 0 auto;
+	margin: 0 auto 50px auto;
+}
+a{
+	text-decoration: none;
+	color: black;
 }
 
 /*--------------------------Header---------------*/
@@ -58,11 +62,6 @@ main{
     display: inline-block;
 }
 
-.logo a{
-	text-decoration: none;
-	color: black;
-}
-
 #rounded-box{
 	color:white;
 	border-radius: 15px;
@@ -87,11 +86,6 @@ main{
 .item{
 	padding-top: 5px;
 	margin: auto 0;
-}
-
-.item a{
-	color:black;
-	text-decoration: none;
 }
 
 #wardrobe{
@@ -138,10 +132,7 @@ input[type=submit] {
 	vertical-align: middle;
 }
 
-.container-child a{
-	text-decoration: none;
-	color: black;
-}
+
 
 
 /*---------------------------------*/
@@ -151,9 +142,20 @@ input[type=submit] {
 	display: flex;
 }
 
-.grid-col{
+.grid-col1{
+    background-color: white;
 	border-radius: 10px;
 	margin: 50px auto;
+	width: 65%;
+	box-shadow: 4px 4px #0000001a;
+}
+
+.grid-col{
+    background-color: white;
+	border-radius: 10px;
+	margin: 50px auto;
+	width: 25%;
+	box-shadow: 4px 4px #0000001a;
 }
 
 .row{
@@ -161,7 +163,6 @@ input[type=submit] {
 	border-radius: 10px;
 	background-color: white;
 	margin-top: 20px;
-	box-shadow: 4px 4px #0000001a;
 }
 
 
@@ -174,147 +175,98 @@ input[type=submit] {
 }
 
 
+/*----------------------------Styling for Left column. Where elephants appear in feed---------------------*/
 
-/*----------------------------Left Top Elephant Side---------------------*/
-
-#top-elephant{
-	background-color:white;
-	padding: 30px;
-	box-shadow: 4px 4px #0000001a;
+.feed-collection{
+	width: 90%;
+	margin: 0 auto;
 }
 
-#top-elephant-info{
-	background-color: pink;
-	border-radius: 0px 0px 10px 10px;
-	padding: 0 15px;
-}
-
-#top-elephant-info p{
-	padding: 5px;
-}
-
-.elephant-pic{
+div[id^='elephant-post.']{
+	margin: 10px 0px;
+	border-radius: 15px;
+	border: 4px solid pink;
+	background-color: white;
+	width: 100%;
 	text-align: center;
-	border: 2px solid pink;
-	border-style: solid solid none solid;
+	position: relative;
 }
 
-/*--Keep all images a set size--*/
-.elephant-pic img{
-	width: 350px;
-	height: 350px;
-	overflow: hidden;
+.split{
+	display: flex;
+	justify-content: space-between;
+	margin: auto 0;
+}
+
+.elephant-post-child, .elephant-post-child img{
+	display: inline-block;
+	vertical-align: middle;
+	margin: auto 0;
+}
+
+.submitted-elephant{
+	margin-bottom: 20px;
+}
+
+.post-container{
+	position: relative;
 }
 
 #like-button{
 	display: flex;
 	justify-content: space-between;
+	position: absolute;
+	left: 0;
+	bottom: 0;
 	padding: 3px;
 }
 
-#like-button button{
+#view-description, #close-description{
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	padding: 3px;
+}
+
+#description{
+	background-color: pink;
+	text-align: left;
+	padding: 10px;
+}
+
+button {
 	background: none;
 	border: none;
 	cursor: pointer;
 }
 
-
-
-/*----------------------------Event Side---------------------*/
-
-/*--Each event in its own div named event--*/
-.event-list ul{
-	overflow:scroll; 
-}
-.event-list{
-	padding: 10px 0;
+#like-child{
+    line-height: 7px;
+    padding: 7px 0;
 }
 
-.event{
-	display: flex;
-	width: 75%;
-	margin: 15px auto;
-	list-style-type: none;
-	background-color: #ffebf5;
-	border-radius: 10px;
-	padding: 10px;
-}
-
-.event-date{
-	width: 50%;
-	border-radius: 10px ;
-	border: 2px solid pink;
-	text-align:center;
-}
-
-.event-date #month{
-	background-color: pink;
-	color: white;
-	border-radius: 8px 8px 0px 0px;
-	border: 2px solid pink;
-}
-
-.event-date #day{
-	color: black;
-}
-
-.event-name{
-	color: black;
-	margin: auto 0;
-	padding-left: 15px;
-}
-
-/*---------------------------------------*/
-
-#non-event{
-	padding: 0px;	
-}
-
-
-.game-name{
-	padding: 10px 0px 10px 10px;
-	border-radius: 10px 0px 0px 10px;
-	border: 2px solid pink;
-	background-color: pink;
-	width: 90%;
+i{
 	cursor: pointer;
 }
 
-.closet{
-	width: 75%;
-	margin: 15px auto 0px auto;
-	list-style-type: none;
-	background-color: #ffebf5;
-	border-radius: 10px;
-	padding: 10px;
-}
-.to-closet{
-	padding: 10px;
-	border-radius: 10px;
-	border: 2px solid pink;
-	text-align: center;
-	background-color: pink;
-	cursor: pointer;
+
+h1{
+    line-height: 10px;
+    padding: 10px 0;
+	font-size: 1.3rem;
 }
 
-a{
-	text-decoration: none;
-	color: black;
-}
 
-.game-name:hover, .to-closet:hover{
-	background-color: #eda1af;
-	border: 2px solid #eda1af;
-}
 
 /*----------------Footer Style---------*/
 
 .footer-container{
 	background-color:#fff;
 	padding: 7px 0px;
-	position: fixed;
-	bottom: 0px;
+	position: relative;
+    bottom: 0;
 	width: 100%;
+    height: 2.5rem;
 }
 
 .top{
