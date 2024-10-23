@@ -4,8 +4,21 @@ import mysql.connector
 import hashlib
 from utilities import *
 import uuid
-mydb = mysql.connector.connect(host = "mysql", user = "root", password = "iloveelephantsmalls", database = "credentials")
+def createDatabase():
+    try:
+        myServer = mysql.connector.connect(host = 'mysql', user='root', password='iloveelephantsmalls')
+        cursor = myServer.cursor()
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {'credentials'}")
+        myServer.commit()
+        cursor.close()
+        myServer.close()
+    except Exception:
+        print("Database create failed.")
 
+# Create the database on app startup
+createDatabase()
+
+mydb = mysql.connector.connect(host = "mysql", user = "root", password = "iloveelephantsmalls", database = "credentials")
 
 #Create a string body for a response: Serve the homeLoggedIn.html with the param -> username.
 def createHomePage(username):
