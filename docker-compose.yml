@@ -1,6 +1,18 @@
 version: '3'
 services:
+  mysql:
+    image: mysql:latest
+    restart: always
+    ports:
+      - '3306:3306'
+    environment:
+#      MYSQL_USER: "Brian"
+#      MYSQL_PASSWORD: "Destiny2"
+      MYSQL_ROOT_PASSWORD: "iloveelephantsmalls"
+#      MYSQL_DATABASE: "credentials"
   app:
     build: .
+    environment:
+      WAIT_HOSTS: mysql:3306
     ports:
       - '8080:8080'

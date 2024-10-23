@@ -4,7 +4,7 @@ import mysql.connector
 import hashlib
 from utilities import *
 import uuid
-mydb = mysql.connector.connect(host = "localhost", user = "root", password = "iloveelephantsmalls", database = "credentials")
+mydb = mysql.connector.connect(host = "mysql", user = "root", password = "iloveelephantsmalls", database = "credentials")
 
 
 #Create a string body for a response: Serve the homeLoggedIn.html with the param -> username.

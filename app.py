@@ -1,10 +1,9 @@
 from flask import Flask, render_template, request, make_response, redirect, flash
-import bcrypt
 import mysql.connector
 import hashlib
 from utilities import *
 import uuid
-mydb = mysql.connector.connect(host = "localhost", user = "root", password = "iloveelephantsmalls", database = "credentials")
+mydb = mysql.connector.connect(host = "mysql", user = "root", password = "iloveelephantsmalls", database = "credentials")
 app=Flask(__name__)
 @app.route('/', methods = ["POST", "GET"])
 def home():
@@ -210,4 +209,4 @@ def submit_elephant():
     return render_template("elephant-maker.html")
 
 if __name__=='__main__':
-    app.run(host="localhost",port=8080)
+    app.run(host="0.0.0.0",port=8080)
