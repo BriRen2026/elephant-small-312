@@ -21,26 +21,17 @@
 					<p class="container-child"><a href="/" id="link"> Elephant Fashion Brawl </a></p>
 				</div>
 
-
-				<!--When logged in, set display: none"-->
-				<div class="logo" style="display: flex;">
-					<ul>
-						<li><a href="/elephant-feed">View Posted Elephants</a></li>
-						<li><a href="/elephant-feed"><span class="fa-solid fa-bars" id="feed"></span></a></li>
-						<li><a href="/register" id="rounded-box">Register</a></li>
-						<li><a href="/login">Login</a></li>
-					</ul>
-				</div>
-
 				<!--When logged in, set display: flex-->
-				<div class="logged-in" style="display: none;">
+				<div class="logged-in" style="display: flex;">
+					<a class="item" href="/elephant-feed" style="padding-right: 5px;">View Posted Elephants</a>
+					<a class="item" href="/elephant-feed"><span style="padding-right: 20px;" class="fa-solid fa-bars" id="feed"></span></a>
 					<div class="item" id="wardrobe">
 						<a href="/elephant-maker">
 							<span class="material-symbols-outlined">checkroom</span>
 						</a>
 					</div>
 					<div class="item" id="header-user">{username}</div>
-					<div class="item" id="profile-picture"><img src="{{ url_for('static', filename='images/test-profile-picture.png') }}"></div>
+					<div class="item" id="profile-picture"><img src="/static/images/test-profile-picture.png"></div>
 
 					<div class="item" id="logout">
 						<form action="/logout" method="get">
