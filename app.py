@@ -245,7 +245,6 @@ def submit_elephant():
     #Redirect back to the elephant maker page
     return render_template("elephant-maker.html")
 
-
 @app.route("/elephant-feed")
 def elephantFeed():
     return render_template("elephant-feed.html")
