@@ -8,6 +8,11 @@ app=Flask(__name__)
 app.secret_key = "elephantsmalls"
 
 # Create credentials database if it doesn't exist at startup.
+
+@app.after_request #sets the nosniff header on each response
+def add_security(response):
+    response.headers['X-Content-Type-Options'] = 'nosniff'
+    return response
 def createDatabase():
     try:
         myServer = mysql.connector.connect(host = 'mysql', user='root', password='iloveelephantsmalls')
