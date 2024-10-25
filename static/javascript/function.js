@@ -1,3 +1,5 @@
+
+
 function elephantSound(){
 	const sound = new Audio("/static/elephant.mp3");
 	sound.play();
@@ -16,6 +18,14 @@ function likeElephant(parent){
 	//Should increment amount of likes whenever we have that set up...
 	let amountOfLikes = parent2.querySelector('#like-counter');
 
+	let username = document.getElementById('header-user');
+
+	const data = {"username": username.innerText};
+
+	const request = new XMLHttpRequest();
+	request.open("POST", "like");
+	request.send(JSON.stringify(data));
+
 	like.style.display = "none";
 	unlike.style.display = "block";
 }
@@ -31,6 +41,14 @@ function unlikeElephant(parent){
 
 	//Should increment amount of likes whenever we have that set up...
 	let amountOfLikes = parent2.querySelector('#like-counter');
+
+	let username = document.getElementById('header-user');
+
+	const data = {"username": username.innerText};
+
+	const request = new XMLHttpRequest();
+	request.open("POST", "unlike");
+	request.send(JSON.stringify(data));
 
 	like.style.display = "block";
 	unlike.style.display = "none";

@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, render_template, request, make_response, redirect, flash
 import mysql.connector
 import hashlib
@@ -15,17 +17,15 @@ app.secret_key = "elephantsmalls"
 def add_security(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
+
 def createDatabase():
     try:
         myServer = mysql.connector.connect(host = 'mysql', user='root', password='iloveelephantsmalls')
         cursor = myServer.cursor()
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {'credentials'}")
 
-
         statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), event VARCHAR(255), id VARCHAR(255), likes INT)"
         cursor.execute(statement)
-
-
 
         myServer.commit()
         cursor.close()
@@ -41,6 +41,15 @@ mydb = mysql.connector.connect(host = "mysql", user = "root", password = "ilovee
 @app.route('/', methods = ["POST", "GET"])
 def home():
     cursor = mydb.cursor(prepared=True)
+
+    #statement = "DELETE FROM authTokens"
+    #cursor.execute(statement)
+    #mydb.commit()
+#
+    #statement = "SELECT * FROM authTokens"
+    #cursor.execute(statement)
+    #print(cursor.fetchall())
+#
 
     #If an authToken is set in cookies -> A user is logged in.
     if "authToken" in request.cookies:
@@ -68,6 +77,7 @@ def home():
             response.data = body.encode('utf-8')
             response.content_type = "text/html; charset=utf-8"
             response.content_length = len(body.encode('utf-8'))
+            cursor.close()
             return response
 
     cursor.close()
@@ -132,7 +142,7 @@ def registerForm():
             cursor.execute(statement, values)
 
             #Generate authToken for user.
-            generateAuthToken(username, cursor, response)
+            generateAuthToken(username, cursor, response, mydb)
 
             # Save changes to database.
             mydb.commit()
@@ -202,10 +212,10 @@ def loginForm():
     cursor.execute(statement,(u,))
     result = cursor.fetchall()
 
+    #If not logged in.
     if (len(result) == 0):
         flash("Invalid username/password.")
         return render_template("login.html")
-
 
     record = result[0][0]
 
@@ -218,10 +228,12 @@ def loginForm():
     if valid == True:
 
         #Generate authToken for user.
-        generateAuthToken(username, cursor, response)
+        generateAuthToken(username, cursor, response, mydb)
 
         #Create homeLoggedIn.html with injected username for response.
         createHomePage(username)
+
+        mydb.commit()
 
         cursor.close()
         return response
@@ -229,6 +241,8 @@ def loginForm():
     #If the passwords do not match, don't authenticate.
     else:
         flash("Invalid username/password.")
+
+        mydb.commit()
         cursor.close()
         return render_template("login.html")
 
@@ -436,6 +450,7 @@ def elephantFeed():
 
     #Grab username.
     username = getUser(request)
+    print(username)
 
     f = ''
 
@@ -444,7 +459,7 @@ def elephantFeed():
         f = createFeedPage(username)
 
     elif(username == "null"):
-        with open("elephant-feed.html", 'r') as template:
+        with open("templates/elephant-feed.html", 'r') as template:
             f = template.read()
 
     # Inject post feed.
@@ -464,6 +479,20 @@ def elephantFeed():
     #return render_template("elephant-feed.html", posts=posts)
     #return render_template("elephant-feed.html", elephant_title=elephant_title, test_post=Markup(test_post), test_post2=Markup(test_post2))
     # Delete above print statement and replace with commented out line
+
+
+@app.route("/like", methods = {"POST"})
+def like():
+    print(json.loads(request.data))
+
+
+
+@app.route("/unlike", methods = {"POST"})
+def unlike():
+    print(json.loads(request.data))
+
+
+
 
 if __name__=='__main__':
     app.run(host="0.0.0.0",port=8080)

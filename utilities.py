@@ -64,7 +64,7 @@ def createFeedPage(username):
         return fileVer1
 
 #Generate and store authentication token for user.
-def generateAuthToken(username, cursor, response):
+def generateAuthToken(username, cursor, response, mydb):
     #Generate uuid -> authentication token.
     unhashedAuthToken = uuid.uuid4().bytes
 
@@ -78,6 +78,13 @@ def generateAuthToken(username, cursor, response):
     values = (username, hashedToken)
     cursor.execute(statement, values)
 
+    # Find username associated with authToken
+    statement = "SELECT * FROM authTokens"
+    cursor.execute(statement)
+    result = cursor.fetchall()
+    print (result)
+    print(len(result))
+
     #Commit.
     mydb.commit()
 
@@ -88,6 +95,7 @@ def generateAuthToken(username, cursor, response):
 def getUser(request):
     cursor = mydb.cursor()
 
+    #Grab authToken.
     authToken = request.cookies["authToken"]
 
     # Hash the authToken cookie.
@@ -96,13 +104,19 @@ def getUser(request):
     hashedToken = hashedToken.hexdigest()
 
     # Find username associated with authToken
-    statement = "SELECT username FROM authTokens WHERE hashedToken ='" + hashedToken + "'"
+    statement = "SELECT * FROM authTokens"
     cursor.execute(statement)
+    print(cursor.fetchall())
+
+    # Find username associated with authToken
+    statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
+    t = hashedToken
+    cursor.execute(statement, (t,))
     result = cursor.fetchall()
 
+    #If there is a token associated with the username, serve the username.
     if (len(result) == 1):
         record = result[0][0]
-
         return record
 
     return "null"
