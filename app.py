@@ -20,6 +20,13 @@ def createDatabase():
         myServer = mysql.connector.connect(host = 'mysql', user='root', password='iloveelephantsmalls')
         cursor = myServer.cursor()
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {'credentials'}")
+
+
+        statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), event VARCHAR(255), id VARCHAR(255), likes INT)"
+        cursor.execute(statement)
+
+
+
         myServer.commit()
         cursor.close()
         myServer.close()
@@ -230,6 +237,14 @@ def loginForm():
 def logOut():
     cursor = mydb.cursor()
 
+    #Create authTokens table if it doesn't exist.
+    cursor = mydb.cursor()
+    statement = "CREATE TABLE IF NOT EXISTS authTokens(username VARCHAR(255), hashedToken VARCHAR(255))"
+    cursor.execute(statement)
+
+    statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), event VARCHAR(255), id VARCHAR(255), likes INT)"
+    cursor.execute(statement)
+
     #Take authToken from cookies.
     authToken = request.cookies["authToken"]
 
@@ -249,6 +264,38 @@ def logOut():
 
 @app.route("/elephant-maker")
 def elephantMaker():
+
+    cursor = mydb.cursor(prepared=True)
+
+    #Grab authetication token from cookies.
+    authToken = request.cookies["authToken"]
+
+    # Hash the authToken cookie.
+    hashedToken = hashlib.sha256()
+    hashedToken.update(bytes.fromhex(authToken))
+    hashedToken = hashedToken.hexdigest()
+
+    cursor = mydb.cursor(prepared=True)
+    # Find username associated with authToken
+    statement = "SELECT username FROM authTokens WHERE hashedToken ='" + hashedToken + "'"
+    cursor.execute(statement)
+    result = cursor.fetchall()
+
+    #If there is a match to a username.
+    if (len(result) == 1):
+        record = result[0][0]
+
+        # body: elephant-maker.html with username injected to be served in response.
+        body = createMakerPage(record)
+
+        # Make and return the home page response.
+        response = make_response()
+        response.data = body.encode('utf-8')
+        response.content_type = "text/html; charset=utf-8"
+        response.content_length = len(body.encode('utf-8'))
+        return response
+
+    cursor.close()
     return render_template("elephant-maker.html")
 
 #Elephants are saved in the form:
@@ -258,8 +305,6 @@ def save_elephant():
     print("Form: ",request.form)
     #Save form data to SQL database
 
-    #....Add Here....
-
     #Redirect back to the elephant maker page
     return render_template("elephant-maker.html")
 
@@ -267,73 +312,157 @@ def save_elephant():
 #[('title', '<title>'), ('event', <'event name'>), ('file', '<submitted elephants url>')]
 @app.route("/submit-elephant", methods=["POST"])
 def submit_elephant():
-    print("Form: ",request.form)
-    #Save form data to SQL database
 
-    #....Add Here....
+    cursor = mydb.cursor(prepared=True)
 
-    #Redirect back to the elephant maker page
-    return render_template("elephant-maker.html")
+    #Parse data from form: username, title, description, file name, and event.
+    username = request.form.get('username')
+    title = request.form.get('title')
+    description = request.form.get('description')
+    file = request.form.get('file')
+    event = request.form.get('event')
+
+    #Set initial likes to 0.
+    likes = 0
+
+    #Create a new id for the post.
+    id = uuid.uuid4().bytes
+    hashedID = hashlib.sha256()
+    hashedID.update(id)
+    hashedID = hashedID.hexdigest()
+
+    cursor = mydb.cursor(prepared=True)
+    #Insert post into posts table.
+    statement = "INSERT INTO posts(username, title, description, filePath, event, id, likes) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    values = (username, title, description, file, event, str(hashedID), likes)
+    cursor.execute(statement, values)
+
+    #Commit changes to database.
+    mydb.commit()
+
+    #Create elephant-maker.html for user to serve in response.
+    html = createMakerPage(username)
+
+    # Make and return the elephant-maker response.
+    response = make_response()
+    response.data = html.encode('utf-8')
+    response.content_type = "text/html; charset=utf-8"
+    response.content_length = len(html.encode('utf-8'))
+
+    cursor.close()
+    return response
+
 
 # HTML for elephant post (need to structure each post individually in a loop)
-elephant_post = """
-<div id="elephant-post.{{post_num}}">
-						<div class="split" id="section-header">
-							<h1 class="elephant-post-child">{{elephant_title}}</h1>
-							<div class="elephant-post-child" id="profile-picture">{{username}}<img src="/static/images/test-profile-picture.png"></div>
-						</div>
-						<div class="post-container">
-						<!-- Image should be what's stored in the database-->
-							<img class="submitted-elephant" src="/static/images/elephant.png" style="width: 300px; height: 300px;">
-							<div id="like-button">
-								<button type="button"  onclick="likeElephant('elephant-post.{{post_num}}')" class="button-like"><i class="fa-regular fa-heart" id="like-child" style="display: block"></i></button>
-								<!-- When liked, should increment like counter shown on page. Can do this in JS easily, but idk how it will work w the database..
-								It might be easier to pretend that this like counter incremented up for the user.
-								It will still happen in the background, but having the page refresh to show this change is probably bad UI since user will be taken to top of page-->
-								<button type="button"  onclick="unlikeElephant('elephant-post.{{post_num}}')" class="button-unlike"  style="display: none"><i class="fa-solid fa-heart" id="like-child"></i></button>
-								<p class="like-child" id="like-counter">{like-count} Likes</p>
-							</div>
-							<button type="button" id="view-description" onclick="openDesc('elephant-post.{{post_num}}')">View Description</button>
-						</div>
-						<div id="description" style="display: none;">
-							{{description}}
-						</div>
-					</div>
-"""
-post_num = 1
+
 @app.route("/elephant-feed")
 def elephantFeed():
+
+    #Was not able to inject html string into html: elephant_post unused.
+    #elephant_post = """
+    #<div id="elephant-post.{{post_num}}">
+    #						<div class="split" id="section-header">
+    #							<h1 class="elephant-post-child">{{elephant_title}}</h1>
+    #							<div class="elephant-post-child" id="profile-picture">{{username}}<img src="/static/images/test-profile-picture.png"></div>
+    #						</div>
+    #						<div class="post-container">
+    #						<!-- Image should be what's stored in the database-->
+    #							<img class="submitted-elephant" src="/static/images/elephant.png" style="width: 300px; height: 300px;">
+    #							<div id="like-button">
+    #								<button type="button"  onclick="likeElephant('elephant-post.{{post_num}}')" class="button-like"><i class="fa-regular fa-heart" id="like-child" style="display: block"></i></button>
+    #								<!-- When liked, should increment like counter shown on page. Can do this in JS easily, but idk how it will work w the database..
+    #								It might be easier to pretend that this like counter incremented up for the user.
+    #								It will still happen in the background, but having the page refresh to show this change is probably bad UI since user will be taken to top of page-->
+    #								<button type="button"  onclick="unlikeElephant('elephant-post.{{post_num}}')" class="button-unlike"  style="display: none"><i class="fa-solid fa-heart" id="like-child"></i></button>
+    #								<p class="like-child" id="like-counter">{like-count} Likes</p>
+    #							</div>
+    #							<button type="button" id="view-description" onclick="openDesc('elephant-post.{{post_num}}')">View Description</button>
+    #						</div>
+    #						<div id="description" style="display: none;">
+    #							{{description}}
+    #						</div>
+    #					</div>
+    #"""
+
+    #Counter for posts to be injected into elephant-feed.html.
+    post_num = 1
+
     # Basic logic: run a loop and create separate divs for each post in the database
     # IMPORTANT: check elephant-feed.html for better understanding/content
 
-    # post_data = ... (retrieve all posts from database)
-    posts = ""
+    #Fetch all posts from posts table.
+    cursor = mydb.cursor(prepared=True)
+    cursor.execute("SELECT * FROM posts")
+    post_data = cursor.fetchall()
 
-    # for post in post_data:
-    #     curr_post = elephant_post
-    #     curr_post = curr_post.replace("{{elephant_title}}", Post Title)
-    #     curr_post = curr_post.replace("{{post_num}}", str(post_num))
-    #     curr_post = curr_post.replace("{{username}}", Post Username)
-    #     curr_post = curr_post.replace("{{description}}", Post Description)
-    #     IMPORTANT: Logic not implemented yet for profile picture and elephant image (displays default)
-    #     post_num += 1
-    #     posts += curr_post
+    # Basic logic: run a loop and create separate divs for each post in the database
+    # IMPORTANT: check elephant-feed.html for better understanding/content
+
+    #posts: String to inject into elephant-feed.html.
+    posts = ""
+    for post in post_data:
+
+        #Use post.html template to create div element of post.
+        with open("templates/post.html", 'r') as template:
+            f = template.read()
+            curr_post = f
+
+            #Inject properties of post based on what's stored in the database.
+            curr_post = curr_post.replace("{{elephant_title}}", post[1])
+            curr_post = curr_post.replace("{{post_num}}", str(post_num))
+            curr_post = curr_post.replace("{{username}}", post[0])
+            curr_post = curr_post.replace("{{description}}", post[2])
+            curr_post = curr_post.replace("{like-count}", str(post[6]))
+
+            #IMPORTANT: Logic not implemented yet for profile picture and elephant image (displays default)
+
+            post_num += 1
+
+            #Concatenate post to feed string.
+            posts += curr_post
 
     # Following code can be safely deleted (testing to ensure that html replaces successfully)
-    test_post = elephant_post
-    test_post = test_post.replace("{{elephant_title}}", "Test Post")
-    test_post = test_post.replace("{{post_num}}", "3")
-    test_post = test_post.replace("{{username}}", "User1")
-    test_post2 = elephant_post
-    test_post2 = test_post2.replace("{{elephant_title}}", "Next Post")
-    test_post2 = test_post2.replace("{{post_num}}", "4")
-    test_post2 = test_post2.replace("{{username}}", "User2")
-    elephant_title = "Replaced"
+    #test_post = elephant_post
+    #test_post = test_post.replace("{{elephant_title}}", "Test Post")
+    #test_post = test_post.replace("{{post_num}}", "3")
+    #test_post = test_post.replace("{{username}}", "User1")
+    #test_post2 = elephant_post
+    #test_post2 = test_post2.replace("{{elephant_title}}", "Next Post")
+    #test_post2 = test_post2.replace("{{post_num}}", "4")
+    #test_post2 = test_post2.replace("{{username}}", "User2")
+    #elephant_title = "Replaced"
     # Delete the section above
 
-    # Actual return statement: return render_template("elephant-feed.html", posts=posts)
-    return render_template("elephant-feed.html",
-                           elephant_title=elephant_title, test_post=Markup(test_post), test_post2=Markup(test_post2))
+
+    #Grab username.
+    username = getUser(request)
+
+    f = ''
+
+    if(username != "null"):
+        #Create feed-page with username injected.
+        f = createFeedPage(username)
+
+    elif(username == "null"):
+        with open("elephant-feed.html", 'r') as template:
+            f = template.read()
+
+    # Inject post feed.
+    editFile = f.split('{{posts}}')
+    html = editFile[0] + posts + editFile[1]
+    response = make_response()
+    response.data = html.encode('utf-8')
+    response.content_type = "text/html; charset=utf-8"
+    response.content_length = len(html.encode('utf-8'))
+
+    cursor.close()
+    return response
+
+
+
+
+    #return render_template("elephant-feed.html", posts=posts)
+    #return render_template("elephant-feed.html", elephant_title=elephant_title, test_post=Markup(test_post), test_post2=Markup(test_post2))
     # Delete above print statement and replace with commented out line
 
 if __name__=='__main__':

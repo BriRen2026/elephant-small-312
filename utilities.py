@@ -31,6 +31,38 @@ def createHomePage(username):
         fileVer1 = editUsername[0] + '<div class="item" id="header-user">' + username + '</div>' + editUsername[1]
         return fileVer1
 
+#Create a string body for a response: Serve the homeLoggedIn.html with the param -> username.
+def createMakerPage(username):
+    #Read homeLoggedIn.html template.
+    with open("templates/elephant-maker.html", "r") as file:
+        f = file.read()
+
+        #Inject username.
+        editUsername = f.split('{username}')
+        fileVer1 = editUsername[0]
+        editUsername.pop(0)
+
+        for section in editUsername:
+            fileVer1 = fileVer1 + username + section
+
+        return fileVer1
+
+#Create a string body for a response: Serve the homeLoggedIn.html with the param -> username.
+def createFeedPage(username):
+    #Read homeLoggedIn.html template.
+    with open("templates/elephant-feed.html", "r") as file:
+        f = file.read()
+
+        #Inject username.
+        editUsername = f.split('{username}')
+        fileVer1 = editUsername[0]
+        editUsername.pop(0)
+
+        for section in editUsername:
+            fileVer1 = fileVer1 + username + section
+
+        return fileVer1
+
 #Generate and store authentication token for user.
 def generateAuthToken(username, cursor, response):
     #Generate uuid -> authentication token.
@@ -51,3 +83,26 @@ def generateAuthToken(username, cursor, response):
 
     #Create authToken cookie to store unhashed authToken.
     response.set_cookie("authToken", unhashedAuthToken.hex(), httponly=True, max_age=7200)
+
+
+def getUser(request):
+    cursor = mydb.cursor()
+
+    authToken = request.cookies["authToken"]
+
+    # Hash the authToken cookie.
+    hashedToken = hashlib.sha256()
+    hashedToken.update(bytes.fromhex(authToken))
+    hashedToken = hashedToken.hexdigest()
+
+    # Find username associated with authToken
+    statement = "SELECT username FROM authTokens WHERE hashedToken ='" + hashedToken + "'"
+    cursor.execute(statement)
+    result = cursor.fetchall()
+
+    if (len(result) == 1):
+        record = result[0][0]
+
+        return record
+
+    return "null"
