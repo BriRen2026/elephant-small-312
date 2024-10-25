@@ -77,7 +77,7 @@
 								<h1>Save Elephant to Your Closet</h1>
 								Title:<br/>
 								<label>
-									  <input id="title" type="text" name="title" placeholder="Name your elephant"/>
+									  <input id="title" type="text" name="title" placeholder="Name your elephant" maxlength="35"/>
 								</label>
 										<br/>
 								<label>
@@ -89,7 +89,7 @@
 							</dialog>
 						</form>
 					<!----------------------------------------------------------------------------------------->
-						<button class="dialog-button-submit" onclick="openDialog()">Submit Elephant</button>
+						<button class="dialog-button-submit" onclick="openDialog()">Submit Elephant (Post Feature)</button>
 						<div id="shadow">
 						<form action="/submit-elephant" method="post" enctype="multipart/form-data" id="elephant-submission">
 							<dialog id="dialog-submit">
@@ -97,13 +97,13 @@
 								<h1>Post Your Elephant</h1>
 								Title:<br/>
 								<label>
-									  <input id="title" type="text" name="title" placeholder="Name your elephant"/>
+									  <input id="title" type="text" name="title" placeholder="Name your elephant" maxlength="35"/>
 								</label>
 								<br/>
-								Description:
+								Description (250 Characters):
 								<br/>
 								<label>
-									  <textarea id="title" type="text" name="description" rows="4" cols="50" placeholder="Give your elephant a description"></textarea>
+									  <textarea id="title" type="text" name="description" rows="5" cols="50" maxlength="250" placeholder="Give your elephant a description"></textarea>
 								</label>
 								<br/> <!-- As a placeholder, saving the url to our static elephant image-->
 									  <!-- In the future, I imagine the saving of elements to paths -->
