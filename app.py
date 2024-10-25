@@ -3,8 +3,10 @@ import mysql.connector
 import hashlib
 from utilities import *
 import uuid
+from markupsafe import Markup
 
 app=Flask(__name__)
+# app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.secret_key = "elephantsmalls"
 
 # Create credentials database if it doesn't exist at startup.
@@ -245,9 +247,66 @@ def submit_elephant():
     #Redirect back to the elephant maker page
     return render_template("elephant-maker.html")
 
+# HTML for elephant post (need to structure each post individually in a loop)
+elephant_post = """
+<div id="elephant-post.{{post_num}}">
+						<div class="split" id="section-header">
+							<h1 class="elephant-post-child">{{elephant_title}}</h1>
+							<div class="elephant-post-child" id="profile-picture">{{username}}<img src="/static/images/test-profile-picture.png"></div>
+						</div>
+						<div class="post-container">
+						<!-- Image should be what's stored in the database-->
+							<img class="submitted-elephant" src="/static/images/elephant.png" style="width: 300px; height: 300px;">
+							<div id="like-button">
+								<button type="button"  onclick="likeElephant('elephant-post.{{post_num}}')" class="button-like"><i class="fa-regular fa-heart" id="like-child" style="display: block"></i></button>
+								<!-- When liked, should increment like counter shown on page. Can do this in JS easily, but idk how it will work w the database..
+								It might be easier to pretend that this like counter incremented up for the user.
+								It will still happen in the background, but having the page refresh to show this change is probably bad UI since user will be taken to top of page-->
+								<button type="button"  onclick="unlikeElephant('elephant-post.{{post_num}}')" class="button-unlike"  style="display: none"><i class="fa-solid fa-heart" id="like-child"></i></button>
+								<p class="like-child" id="like-counter">{like-count} Likes</p>
+							</div>
+							<button type="button" id="view-description" onclick="openDesc('elephant-post.{{post_num}}')">View Description</button>
+						</div>
+						<div id="description" style="display: none;">
+							{{description}}
+						</div>
+					</div>
+"""
+post_num = 1
 @app.route("/elephant-feed")
 def elephantFeed():
-    return render_template("elephant-feed.html")
+    # Basic logic: run a loop and create separate divs for each post in the database
+    # IMPORTANT: check elephant-feed.html for better understanding/content
+
+    # post_data = ... (retrieve all posts from database)
+    posts = ""
+
+    # for post in post_data:
+    #     curr_post = elephant_post
+    #     curr_post = curr_post.replace("{{elephant_title}}", Post Title)
+    #     curr_post = curr_post.replace("{{post_num}}", str(post_num))
+    #     curr_post = curr_post.replace("{{username}}", Post Username)
+    #     curr_post = curr_post.replace("{{description}}", Post Description)
+    #     IMPORTANT: Logic not implemented yet for profile picture and elephant image (displays default)
+    #     post_num += 1
+    #     posts += curr_post
+
+    # Following code can be safely deleted (testing to ensure that html replaces successfully)
+    test_post = elephant_post
+    test_post = test_post.replace("{{elephant_title}}", "Test Post")
+    test_post = test_post.replace("{{post_num}}", "3")
+    test_post = test_post.replace("{{username}}", "User1")
+    test_post2 = elephant_post
+    test_post2 = test_post2.replace("{{elephant_title}}", "Next Post")
+    test_post2 = test_post2.replace("{{post_num}}", "4")
+    test_post2 = test_post2.replace("{{username}}", "User2")
+    elephant_title = "Replaced"
+    # Delete the section above
+
+    # Actual return statement: return render_template("elephant-feed.html", posts=posts)
+    return render_template("elephant-feed.html",
+                           elephant_title=elephant_title, test_post=Markup(test_post), test_post2=Markup(test_post2))
+    # Delete above print statement and replace with commented out line
 
 if __name__=='__main__':
     app.run(host="0.0.0.0",port=8080)

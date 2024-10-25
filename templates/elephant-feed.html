@@ -64,10 +64,17 @@
 					<!-- READ THIS IF NOTHING ELSE vvvvvvvvvvvvvvvvvvvvvvvv -->
 					<!-- I have 2 elephant-post.{CurrPostNumber}s in place for example purposes. Check out what the onclick() functions use a parameter -->
 
+					<!-- The following placeholder 'posts' will contain all posts (delete all example html after this) -->
+					{{posts}}
+
+					{{test_post}}
+
+					{{test_post2}}
+
 					<div id="elephant-post.1">
 						<div class="split" id="section-header">
-							<h1 class="elephant-post-child">{elephant-title}</h1>
-							<div class="elephant-post-child" id="profile-picture">{username}<img src="{{ url_for('static', filename='images/test-profile-picture.png') }}"></div>
+							<h1 class="elephant-post-child">{{elephant_title}}</h1>
+							<div class="elephant-post-child" id="profile-picture">{{username}}<img src="{{ url_for('static', filename='images/test-profile-picture.png') }}"></div>
 						</div>
 						<div class="post-container">
 						<!-- Image should be what's stored in the database-->
@@ -83,15 +90,15 @@
 							<button type="button" id="view-description" onclick="openDesc('elephant-post.1')">View Description</button>
 						</div>
 						<div id="description" style="display: none;">
-							{description}
+							{{description}}
 						</div>
 					</div>
 		<!-------------------------------------------------------------------------------------------------------------->
 
 					<div id="elephant-post.2">
 						<div class="split" id="section-header">
-							<h1 class="elephant-post-child">{elephant-title}</h1>
-							<div class="elephant-post-child" id="profile-picture">{username}<img src="{{ url_for('static', filename='images/test-profile-picture.png') }}"></div>
+							<h1 class="elephant-post-child">{{elephant_title}}</h1>
+							<div class="elephant-post-child" id="profile-picture">{{username}}<img src="{{ url_for('static', filename='images/test-profile-picture.png') }}"></div>
 						</div>
 
 						<div class="post-container">
@@ -106,7 +113,7 @@
 						</div>
 
 						<div id="description" style="display: none;">
-							{description}
+							{{description}}
 						</div>
 					</div>
 		<!-------------------------------------------------------------------------------------------------------------->

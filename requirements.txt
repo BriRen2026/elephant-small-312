@@ -4,3 +4,4 @@ flask
 mysql
 mysql-connector-python
 uuid
+MarkupSafe
