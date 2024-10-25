@@ -14,6 +14,7 @@
   font-family: Signika Negative, sans-serif;
 }
 body {
+    word-break: break-word;
 	background-color:#d5eaed;
 }
 main{
@@ -200,6 +201,8 @@ div[id^='elephant-post.']{
 
 .elephant-post-child, .elephant-post-child img{
 	display: inline-block;
+	word-break: break-word;
+	line-height: 1.5;
 	vertical-align: middle;
 	margin: auto 0;
 }
