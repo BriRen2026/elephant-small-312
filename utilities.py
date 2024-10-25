@@ -9,6 +9,7 @@ def createDatabase():
         myServer = mysql.connector.connect(host = 'mysql', user='root', password='iloveelephantsmalls')
         cursor = myServer.cursor()
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {'credentials'}")
+
         myServer.commit()
         cursor.close()
         myServer.close()

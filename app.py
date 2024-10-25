@@ -24,11 +24,22 @@ def createDatabase():
         cursor = myServer.cursor()
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {'credentials'}")
 
+        myDB = mysql.connector.connect(host = 'mysql', user='root', password='iloveelephantsmalls', database = 'credentials')
+        dbCursor = myDB.cursor()
+
+        statement = "CREATE TABLE IF NOT EXISTS authTokens(username VARCHAR(255), hashedToken VARCHAR(255))"
+        dbCursor.execute(statement)
+
+        statement = "CREATE TABLE IF NOT EXISTS logins(username VARCHAR(255), hashedPass VARCHAR(255))"
+        dbCursor.execute(statement)
+
         statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), event VARCHAR(255), id VARCHAR(255), likes INT)"
-        cursor.execute(statement)
+        dbCursor.execute(statement)
 
         myServer.commit()
+        myDB.commit()
         cursor.close()
+        dbCursor.close()
         myServer.close()
     except Exception:
         print("Database create failed.")
