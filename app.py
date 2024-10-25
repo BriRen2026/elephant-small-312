@@ -36,6 +36,9 @@ def createDatabase():
         statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), event VARCHAR(255), id VARCHAR(255), likes INT)"
         dbCursor.execute(statement)
 
+        statement = "CREATE TABLE IF NOT EXISTS likes(username VARCHAR(255), postID VARCHAR(255)" #added by zane, DB that contains username and post's div ID
+        dbCursor.execute(statement)
+
         myServer.commit()
         myDB.commit()
         cursor.close()
@@ -355,6 +358,7 @@ def submit_elephant():
     hashedID = hashlib.sha256()
     hashedID.update(id)
     hashedID = hashedID.hexdigest()
+    #likedby = [] #set list of people who have liked the post
 
     cursor = mydb.cursor(prepared=True)
     #Insert post into posts table.
@@ -494,13 +498,13 @@ def elephantFeed():
 
 @app.route("/like", methods = {"POST"})
 def like():
-    print(json.loads(request.data))
+    print(json.loads(request.data)) #this returns username and post's div id
 
 
 
 @app.route("/unlike", methods = {"POST"})
 def unlike():
-    print(json.loads(request.data))
+    print(json.loads(request.data)) #we're not gonna worry about unliking rn
 
 
 
