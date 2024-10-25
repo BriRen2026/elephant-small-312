@@ -33,7 +33,7 @@ mydb = mysql.connector.connect(host = "mysql", user = "root", password = "ilovee
 
 @app.route('/', methods = ["POST", "GET"])
 def home():
-    cursor = mydb.cursor()
+    cursor = mydb.cursor(prepared=True)
 
     #If an authToken is set in cookies -> A user is logged in.
     if "authToken" in request.cookies:
@@ -45,8 +45,9 @@ def home():
         hashedToken = hashedToken.hexdigest()
 
         #Find username associated with authToken
-        statement = "SELECT username FROM authTokens WHERE hashedToken ='" + hashedToken + "'"
-        cursor.execute(statement)
+        statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
+        t=hashedToken
+        cursor.execute(statement,(t,))
         result = cursor.fetchall()
 
         if(len(result) == 1):
@@ -77,14 +78,14 @@ def registerForm():
     response = make_response(redirect("/", code = 302))
 
     #cursor: To interact with database.
-    cursor = mydb.cursor()
+    cursor = mydb.cursor(prepared=True)
 
     #Create logins table.
     statement = "CREATE TABLE IF NOT EXISTS logins(username VARCHAR(255), hashedPass VARCHAR(255))"
     cursor.execute(statement)
 
     #Create authTokens table if it doesn't exist.
-    cursor = mydb.cursor()
+    cursor = mydb.cursor(prepared=True)
     statement = "CREATE TABLE IF NOT EXISTS authTokens(username VARCHAR(255), hashedToken VARCHAR(255))"
     cursor.execute(statement)
 
@@ -94,8 +95,9 @@ def registerForm():
     repassword = request.form.get('repassword')
 
     #Find login for input username.
-    statement = "SELECT * FROM logins WHERE username ='" + username + "'"
-    cursor.execute(statement)
+    statement = "SELECT * FROM logins WHERE username = %s"
+    u=username
+    cursor.execute(statement,(u,))
     result = cursor.fetchall()
 
     #Computes how many instances are associated with that username: should be either 0 or 1.
@@ -107,7 +109,9 @@ def registerForm():
     if exists == 0:
 
         #Check if the passwords matched for verification.
-        if (password == repassword):
+        #to be done: implement password validator
+        #Stubbed out with [and True] for now for ease of testing. To be implemented for final demo.
+        if (password == repassword and True):
 
             #Salt + hash password.
             salt = bcrypt.gensalt()
@@ -129,7 +133,7 @@ def registerForm():
             cursor.close()
             return response
 
-        #If password & repassword don't match, return register form.
+        #If password & repassword don't match, or password is not strong enough, return register form.
         else:
             print("Passwords don't match!")
             cursor.close()
@@ -141,6 +145,28 @@ def registerForm():
         cursor.close()
         return render_template("register.html")
 
+def validate_password(pwd):
+    if len(pwd)<8:
+        return False
+    all_special = "!@#$%^&()-_="
+    lower=False
+    upper=False
+    number=False
+    special=False
+    for char in pwd:
+        if (not char.isalnum()) and (char not in all_special):
+            return False
+        if char.islower():
+            lower=True
+        if char.isupper():
+            upper=True
+        if char.isdigit():
+            number=True
+        if char in all_special:
+            special=True
+    if (not lower) or (not upper) or (not number) or (not special):
+        return False
+    return True
 
 
 @app.route("/login")
@@ -154,7 +180,7 @@ def loginForm():
     response = make_response(redirect("/", code = 302))
 
     #Create authTokens table if it doesn't exist.
-    cursor = mydb.cursor()
+    cursor = mydb.cursor(prepared=True)
     statement = "CREATE TABLE IF NOT EXISTS authTokens(username VARCHAR(255), hashedToken VARCHAR(255))"
     cursor.execute(statement)
 
@@ -164,8 +190,9 @@ def loginForm():
 
 
     #Find record of given username in database.
-    statement = "SELECT hashedPass FROM logins WHERE username ='" + username + "'"
-    cursor.execute(statement)
+    statement = "SELECT hashedPass FROM logins WHERE username = %s"
+    u=username
+    cursor.execute(statement,(u,))
     result = cursor.fetchall()
 
     if (len(result) == 0):
@@ -212,9 +239,10 @@ def logOut():
     hashedToken = hashedToken.hexdigest()
 
     #Delete token from authTokens table.
-    statement = "DELETE FROM authTokens WHERE hashedToken='" + hashedToken+"'"
-    cursor.execute(statement)
-
+    statement = "DELETE FROM authTokens WHERE hashedToken = %s"
+    t=hashedToken
+    cursor.execute(statement, (t,))
+    mydb.commit()
     cursor.close()
     #Redirect to home page.
     return redirect("/", code = 302)
