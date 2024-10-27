@@ -334,43 +334,46 @@ def elephantMaker():
     #Create cursor.
     cursor = mydb.cursor(prepared=True)
 
-    #Grab authentication token from cookies.
-    authToken = request.cookies["authToken"]
+    if 'authToken' in request.cookies:
+        #Grab authentication token from cookies.
+        authToken = request.cookies["authToken"]
 
-    # Hash the authToken cookie.
-    hashedToken = hashlib.sha256()
-    hashedToken.update(bytes.fromhex(authToken))
-    hashedToken = hashedToken.hexdigest()
+        # Hash the authToken cookie.
+        hashedToken = hashlib.sha256()
+        hashedToken.update(bytes.fromhex(authToken))
+        hashedToken = hashedToken.hexdigest()
 
-    # Find username associated with authToken
-    statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
-    t = hashedToken
-    cursor.execute(statement, (t,))
-    result = cursor.fetchall()
+        # Find username associated with authToken
+        statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
+        t = hashedToken
+        cursor.execute(statement, (t,))
+        result = cursor.fetchall()
 
-    #If there is a match to a username.
-    if (len(result) == 1):
+        #If there is a match to a username.
+        if (len(result) == 1):
 
-        #Grab username.
-        record = result[0][0]
+            #Grab username.
+            record = result[0][0]
 
-        #Create body: elephant-maker.html with username injected to be served in response.
-        body = createMakerPage(record)
+            #Create body: elephant-maker.html with username injected to be served in response.
+            body = createMakerPage(record)
 
-        #Make and return the home page response.
-        response = make_response()
-        response.data = body.encode('utf-8')
-        response.content_type = "text/html; charset=utf-8"
-        response.content_length = len(body.encode('utf-8'))
+            #Make and return the home page response.
+            response = make_response()
+            response.data = body.encode('utf-8')
+            response.content_type = "text/html; charset=utf-8"
+            response.content_length = len(body.encode('utf-8'))
+
+            mydb.commit()
+            cursor.close()
+
+            return response
 
         mydb.commit()
         cursor.close()
-
-        return response
-
-    mydb.commit()
-    cursor.close()
-    return render_template("login.html")
+        return render_template("login.html")
+    else:
+        return render_template("login.html")
 
 #Elephants are saved in the form:
 #[('title', '<title>'), ('file', '<submitted elephants url>')]
@@ -527,7 +530,7 @@ def elephantFeed():
 
     elif(username == "null"):
         with open("templates/elephant-feedNotLoggedIn.html", 'r') as template:
-            f = template.read()
+           f = template.read()
 
         #return redirect("/login", code = 302)
 
