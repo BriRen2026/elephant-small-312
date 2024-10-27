@@ -13,7 +13,9 @@ app.secret_key = "elephantsmalls"
 @app.after_request #Sets the nosniff header on each responses
 def add_security(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
+    print(response.headers)
     return response
+
 
 # Create credentials database if it doesn't exist at startup.
 def createDatabase():
@@ -319,8 +321,12 @@ def logOut():
     mydb.commit()
     cursor.close()
 
+    response = make_response(redirect("/", code = 302))
+    response.content_type = "text/html; charset=utf-8"
+    response.set_cookie("authToken", httponly=True, max_age=-100)
+
     #Redirect to home page.
-    return redirect("/", code = 302)
+    return response
 
 @app.route("/elephant-maker")
 def elephantMaker():
@@ -522,6 +528,8 @@ def elephantFeed():
     elif(username == "null"):
         with open("templates/elephant-feedNotLoggedIn.html", 'r') as template:
             f = template.read()
+
+        #return redirect("/login", code = 302)
 
     #Inject post feed.
     editFile = f.split('{{posts}}')

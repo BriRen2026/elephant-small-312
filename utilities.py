@@ -134,29 +134,32 @@ def getUser(request, mydb):
     #Create cursor.
     cursor = mydb.cursor()
 
-    #Grab authToken.
-    authToken = request.cookies["authToken"]
+    if 'authToken' in request.cookies:
+        #Grab authToken.
+        authToken = request.cookies["authToken"]
 
-    #Hash the authToken cookie.
-    hashedToken = hashlib.sha256()
-    hashedToken.update(bytes.fromhex(authToken))
-    hashedToken = hashedToken.hexdigest()
+        #Hash the authToken cookie.
+        hashedToken = hashlib.sha256()
+        hashedToken.update(bytes.fromhex(authToken))
+        hashedToken = hashedToken.hexdigest()
 
-    #Find username associated with authToken
-    #statement = "SELECT * FROM authTokens"
-    #cursor.execute(statement)
-    #print(cursor.fetchall())
+        #Find username associated with authToken
+        #statement = "SELECT * FROM authTokens"
+        #cursor.execute(statement)
+        #print(cursor.fetchall())
 
-    #Find username associated with authToken
-    statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
-    t = hashedToken
-    cursor.execute(statement, (t,))
-    result = cursor.fetchall()
+        #Find username associated with authToken
+        statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
+        t = hashedToken
+        cursor.execute(statement, (t,))
+        result = cursor.fetchall()
 
-    #If there is a token associated with the username, serve the username.
-    if (len(result) == 1):
-        record = result[0][0]
-        return record
+        #If there is a token associated with the username, serve the username.
+        if (len(result) == 1):
+            record = result[0][0]
+            return record
 
+        else:
+            return "null"
     else:
         return "null"
