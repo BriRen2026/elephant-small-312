@@ -492,7 +492,7 @@ def elephantFeed():
             post_num += 1
 
             #Concatenate post to feed string.
-            posts += curr_post
+            posts = curr_post + posts
 
     # Following code can be safely deleted (testing to ensure that html replaces successfully)
     #test_post = elephant_post
