@@ -1,5 +1,4 @@
 import json
-
 from flask import Flask, render_template, request, make_response, redirect, flash
 import mysql.connector
 import hashlib
@@ -11,62 +10,83 @@ app=Flask(__name__)
 # app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.secret_key = "elephantsmalls"
 
-# Create credentials database if it doesn't exist at startup.
-
-@app.after_request #sets the nosniff header on each response
+@app.after_request #Sets the nosniff header on each responses
 def add_security(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     return response
 
+# Create credentials database if it doesn't exist at startup.
 def createDatabase():
-    try:
+        #Connect to mysql server.
         myServer = mysql.connector.connect(host = 'mysql', user='root', password='iloveelephantsmalls')
-        cursor = myServer.cursor()
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {'credentials'}")
 
+        #Create cursor to execute statements.
+        serverCursor = myServer.cursor()
+
+        #Create database: credentials -> To store all information.
+        serverCursor.execute(f"CREATE DATABASE IF NOT EXISTS {'credentials'}")
+
+        #Connect to credentials database + create database cursor.
         myDB = mysql.connector.connect(host = 'mysql', user='root', password='iloveelephantsmalls', database = 'credentials')
         dbCursor = myDB.cursor()
 
+        #Create table: authTokens -> To store usernames associated with hashed authentication tokens during user sessions.
         statement = "CREATE TABLE IF NOT EXISTS authTokens(username VARCHAR(255), hashedToken VARCHAR(255))"
         dbCursor.execute(statement)
 
+        #Create table: logins -> To store usernames associated with hashed + salted passwords during registration.
         statement = "CREATE TABLE IF NOT EXISTS logins(username VARCHAR(255), hashedPass VARCHAR(255))"
         dbCursor.execute(statement)
 
+        #Create table: posts -> To store elephant posts associated with information during elephant submission.
         statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), event VARCHAR(255), id VARCHAR(255), likes INT)"
         dbCursor.execute(statement)
 
-        statement = "CREATE TABLE IF NOT EXISTS likes(username VARCHAR(255), postID VARCHAR(255)" #added by zane, DB that contains username and post's div ID
+
+        #added by zane, DB that contains username and post's div ID
+        #Created table: likes -> To store usernames associated with post's div ID.
+        statement = "CREATE TABLE IF NOT EXISTS likes(username VARCHAR(255), postID VARCHAR(255))"
         dbCursor.execute(statement)
 
-        myServer.commit()
+        #Commit to server and database connections.
         myDB.commit()
-        cursor.close()
-        dbCursor.close()
-        myServer.close()
-    except Exception:
-        print("Database create failed.")
+        myServer.commit()
 
-# Create the database on app startup
+
+        #Close server and database cursors.
+        dbCursor.close()
+        serverCursor.close()
+
+
+        #Close server and database connections.
+        myServer.close()
+        myDB.close()
+
+# Create the database on app startup.
 createDatabase()
 
+#Connect to database: credentials.
 mydb = mysql.connector.connect(host = "mysql", user = "root", password = "iloveelephantsmalls", database = "credentials")
 
 @app.route('/', methods = ["POST", "GET"])
 def home():
+
+    #Create prepared database cursor for statement executions.
     cursor = mydb.cursor(prepared=True)
 
     #statement = "DELETE FROM authTokens"
     #cursor.execute(statement)
     #mydb.commit()
-#
+
     #statement = "SELECT * FROM authTokens"
     #cursor.execute(statement)
     #print(cursor.fetchall())
-#
+
 
     #If an authToken is set in cookies -> A user is logged in.
     if "authToken" in request.cookies:
+
+        #Grab authToken from cookies.
         authToken = request.cookies["authToken"]
 
         #Hash the authToken cookie.
@@ -76,14 +96,17 @@ def home():
 
         #Find username associated with authToken
         statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
-        t=hashedToken
-        cursor.execute(statement,(t,))
+        t = hashedToken
+        cursor.execute(statement, (t,))
         result = cursor.fetchall()
 
+        #If there is only one authentication token for the user.
         if(len(result) == 1):
+
+            #Grab username from record in authTokens.
             record = result[0][0]
 
-            #body: homeLoggedIn.html with username injected to be served in response.
+            #Create body: homeLoggedIn.html with username injected to be served in response.
             body = createHomePage(record)
 
             #Make and return the home page response.
@@ -94,8 +117,13 @@ def home():
             cursor.close()
             return response
 
-    cursor.close()
+        #If there is more than one authentication token for the user: invalid login.
+        else:
+            cursor.close()
+            return render_template("home.html")
+
     #If there is no authToken -> No user is logged in.
+    cursor.close()
     return render_template("home.html")
 
 
@@ -108,36 +136,35 @@ def registerForm():
     #Create base redirect response.
     response = make_response(redirect("/", code = 302))
 
-    #cursor: To interact with database.
+    #Create prepared cursor: To interact with database.
     cursor = mydb.cursor(prepared=True)
 
-    #Create logins table.
+    #Create logins table if it doesn't exist (for precautions).
     statement = "CREATE TABLE IF NOT EXISTS logins(username VARCHAR(255), hashedPass VARCHAR(255))"
     cursor.execute(statement)
 
-    #Create authTokens table if it doesn't exist.
-    cursor = mydb.cursor(prepared=True)
+    #Create authTokens table if it doesn't exist (for precautions).
     statement = "CREATE TABLE IF NOT EXISTS authTokens(username VARCHAR(255), hashedToken VARCHAR(255))"
     cursor.execute(statement)
 
-    #Parse username, password, and reentered password.
+    #Parse username, password, and reentered password from form.
     username = request.form.get('username')
     password = request.form.get('password')
     repassword = request.form.get('repassword')
 
-    #Find login for input username.
+    #Find potential login for input username.
     statement = "SELECT * FROM logins WHERE username = %s"
     u=username
     cursor.execute(statement,(u,))
     result = cursor.fetchall()
 
     #Computes how many instances are associated with that username: should be either 0 or 1.
-    exists = 0
-    for element in result:
-        exists += 1
+    #exists = 0
+    #for element in result:
+        #exists += 1
 
     #If there is not a registered user with the username:
-    if exists == 0:
+    if len(result) == 0:
 
         #Check if the passwords matched for verification.
         #to be done: implement password validator
@@ -158,7 +185,7 @@ def registerForm():
             #Generate authToken for user.
             generateAuthToken(username, cursor, response, mydb)
 
-            # Save changes to database.
+            #Save changes to database.
             mydb.commit()
 
             cursor.close()
@@ -175,6 +202,7 @@ def registerForm():
         print("Username is already taken!")
         cursor.close()
         return render_template("register.html")
+
 
 def validate_password(pwd):
     if len(pwd)<8:
@@ -219,23 +247,26 @@ def loginForm():
     username = request.form.get('username')
     password = request.form.get('password')
 
-
     #Find record of given username in database.
     statement = "SELECT hashedPass FROM logins WHERE username = %s"
     u=username
     cursor.execute(statement,(u,))
     result = cursor.fetchall()
 
-    #If not logged in.
+    #If not registered.
     if (len(result) == 0):
         flash("Invalid username/password.")
         return render_template("login.html")
 
+    #If registered.
+
+    #Grab username.
     record = result[0][0]
 
     #Verify the given password and stored password.
     valid = bcrypt.checkpw(password.encode('utf-8'), record.encode('utf-8'))
 
+    #Commit for good measure.
     mydb.commit()
 
     #If passwords match, authenticate user.
@@ -247,6 +278,7 @@ def loginForm():
         #Create homeLoggedIn.html with injected username for response.
         createHomePage(username)
 
+        #Commit.
         mydb.commit()
 
         cursor.close()
@@ -255,7 +287,6 @@ def loginForm():
     #If the passwords do not match, don't authenticate.
     else:
         flash("Invalid username/password.")
-
         mydb.commit()
         cursor.close()
         return render_template("login.html")
@@ -263,14 +294,12 @@ def loginForm():
 
 @app.route("/logout")
 def logOut():
+
+    #Create cursor.
     cursor = mydb.cursor()
 
     #Create authTokens table if it doesn't exist.
-    cursor = mydb.cursor()
     statement = "CREATE TABLE IF NOT EXISTS authTokens(username VARCHAR(255), hashedToken VARCHAR(255))"
-    cursor.execute(statement)
-
-    statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), event VARCHAR(255), id VARCHAR(255), likes INT)"
     cursor.execute(statement)
 
     #Take authToken from cookies.
@@ -285,17 +314,21 @@ def logOut():
     statement = "DELETE FROM authTokens WHERE hashedToken = %s"
     t=hashedToken
     cursor.execute(statement, (t,))
+
+    #Commit & close.
     mydb.commit()
     cursor.close()
+
     #Redirect to home page.
     return redirect("/", code = 302)
 
 @app.route("/elephant-maker")
 def elephantMaker():
 
+    #Create cursor.
     cursor = mydb.cursor(prepared=True)
 
-    #Grab authetication token from cookies.
+    #Grab authentication token from cookies.
     authToken = request.cookies["authToken"]
 
     # Hash the authToken cookie.
@@ -303,31 +336,39 @@ def elephantMaker():
     hashedToken.update(bytes.fromhex(authToken))
     hashedToken = hashedToken.hexdigest()
 
-    cursor = mydb.cursor(prepared=True)
     # Find username associated with authToken
-    statement = "SELECT username FROM authTokens WHERE hashedToken ='" + hashedToken + "'"
-    cursor.execute(statement)
+    statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
+    t = hashedToken
+    cursor.execute(statement, (t,))
     result = cursor.fetchall()
 
     #If there is a match to a username.
     if (len(result) == 1):
+
+        #Grab username.
         record = result[0][0]
 
-        # body: elephant-maker.html with username injected to be served in response.
+        #Create body: elephant-maker.html with username injected to be served in response.
         body = createMakerPage(record)
 
-        # Make and return the home page response.
+        #Make and return the home page response.
         response = make_response()
         response.data = body.encode('utf-8')
         response.content_type = "text/html; charset=utf-8"
         response.content_length = len(body.encode('utf-8'))
+
+        mydb.commit()
+        cursor.close()
+
         return response
 
+    mydb.commit()
     cursor.close()
-    return render_template("elephant-maker.html")
+    return render_template("login.html")
 
 #Elephants are saved in the form:
 #[('title', '<title>'), ('file', '<submitted elephants url>')]
+
 @app.route("/save-elephant", methods=["POST"])
 def save_elephant():
     print("Form: ",request.form)
@@ -338,9 +379,11 @@ def save_elephant():
 
 #Elephants are submitted in the form:
 #[('title', '<title>'), ('event', <'event name'>), ('file', '<submitted elephants url>')]
+
 @app.route("/submit-elephant", methods=["POST"])
 def submit_elephant():
 
+    #Create cursor.
     cursor = mydb.cursor(prepared=True)
 
     #Parse data from form: username, title, description, file name, and event.
@@ -360,7 +403,6 @@ def submit_elephant():
     hashedID = hashedID.hexdigest()
     #likedby = [] #set list of people who have liked the post
 
-    cursor = mydb.cursor(prepared=True)
     #Insert post into posts table.
     statement = "INSERT INTO posts(username, title, description, filePath, event, id, likes) VALUES (%s, %s, %s, %s, %s, %s, %s)"
     values = (username, title, description, file, event, str(hashedID), likes)
@@ -370,16 +412,17 @@ def submit_elephant():
     mydb.commit()
 
     #Create elephant-maker.html for user to serve in response.
-    html = createMakerPage(username)
+    #html = createMakerPage(username)
 
     # Make and return the elephant-maker response.
-    response = make_response()
-    response.data = html.encode('utf-8')
-    response.content_type = "text/html; charset=utf-8"
-    response.content_length = len(html.encode('utf-8'))
+    #response = make_response()
+    #response.data = html.encode('utf-8')
+    #response.content_type = "text/html; charset=utf-8"
+    #response.content_length = len(html.encode('utf-8'))
 
+    mydb.commit()
     cursor.close()
-    return response
+    return redirect("/elephant-feed", code = 302)
 
 
 # HTML for elephant post (need to structure each post individually in a loop)
@@ -416,19 +459,20 @@ def elephantFeed():
     #Counter for posts to be injected into elephant-feed.html.
     post_num = 1
 
-    # Basic logic: run a loop and create separate divs for each post in the database
-    # IMPORTANT: check elephant-feed.html for better understanding/content
+    #Basic logic: run a loop and create separate divs for each post in the database
+    #IMPORTANT: check elephant-feed.html for better understanding/content
 
     #Fetch all posts from posts table.
     cursor = mydb.cursor(prepared=True)
     cursor.execute("SELECT * FROM posts")
     post_data = cursor.fetchall()
 
-    # Basic logic: run a loop and create separate divs for each post in the database
-    # IMPORTANT: check elephant-feed.html for better understanding/content
+    #Basic logic: run a loop and create separate divs for each post in the database
+    #IMPORTANT: check elephant-feed.html for better understanding/content
 
     #posts: String to inject into elephant-feed.html.
     posts = ""
+
     for post in post_data:
 
         #Use post.html template to create div element of post.
@@ -464,9 +508,10 @@ def elephantFeed():
 
 
     #Grab username.
-    username = getUser(request)
-    print(username)
+    username = getUser(request, mydb)
+    #print(username)
 
+    #Create f: To store response body which contains injected html of feed.
     f = ''
 
     if(username != "null"):
@@ -474,26 +519,25 @@ def elephantFeed():
         f = createFeedPage(username)
 
     elif(username == "null"):
-        with open("templates/elephant-feed.html", 'r') as template:
+        with open("templates/elephant-feedNotLoggedIn.html", 'r') as template:
             f = template.read()
 
-    # Inject post feed.
+    #Inject post feed.
     editFile = f.split('{{posts}}')
     html = editFile[0] + posts + editFile[1]
+
     response = make_response()
     response.data = html.encode('utf-8')
     response.content_type = "text/html; charset=utf-8"
     response.content_length = len(html.encode('utf-8'))
 
+    mydb.commit()
     cursor.close()
     return response
 
-
-
-
     #return render_template("elephant-feed.html", posts=posts)
     #return render_template("elephant-feed.html", elephant_title=elephant_title, test_post=Markup(test_post), test_post2=Markup(test_post2))
-    # Delete above print statement and replace with commented out line
+    #Delete above print statement and replace with commented out line
 
 
 @app.route("/like", methods = {"POST"})
@@ -505,8 +549,6 @@ def like():
 @app.route("/unlike", methods = {"POST"})
 def unlike():
     print(json.loads(request.data)) #we're not gonna worry about unliking rn
-
-
 
 
 if __name__=='__main__':

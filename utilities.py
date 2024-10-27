@@ -2,26 +2,61 @@ from flask import Flask, render_template, request, make_response, redirect, flas
 import bcrypt
 import mysql.connector
 import hashlib
-from utilities import *
 import uuid
+
+# Create credentials database if it doesn't exist at startup.
 def createDatabase():
-    try:
+        #Connect to mysql server.
         myServer = mysql.connector.connect(host = 'mysql', user='root', password='iloveelephantsmalls')
-        cursor = myServer.cursor()
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {'credentials'}")
 
+        #Create cursor to execute statements.
+        serverCursor = myServer.cursor()
+
+        #Create database: credentials -> To store all information.
+        serverCursor.execute(f"CREATE DATABASE IF NOT EXISTS {'credentials'}")
+
+        #Connect to credentials database + create database cursor.
+        myDB = mysql.connector.connect(host = 'mysql', user='root', password='iloveelephantsmalls', database = 'credentials')
+        dbCursor = myDB.cursor()
+
+        #Create table: authTokens -> To store usernames associated with hashed authentication tokens during user sessions.
+        statement = "CREATE TABLE IF NOT EXISTS authTokens(username VARCHAR(255), hashedToken VARCHAR(255))"
+        dbCursor.execute(statement)
+
+        #Create table: logins -> To store usernames associated with hashed + salted passwords during registration.
+        statement = "CREATE TABLE IF NOT EXISTS logins(username VARCHAR(255), hashedPass VARCHAR(255))"
+        dbCursor.execute(statement)
+
+        #Create table: posts -> To store elephant posts associated with information during elephant submission.
+        statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), event VARCHAR(255), id VARCHAR(255), likes INT)"
+        dbCursor.execute(statement)
+
+
+        #added by zane, DB that contains username and post's div ID
+        #Created table: likes -> To store usernames associated with post's div ID.
+        statement = "CREATE TABLE IF NOT EXISTS likes(username VARCHAR(255), postID VARCHAR(255))"
+        dbCursor.execute(statement)
+
+        #Commit to server and database connections.
+        myDB.commit()
         myServer.commit()
-        cursor.close()
-        myServer.close()
-    except Exception:
-        print("Database create failed.")
 
-# Create the database on app startup
+
+        #Close server and database cursors.
+        dbCursor.close()
+        serverCursor.close()
+
+
+        #Close server and database connections.
+        myServer.close()
+        myDB.close()
+
+# Create the database on app startup.
 createDatabase()
 
 mydb = mysql.connector.connect(host = "mysql", user = "root", password = "iloveelephantsmalls", database = "credentials")
 
-#Create a string body for a response: Serve the homeLoggedIn.html with the param -> username.
+#Create a string body for a response: Serve the homeLoggedIn.html with the username injected.
 def createHomePage(username):
     #Read homeLoggedIn.html template.
     with open("templates/homeLoggedIn.html", "r") as file:
@@ -43,6 +78,7 @@ def createMakerPage(username):
         fileVer1 = editUsername[0]
         editUsername.pop(0)
 
+        #For every division in editUsername after split, insert the username.
         for section in editUsername:
             fileVer1 = fileVer1 + username + section
 
@@ -79,37 +115,39 @@ def generateAuthToken(username, cursor, response, mydb):
     values = (username, hashedToken)
     cursor.execute(statement, values)
 
-    # Find username associated with authToken
-    statement = "SELECT * FROM authTokens"
-    cursor.execute(statement)
-    result = cursor.fetchall()
-    print (result)
-    print(len(result))
+    #Find username associated with authToken
+    #statement = "SELECT * FROM authTokens"
+    #cursor.execute(statement)
+    #result = cursor.fetchall()
+    #print (result)
+    #print(len(result))
 
-    #Commit.
+    #Commit to db.
     mydb.commit()
 
     #Create authToken cookie to store unhashed authToken.
     response.set_cookie("authToken", unhashedAuthToken.hex(), httponly=True, max_age=7200)
 
 
-def getUser(request):
+
+def getUser(request, mydb):
+    #Create cursor.
     cursor = mydb.cursor()
 
     #Grab authToken.
     authToken = request.cookies["authToken"]
 
-    # Hash the authToken cookie.
+    #Hash the authToken cookie.
     hashedToken = hashlib.sha256()
     hashedToken.update(bytes.fromhex(authToken))
     hashedToken = hashedToken.hexdigest()
 
-    # Find username associated with authToken
-    statement = "SELECT * FROM authTokens"
-    cursor.execute(statement)
-    print(cursor.fetchall())
+    #Find username associated with authToken
+    #statement = "SELECT * FROM authTokens"
+    #cursor.execute(statement)
+    #print(cursor.fetchall())
 
-    # Find username associated with authToken
+    #Find username associated with authToken
     statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
     t = hashedToken
     cursor.execute(statement, (t,))
@@ -120,4 +158,5 @@ def getUser(request):
         record = result[0][0]
         return record
 
-    return "null"
+    else:
+        return "null"
