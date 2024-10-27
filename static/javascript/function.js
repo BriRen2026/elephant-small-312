@@ -8,27 +8,37 @@ function elephantSound(){
 
 function likeElephant(parent){
 	console.log("Pressed Like Button");
-	const parent2 = document.getElementById(parent);
-	console.log(parent)
-	//Button starts in unlike state.
-	//button-like is the non-solid heart. When you click it, it should become the button-unlike so its in a state where you can unlike after liking
+const parent2 = document.getElementById(parent);
+console.log(parent)
+console.log(parent2)
+//Button starts in unlike state.
+//button-like is the non-solid heart. When you click it, it should become the button-unlike so its in a state where you can unlike after liking
+let id = parent2.querySelector("#post_id").value
+console.log(id)
+let like = parent2.querySelector('.button-like');
+let unlike = parent2.querySelector('.button-unlike');
 
-	let like = parent2.querySelector('.button-like');
-	let unlike = parent2.querySelector('.button-unlike');
 
-	//Should increment amount of likes whenever we have that set up...
-	let amountOfLikes = parent2.querySelector('#like-counter'); // QUESTION FROM ZANE: How does this work, does it pull from the like count in the DB?
+//Should increment amount of likes whenever we have that set up...
+let amountOfLikes = parent2.querySelector('#like-counter');
 
-	let username = document.getElementById('header-user');
 
-	const data = {"username": username.innerText, "id" : parent}; //id : parent added by zane, sends the div ID
+let username = document.getElementById('header-user');
+console.log(username.innerText)
 
-	const request = new XMLHttpRequest();
-	request.open("POST", "like");
-	request.send(JSON.stringify(data));
 
-	like.style.display = "none";
-	unlike.style.display = "block";
+const data = {"username": username.innerText, "id" : id }; //id : id added by zane, sends the post ID
+
+
+const request = new XMLHttpRequest();
+request.open("POST", "like");
+console.log(data)
+request.send(JSON.stringify(data));
+
+
+like.style.display = "none";
+unlike.style.display = "block";
+
 }
 
 function unlikeElephant(parent){
