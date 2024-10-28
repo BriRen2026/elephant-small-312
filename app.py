@@ -300,7 +300,7 @@ def loginForm():
 def logOut():
 
     #Create cursor.
-    cursor = mydb.cursor()
+    cursor = mydb.cursor(prepared=True)
 
     #Create authTokens table if it doesn't exist.
     statement = "CREATE TABLE IF NOT EXISTS authTokens(username VARCHAR(255), hashedToken VARCHAR(255))"
@@ -565,14 +565,17 @@ def like():
     data = json.loads(request.data)
     username = data["username"]
     theid = data["id"]
-    cursor = mydb.cursor(buffered=True)
+
+    cursor = mydb.cursor(prepared=True)
+
     statement2 = "SELECT * FROM likes WHERE username = %s AND postID = %s"
     cursor.execute(statement2, (username, theid,))
     result = cursor.fetchall()
-    print("result:")
+    print("result: ")
     print(result)
     if len(result) != 0:
         return redirect("/elephant-feed", code=302)
+
     statement = "UPDATE posts SET likes = likes+1 WHERE id = %s"
     cursor.execute(statement, (theid,))
     statement3 = "INSERT INTO likes(username, postID) VALUES (%s, %s)"
@@ -587,7 +590,7 @@ def like():
 
 
 
-
+# We aren't worried about unliking yet
 @app.route("/unlike", methods = {"POST"})
 def unlike():
     print(json.loads(request.data)) #we're not gonna worry about unliking rn

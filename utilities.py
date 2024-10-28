@@ -134,7 +134,7 @@ def generateAuthToken(username, cursor, response, mydb):
 
 def getUser(request, mydb):
     #Create cursor.
-    cursor = mydb.cursor()
+    cursor = mydb.cursor(prepared=True)
 
     if 'authToken' in request.cookies:
         #Grab authToken.

@@ -17,7 +17,20 @@ function likeElephant(parent) {
 	let like = parent2.querySelector('.button-like');
 	let unlike = parent2.querySelector('.button-unlike');
 	//Should increment amount of likes whenever we have that set up...
-	let amountOfLikes = parent2.querySelector('#like-counter');
+
+	let amountOfLikes = parent2.querySelector('#like-counter'); //Shows "<Num> Likes"
+	let likes = amountOfLikes.innerHTML;
+	console.log("Likes: ",likes);
+	//To string innerHTML
+	let likesArray = likes.split(" "); //Split on the space -> ["", "<Num>" "Likes"]
+  	console.log("Array: ",likesArray);
+	let likeNum = likesArray[0];
+	console.log("Got Num: ",likeNum); // "<Num>"
+	likeNum = parseInt(likeNum) + 1; //<Num> + 1
+	console.log("New LikeNum: ",likeNum);
+  	amountOfLikes.innerHTML = likeNum+" Likes"; //Update javascript on front end
+
+
 	let username = document.getElementById('header-user');
 	console.log(username.innerText)
 	const data = {"username": username.innerText, "id": id}; //id : id added by zane, sends the post ID
@@ -40,6 +53,16 @@ function unlikeElephant(parent){
 
 	//Should increment amount of likes whenever we have that set up...
 	let amountOfLikes = parent2.querySelector('#like-counter');
+	let likes = amountOfLikes.innerHTML;
+	console.log("Likes: ",likes);
+	//To string innerHTML
+	let likesArray = likes.split(" "); //Split on the space -> ["", "<Num>" "Likes"]
+  	console.log("Array: ",likesArray);
+	let likeNum = likesArray[0];
+	console.log("Got Num: ",likeNum); // "<Num>"
+	likeNum = parseInt(likeNum) - 1; //<Num> + 1
+	console.log("New LikeNum: ",likeNum);
+  	amountOfLikes.innerHTML = likeNum+" Likes"; //Update javascript on front end
 
 	let username = document.getElementById('header-user');
 
