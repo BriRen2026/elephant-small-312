@@ -103,12 +103,14 @@ def createFeedPage(username):
 #Generate and store authentication token for user.
 def generateAuthToken(username, cursor, response, mydb):
     #Generate uuid -> authentication token.
-    unhashedAuthToken = uuid.uuid4().bytes
+    unhashedAuthToken = str(uuid.uuid4()).encode()
+    hashedToken=hashlib.sha256(unhashedAuthToken).hexdigest()
+
 
     #Hash authentication token.
-    hashedToken = hashlib.sha256()
-    hashedToken.update(unhashedAuthToken)
-    hashedToken = hashedToken.hexdigest()
+    # hashedToken = hashlib.sha256()
+    # hashedToken.update(unhashedAuthToken)
+    # hashedToken = hashedToken.hexdigest()
 
     #Insert token into authTokens table.
     statement = "INSERT INTO authTokens(username,hashedToken) VALUES (%s, %s)"
@@ -126,7 +128,7 @@ def generateAuthToken(username, cursor, response, mydb):
     mydb.commit()
 
     #Create authToken cookie to store unhashed authToken.
-    response.set_cookie("authToken", unhashedAuthToken.hex(), httponly=True, max_age=7200)
+    response.set_cookie("authToken", unhashedAuthToken.decode(), httponly=True, max_age=7200)
 
 
 
@@ -139,9 +141,10 @@ def getUser(request, mydb):
         authToken = request.cookies["authToken"]
 
         #Hash the authToken cookie.
-        hashedToken = hashlib.sha256()
-        hashedToken.update(bytes.fromhex(authToken))
-        hashedToken = hashedToken.hexdigest()
+        hashedToken = hashlib.sha256(authToken.encode()).hexdigest()
+        # hashedToken = hashlib.sha256()
+        # hashedToken.update(bytes.fromhex(authToken))
+        # hashedToken = hashedToken.hexdigest()
 
         #Find username associated with authToken
         #statement = "SELECT * FROM authTokens"

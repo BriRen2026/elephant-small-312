@@ -5,6 +5,7 @@ import hashlib
 from utilities import *
 import uuid
 from markupsafe import Markup
+import html
 
 app=Flask(__name__)
 # app.config["TEMPLATES_AUTO_RELOAD"] = True
@@ -92,9 +93,10 @@ def home():
         authToken = request.cookies["authToken"]
 
         #Hash the authToken cookie.
-        hashedToken = hashlib.sha256()
-        hashedToken.update(bytes.fromhex(authToken))
-        hashedToken = hashedToken.hexdigest()
+        hashedToken=hashlib.sha256(authToken.encode()).hexdigest()
+        # hashedToken = hashlib.sha256()
+        # hashedToken.update(bytes.fromhex(authToken))
+        # hashedToken = hashedToken.hexdigest()
 
         #Find username associated with authToken
         statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
@@ -150,9 +152,9 @@ def registerForm():
     cursor.execute(statement)
 
     #Parse username, password, and reentered password from form.
-    username = request.form.get('username')
-    password = request.form.get('password')
-    repassword = request.form.get('repassword')
+    username = html.escape(request.form.get('username'))
+    password = html.escape(request.form.get('password'))
+    repassword = html.escape(request.form.get('repassword'))
 
     #Find potential login for input username.
     statement = "SELECT * FROM logins WHERE username = %s"
@@ -246,8 +248,8 @@ def loginForm():
     cursor.execute(statement)
 
     #Parse input username and password.
-    username = request.form.get('username')
-    password = request.form.get('password')
+    username = html.escape(request.form.get('username'))
+    password = html.escape(request.form.get('password'))
 
     #Find record of given username in database.
     statement = "SELECT hashedPass FROM logins WHERE username = %s"
@@ -308,9 +310,10 @@ def logOut():
     authToken = request.cookies["authToken"]
 
     #Hash authentication token.
-    hashedToken = hashlib.sha256()
-    hashedToken.update(bytes.fromhex(authToken))
-    hashedToken = hashedToken.hexdigest()
+    # hashedToken = hashlib.sha256()
+    # hashedToken.update(bytes.fromhex(authToken))
+    # hashedToken = hashedToken.hexdigest()
+    hashedToken = hashlib.sha256(authToken.encode()).hexdigest()
 
     #Delete token from authTokens table.
     statement = "DELETE FROM authTokens WHERE hashedToken = %s"
@@ -339,9 +342,10 @@ def elephantMaker():
         authToken = request.cookies["authToken"]
 
         # Hash the authToken cookie.
-        hashedToken = hashlib.sha256()
-        hashedToken.update(bytes.fromhex(authToken))
-        hashedToken = hashedToken.hexdigest()
+        hashedToken = hashlib.sha256(authToken.encode()).hexdigest()
+        # hashedToken = hashlib.sha256()
+        # hashedToken.update(bytes.fromhex(authToken))
+        # hashedToken = hashedToken.hexdigest()
 
         # Find username associated with authToken
         statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
@@ -396,11 +400,11 @@ def submit_elephant():
     cursor = mydb.cursor(prepared=True)
 
     #Parse data from form: username, title, description, file name, and event.
-    username = request.form.get('username')
-    title = request.form.get('title')
-    description = request.form.get('description')
-    file = request.form.get('file')
-    event = request.form.get('event')
+    username = html.escape(request.form.get('username'))
+    title = html.escape(request.form.get('title'))
+    description = html.escape(request.form.get('description'))
+    file = html.escape(request.form.get('file'))
+    event = html.escape(request.form.get('event'))
 
     #Set initial likes to 0.
     likes = 0
@@ -529,8 +533,10 @@ def elephantFeed():
         f = createFeedPage(username)
 
     elif(username == "null"):
-        with open("templates/elephant-feedNotLoggedIn.html", 'r') as template:
-           f = template.read()
+        # with open("templates/elephant-feedNotLoggedIn.html", 'r') as template:
+        #    f = template.read()
+        #User is not logged in. Return to home page.
+        return render_template("elephant-feedNotLoggedIn.html")
 
         #return redirect("/login", code = 302)
 
