@@ -29,9 +29,9 @@
 							<span class="material-symbols-outlined">checkroom</span>
 						</a>
 					</div>
-					<div class="item" id="header-user">{username}</div>
+					<div class="item" id="header-user">jenna</div>
 					<div class="item" id="profile-picture"><img src="/static/images/test-profile-picture.png"></div>
-					
+
 					<!--When pressing logout, GET request is made-->
 					<div class="item" id="logout">
 						<form action="/logout" method="get">
@@ -42,10 +42,11 @@
 			</div>
 		</div>
 	  </header>
-	  
+
     <main>
+
 		<div class="grid-container">
-		
+
 			<div class="grid-col1" id="currentlyWearing">
 				<p id="section-header-left" style="color: pink;"> - </p>
 				<!--Worn items get added to the item-list-->
@@ -61,17 +62,15 @@
 					<div class="item-image" style="background-image: url('/static/images/elephant-small.jpg');"></div>
 				</div>
 			</div>
-		
+
 			<div class="grid-col2" id="elephant">
 				<p id="section-header-middle"> Your Elephant </p>
 				<div class="inner-elephant">
-					<div class="elephant-pic">
-						<img src="/static/images/elephant.png">
-					</div>
+					<div id="elephant-pic"><img src="/static/images/elephant.png"></div>
 					<div class="container" id="elephant-info">
 					<!---------------------------------------------SAVE ELEPHANT-------------------------------------------->
 						<button class="dialog-button-save" onclick="openDialog2()">Save Elephant</button>
-						<form action="/save-elephant" method="post" enctype="multipart/form-data">
+						<form action="/save-elephant" method="post" enctype="multipart/form-data" id="elephant-save-form">
 							<dialog id="dialog-save">
 								<button id="close2" onclick="closeDialog2()" type="button">X</button>
 								<h1>Save Elephant to Your Closet</h1>
@@ -91,7 +90,7 @@
 					<!----------------------------------------------------------------------------------------->
 						<button class="dialog-button-submit" onclick="openDialog()">Submit Elephant (Post Feature)</button>
 						<div id="shadow">
-						<form action="/submit-elephant" method="post" enctype="multipart/form-data" id="elephant-submission">
+						<form action="/submit-elephant" method="post" enctype="multipart/form-data" id="elephant-submit-form">
 							<dialog id="dialog-submit">
 								<button id="close" onclick="closeDialog()" type="button">X</button>
 								<h1>Post Your Elephant</h1>
@@ -108,11 +107,11 @@
 								<br/> <!-- As a placeholder, saving the url to our static elephant image-->
 									  <!-- In the future, I imagine the saving of elements to paths -->
 									<input id="elephant" type="text" name="file" value="/static/images/elephant.png" hidden/>
-									<input id="username" type="text" name="username" value="{username}" hidden/>
+									<input id="username" type="text" name="username" value="jenna" hidden/>
 								<!-- Close dialog and submit at the same time -->
 								Select Event to Submit For:
 								<label>
-									<select form="elephant-submission" name="event">
+									<select form="elephant-submit-form" name="event">
 										<option value="None" selected>No Event! Just For Fun :)</option>
 										<option value="Event-A">EventA</option>
 										<option value="Event-B">EventB</option>
@@ -127,36 +126,57 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="grid-col3">
 				<p id = "section-header-right"> Your Closet </p>
 				<div class="filter-container">
-					<p class="container-child" id="filter-item">Head</p>
+					<p class="container-child" id="filter-item" onclick="elephantSelector()">Elephant</p>
+					<p class="container-child" id="filter-item" onclick="headSelector()">Head</p>
 					<p class="container-child" id="filter-item">Trunk</p>
 					<p class="container-child" id="filter-item">Body</p>
 					<p class="container-child" id="filter-item">Feet</p>
 					<p class="container-child" id="filter-item">Accessories</p>
-					<p class="container-child" id="filter-item">Makeup</p>
 				</div>
+
 				<div class="closet"> <!--2 rows of 4 items-->
-					<div class= "row">
-						<div class="column-item" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-						<div class="column-item" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-						<div class="column-item" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-						<div class="column-item" style="background-image: url('/static/images/elephant-small.jpg');"></div>
+
+				<!--OPTIONS FOR SELECTING AN ELEPHANT BASE-->
+					<div id="elephant-selector" style="display: block;">
+						<div class= "row">
+							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/elephant.png"/></button></div>
+							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/old-elephant.jpg"/></button></div>
+							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/phanpy.jpg"/></button></div>
+							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/playful-elephant.jpg"/></button></div>
+						</div>
+						<div class= "row">
+							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/scrungly-elephant.jpg"/></button></div>
+							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/serene-elephant.jpg"/></button></div>
+							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/baby-elephant.jpg"/></button></div>
+							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/sleek-mammoth.jpeg"/></button></div>
+						</div>
 					</div>
-					<div class= "row">
-						<div class="column-item" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-						<div class="column-item" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-						<div class="column-item" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-						<div class="column-item" style="background-image: url('/static/images/elephant-small.jpg');"></div>
+
+					<!--------OPTIONS FOR SELECTING HEAD ACCESSORIES------------>
+					<div id="head-selector" style="display: none;">
+						<div class= "row">
+							<div class="column-item"><button id="selector-img"><img src="elephant.png"/></button></div>
+							<div class="column-item"><button id="selector-img"><img src="old-elephant.jpg"/></button></div>
+							<div class="column-item"><button id="selector-img"><img src="phanpy.jpg"/></button></div>
+							<div class="column-item"><button id="selector-img"><img src="playful-elephant.jpg"/></button></div>
+						</div>
+						<div class= "row">
+							<div class="column-item"><button id="selector-img"><img src="scrungly-elephant.jpg"/></button></div>
+							<div class="column-item"><button id="selector-img"><img src="serene-elephant.jpg"/></button></div>
+							<div class="column-item"><button id="selector-img"><img src="baby-elephant.jpg"/></button></div>
+							<div class="column-item"><button id="selector-img"><img src="sleek-mammoth.jpeg"/></button></div>
+						</div>
 					</div>
 				</div>
 			</div>
-			
+
 		</div>
     </main>
-	
+
 	<footer>
 		<div class="footer-container">
 			<div class="top">

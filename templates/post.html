@@ -7,7 +7,7 @@
                       </div>
                       <div class="post-container">
                       <!-- Image should be what's stored in the database-->
-                         <img class="submitted-elephant" src="/static/images/elephant.png" style="width: 300px; height: 300px;">
+                         <img class="submitted-elephant" src="{{elephant_image}}" style="width: 300px; height: 300px;">
                         <input id="post_id" value="{{post_id}}"  hidden>
                          <div id="like-button">
                            <button type="button"  onclick="likeElephant('elephant-post.{{post_num}}')" class="button-like"><i class="fa-regular fa-heart" id="like-child" style="display: block"></i></button>

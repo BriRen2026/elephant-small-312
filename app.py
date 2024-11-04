@@ -399,6 +399,9 @@ def submit_elephant():
     #Create cursor.
     cursor = mydb.cursor(prepared=True)
 
+    print("Name: ",request.form.get("file"))
+    print("Name: ",html.escape(request.form.get("file")))
+
     #Parse data from form: username, title, description, file name, and event.
     username = html.escape(request.form.get('username'))
     title = html.escape(request.form.get('title'))
@@ -487,6 +490,7 @@ def elephantFeed():
     posts = ""
 
     for post in post_data:
+        print("Post: ",post)
 
         #Use post.html template to create div element of post.
         with open("templates/post.html", 'r') as template:
@@ -494,14 +498,16 @@ def elephantFeed():
             curr_post = f
 
             #Inject properties of post based on what's stored in the database.
+            #Database infos tored in format = (username, title, description, file, event, str(hashedID), likes)
             curr_post = curr_post.replace("{{elephant_title}}", post[1])
             curr_post = curr_post.replace("{{post_num}}", str(post_num))
             curr_post = curr_post.replace("{{username}}", post[0])
             curr_post = curr_post.replace("{{description}}", post[2])
             curr_post = curr_post.replace("{like-count}", str(post[6]))
             curr_post = curr_post.replace("{{post_id}}", str(post[5])) #sets post ID in hidden form
+            curr_post = curr_post.replace("{{elephant_image}}", str(post[3]))
 
-            #IMPORTANT: Logic not implemented yet for profile picture and elephant image (displays default)
+            #IMPORTANT: Logic not implemented yet for profile picture
 
             post_num += 1
 
