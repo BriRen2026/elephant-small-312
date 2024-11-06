@@ -595,7 +595,9 @@ def like():
     cursor.close()
     return redirect("/elephant-feed", code=302)
 
-
+@app.route("/profile")
+def profile():
+    return render_template("profile.html")
 
 # We aren't worried about unliking yet
 @app.route("/unlike", methods = {"POST"})

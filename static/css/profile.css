@@ -1,0 +1,221 @@
+@import url('https://fonts.googleapis.com/css2?family=Charm:wght@400;700&family=Cookie&family=Signika+Negative:wght@300..700&display=swap');
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+*{
+  margin:0;
+  padding:0;
+  font-family: Signika Negative, sans-serif;
+}
+body {
+	background-color:#d5eaed;
+}
+main{
+	width: 60%;
+	margin: 0 auto;
+}
+
+a{
+	color: black;
+	text-decoration: none;
+}
+
+/*--------------------------Header---------------*/
+
+.header{
+	width: 100%;
+	height: 50px;
+	background-color:#fff;
+	box-shadow: 4px 4px #0000001a;
+}
+
+.header-contents{
+	height: 100%;
+	width: 75%;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+}
+
+/* Styling for a non-logged in user's header ---------------------------------------*/
+/*--- Logo is used for both the actual logo, and placement for register/login--*/
+#feed{
+	padding-right: 7px;
+	padding-left: 5px;
+}
+
+.logo p{
+	font-size: 1.25rem;
+}
+
+.logo{
+	margin: auto 0;
+}
+/*---Register/login specific styling with logo--*/
+.logo li{
+	list-style-type: none;
+    display: inline-block;
+}
+
+.logo a{
+	text-decoration: none;
+	color: black;
+}
+
+#rounded-box{
+	color:white;
+	border-radius: 15px;
+	border: 2px solid #ab8fb5;
+	background-color: #ab8fb5;
+	padding: 8px;
+}
+
+#rounded-box:hover{
+	border: 2px solid #8d7296;
+	background-color: #8d7296;
+}
+
+
+/*-----------------------Styling for a logged in user's header------------*/
+
+.logged-in{
+	display: flex;
+	margin: auto 0;
+}
+
+.item{
+	padding-top: 5px;
+	margin: auto 0;
+}
+
+.item a{
+	color:black;
+	text-decoration: none;
+}
+
+#wardrobe{
+	cursor: pointer;
+}
+
+#header-user{
+	padding: 0px 5px 0px 20px;
+}
+
+#profile-picture img{
+	border-radius: 50px;
+	cursor: pointer;
+}
+
+#profile-picture{
+	position: relative;
+}
+
+#logout{
+	padding-left: 5px;
+}
+
+input[type=submit] {
+  background-color: white;
+  color: black;
+  padding: 5px 5px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+/* ------------------------------------------------------------------------ */
+
+/*----Puts elements side by side----*/
+.container{
+	padding: 10px;
+	border-radius: 10px;
+}
+
+.sub-container{
+	display: flex;
+}
+
+.container-child{
+	display: inline-block;
+	vertical-align: middle;
+	margin: auto 0;
+}
+
+.container-saved{
+	text-align: center;
+}
+
+/*---------------------------------*/
+/*--------------Style main setup--------*/
+
+.grid-container {
+	margin-top: 50px;
+	border-radius: 10px;
+	padding: 10px;
+	width: 100%;
+	background-color: pink;
+}
+
+.grid-col{
+	border-radius: 10px;
+	background-color: white;
+}
+
+
+#section-header{
+	border-radius: 10px 10px 0px 0px;
+	border: 2px solid pink;
+	background-color: pink;
+	padding: 5px;
+	text-align: center;
+}
+
+#profile-picture-profile img{
+	border-radius: 50px;
+	width: 100px;
+	cursor: pointer;
+}
+
+#profile-picture-profile {
+	position: relative;
+}
+
+.pfp-submit[type=submit]{
+	background-color: pink;
+	font-size: 10pt;
+}
+.pfp-submit[type=submit]:hover{
+	background-color: #f0adb8;
+}
+
+/*----------------------------Title---------------------*/
+
+
+/*----------------Footer Style---------*/
+
+.footer-container{
+	background-color:#fff;
+	padding: 7px 0px;
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+}
+
+.top{
+	width: 75%;
+	margin: 0 auto;
+	display:flex;
+	justify-content:space-between;
+}
+
+.top li{
+	list-style-type: none;
+    display: inline-block;
+}

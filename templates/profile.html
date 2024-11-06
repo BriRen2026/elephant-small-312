@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Elephant Site</title>
+    <link rel="stylesheet" href="static/css/profile.css">
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  </head>
+
+  <body>
+	<!--------------Header---------------------->
+	  <header>
+		<div class="header"> <!--Here for styling Not useless-->
+			<div class="header-contents">
+				<div class="logo">
+					<img src="/static/images/elephant-small.jpg" style="cursor: pointer" class="container-child" onclick="elephantSound()">
+					<p class="container-child"><a href="/" id="link"> Elephant Fashion Brawl </a></p>
+				</div>
+
+				<!--When logged in, set display: none"-->
+				<div class="logo" style="display: none;">
+					<ul>
+						<li><a href="/register" id="rounded-box">Register</a></li>
+						<li><a href="/login">Login</a></li>
+					</ul>
+				</div>
+
+				<!--When logged in, set display: flex"-->
+				<div class="logged-in" style="display: flex;">
+					<a class="item" href="/elephant-feed" style="padding-right: 5px;">View Posted Elephants</a>
+					<a class="item" href="/elephant-feed"><span style="padding-right: 20px;" class="fa-solid fa-bars" id="feed"></span></a>
+					<div class="item" id="wardrobe">
+						<a href="/elephant-maker">
+							<span class="material-symbols-outlined">checkroom</span>
+						</a>
+					</div>
+					<div class="item" id="header-user">{username}</div>
+					<div class="item" id="profile-picture"><img src="/static/images/test-profile-picture.png"></div>
+
+					<div class="item" id="logout">
+						<form action="/logout" method="get">
+							<label><input type="submit" value="Log Out"></label>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	  </header>
+
+
+
+    <main>
+		<div class="grid-container">
+			<div class="grid-col">
+
+				<div class="container">
+					<div class="sub-container">
+						<div class="container-child" id="profile-picture-profile"><img src="/static/images/test-profile-picture.png"></div>
+						<div class="container-child">{username}</div>
+					</div>
+					<form action="/change-pfp" method="post" enctype="multipart/form-data" id="change-pfp-form">
+						<label for="pfp" style="font-size: 10pt;">Select Profile Picture:</label></br>
+						<input type="submit" value="Submit"  class="pfp-submit"/>
+						<input type="file" id="pfp" name="pfp" accept="image/png, image/jpeg"/></br>
+					</form>
+				</div>
+				<hr>
+				<div class="container-saved">
+					<h2>Saved Elephants</h2>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer>
+		<div class="footer-container">
+			<div class="top">
+				<ul class="top-child">
+					<li href="#">Support</li>
+					<li> | </li>
+					<li href="#">Contact</li>
+				</ul>
+			</div>
+			<div class="top">
+				<ul class="top-child">
+					<li href="#">Privacy Policy</li>
+					<li> | </li>
+					<li href="#">Copyright</li>
+				</ul>
+				<ul class="top-child">
+					<li><a href="https://www.instagram.com/elephant_small.jpg?igsh=MXYxNWJndmE1ZGljcw==">Instagram <i class="fa-brands fa-instagram"></i></a></li>
+					<li> | </li>
+					<li><a href="#">Discord <i class="fa-brands fa-discord"></i></a></li>
+					<li> | </li>
+				</ul>
+			</div>
+		</div>
+	</footer>
+  <script src="/static/javascript/function.js"></script>
+  </body>
+</html>
