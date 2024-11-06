@@ -600,7 +600,27 @@ def like():
 @app.route("/unlike", methods = {"POST"})
 def unlike():
     print(json.loads(request.data)) #we're not gonna worry about unliking rn
+    data = json.loads(request.data)
+    username = data["username"]
+    theid = data["id"]
 
+    cursor = mydb.cursor(prepared=True)
+    statement2 = "SELECT * FROM likes WHERE username = %s AND postID = %s"
+    cursor.execute(statement2, (username, theid,))
+    result = cursor.fetchall()
+    if len(result) == 0:
+        return redirect("/elephant-feed", code=302)
+    statement = "UPDATE posts SET likes = likes-1 WHERE id = %s"
+    cursor.execute(statement, (theid,))
+    statement3 = "DELETE FROM likes(username, postID) VALUES (%s, %s)"
+    cursor.execute(statement3, (username, theid,))
+    statement = "SELECT * FROM likes"
+    cursor.execute(statement)
+    print("likes content:")
+    print(cursor.fetchall())
+    mydb.commit()
+    cursor.close()
+    return redirect("/elephant-feed", code=302)
 
 if __name__=='__main__':
     app.run(host="0.0.0.0",port=8080)

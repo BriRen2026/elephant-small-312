@@ -45,6 +45,7 @@ function likeElephant(parent) {
 function unlikeElephant(parent){
 	console.log("Pressed Unlike Button");
 	const parent2 = document.getElementById(parent);
+	let id = parent2.querySelector("#post_id").value
 	//Button starts in liked state.
 	//button-unlike is the solid heart. When you click it, it should become button-like, as you put it into a state where it can be liked again after unliking
 
@@ -66,7 +67,7 @@ function unlikeElephant(parent){
 
 	let username = document.getElementById('header-user');
 
-	const data = {"username": username.innerText};
+	const data = {"username": username.innerText, "id": id};
 
 	const request = new XMLHttpRequest();
 	request.open("POST", "unlike");
