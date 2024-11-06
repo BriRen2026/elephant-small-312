@@ -404,6 +404,7 @@ def submit_elephant():
 
     #Parse data from form: username, title, description, file name, and event.
     username = html.escape(request.form.get('username'))
+    print("Username: " + username)
     title = html.escape(request.form.get('title'))
     description = html.escape(request.form.get('description'))
     file = html.escape(request.form.get('file'))

@@ -29,7 +29,7 @@
 							<span class="material-symbols-outlined">checkroom</span>
 						</a>
 					</div>
-					<div class="item" id="header-user">jenna</div>
+					<div class="item" id="header-user">{username}</div>
 					<div class="item" id="profile-picture"><img src="/static/images/test-profile-picture.png"></div>
 
 					<!--When pressing logout, GET request is made-->
@@ -107,7 +107,7 @@
 								<br/> <!-- As a placeholder, saving the url to our static elephant image-->
 									  <!-- In the future, I imagine the saving of elements to paths -->
 									<input id="elephant" type="text" name="file" value="/static/images/elephant.png" hidden/>
-									<input id="username" type="text" name="username" value="jenna" hidden/>
+									<input id="username" type="text" name="username" value={username} hidden/>
 								<!-- Close dialog and submit at the same time -->
 								Select Event to Submit For:
 								<label>
