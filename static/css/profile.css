@@ -87,6 +87,7 @@ a{
 .logged-in{
 	display: flex;
 	margin: auto 0;
+	height: 100%;
 }
 
 .item{
@@ -108,12 +109,20 @@ a{
 }
 
 #profile-picture img{
-	border-radius: 50px;
+	height: auto;
 	cursor: pointer;
+	width: 100%;
 }
 
 #profile-picture{
 	position: relative;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: flex;
+	border: 1px solid black;
+	justify-content: center;
 }
 
 #logout{
@@ -178,13 +187,20 @@ input[type=submit] {
 }
 
 #profile-picture-profile img{
-	border-radius: 50px;
-	width: 100px;
+	height: auto;
 	cursor: pointer;
 }
 
 #profile-picture-profile {
 	position: relative;
+	width: 80px;
+	height: 80px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	border: 1px solid black;
+	margin-right: 10px;
 }
 
 .pfp-submit[type=submit]{

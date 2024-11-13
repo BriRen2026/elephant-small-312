@@ -3,8 +3,13 @@
 <div id="elephant-post.{{post_num}}">
 					<div class="split" id="section-header">
                          <h1 class="elephant-post-child">{{elephant_title}}</h1>
-                         <div class="elephant-post-child" id="profile-picture">{{username}}<img src="{{pfp}}"></div>
-                      </div>
+                         <div class="elephant-post-child">
+                            <div>{{username}}</div>
+                             <div id="profile-picture">
+                                 <img src="{{pfp}}">
+                             </div>
+                         </div>
+                    </div>
                       <div class="post-container">
                       <!-- Image should be what's stored in the database-->
                          <img class="submitted-elephant" src="{{elephant_image}}" style="width: 300px; height: 300px;">

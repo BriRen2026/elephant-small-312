@@ -393,7 +393,7 @@ def elephantMaker():
         cursor.close()
         return render_template("login.html")
     else:
-        return render_template("login.html")
+        return render_template("register.html")
 
 #Elephants are saved in the form:
 #[('title', '<title>'), ('file', '<submitted elephants url>')]
@@ -571,7 +571,7 @@ def elephantFeed():
         # with open("templates/elephant-feedNotLoggedIn.html", 'r') as template:
         #    f = template.read()
         #User is not logged in. Return to home page.
-        return render_template("elephant-feedNotLoggedIn.html")
+        return render_template("register.html")
 
         #return redirect("/login", code = 302)
 

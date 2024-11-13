@@ -103,12 +103,20 @@ main{
 }
 
 #profile-picture img{
-	border-radius: 50px;
+	height: auto;
 	cursor: pointer;
+	width: 100%;
 }
 
 #profile-picture{
 	position: relative;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: flex;
+	border: 1px solid black;
+	justify-content: center;
 }
 
 #logout{

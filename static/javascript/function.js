@@ -16,12 +16,11 @@ function likeElephant(parent) {
 	console.log(id)
 	let like = parent2.querySelector('.button-like');
 	let unlike = parent2.querySelector('.button-unlike');
-	//Should increment amount of likes whenever we have that set up...
 
+	//Visually Increment the amount of likes
 	let amountOfLikes = parent2.querySelector('#like-counter'); //Shows "<Num> Likes"
 	let likes = amountOfLikes.innerHTML;
 	console.log("Likes: ",likes);
-	//To string innerHTML
 	let likesArray = likes.split(" "); //Split on the space -> ["", "<Num>" "Likes"]
   	console.log("Array: ",likesArray);
 	let likeNum = likesArray[0];
@@ -30,14 +29,14 @@ function likeElephant(parent) {
 	console.log("New LikeNum: ",likeNum);
   	amountOfLikes.innerHTML = likeNum+" Likes"; //Update javascript on front end
 
-
+	//Keep track of who has liked posts
 	let username = document.getElementById('header-user');
-	console.log(username.innerText)
 	const data = {"username": username.innerText, "id": id}; //id : id added by zane, sends the post ID
 	const request = new XMLHttpRequest();
 	request.open("POST", "like");
-	console.log(data)
 	request.send(JSON.stringify(data));
+
+	//Change if heart is shown as liked or unliked
 	like.style.display = "none";
 	unlike.style.display = "block";
 }
@@ -52,7 +51,7 @@ function unlikeElephant(parent){
 	let like = parent2.querySelector('.button-like');
 	let unlike = parent2.querySelector('.button-unlike');
 
-	//Should increment amount of likes whenever we have that set up...
+	//Decrement the amount of likes
 	let amountOfLikes = parent2.querySelector('#like-counter');
 	let likes = amountOfLikes.innerHTML;
 	console.log("Likes: ",likes);
@@ -65,14 +64,14 @@ function unlikeElephant(parent){
 	console.log("New LikeNum: ",likeNum);
   	amountOfLikes.innerHTML = likeNum+" Likes"; //Update javascript on front end
 
+	//Should remove the username from who has liked it
 	let username = document.getElementById('header-user');
-
 	const data = {"username": username.innerText, "id": id};
-
 	const request = new XMLHttpRequest();
 	request.open("POST", "unlike");
 	request.send(JSON.stringify(data));
 
+	//Change from liked state to unliked state
 	like.style.display = "block";
 	unlike.style.display = "none";
 }
