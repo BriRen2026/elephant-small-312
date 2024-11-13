@@ -24,7 +24,7 @@ def createDatabase():
         dbCursor.execute(statement)
 
         #Create table: logins -> To store usernames associated with hashed + salted passwords during registration.
-        statement = "CREATE TABLE IF NOT EXISTS logins(username VARCHAR(255), hashedPass VARCHAR(255))"
+        statement = "CREATE TABLE IF NOT EXISTS logins(username VARCHAR(255), hashedPass VARCHAR(255), profilePicture VARCHAR(255))"
         dbCursor.execute(statement)
 
         #Create table: posts -> To store elephant posts associated with information during elephant submission.
@@ -57,7 +57,7 @@ createDatabase()
 mydb = mysql.connector.connect(host = "mysql", user = "root", password = "iloveelephantsmalls", database = "credentials")
 
 #Create a string body for a response: Serve the homeLoggedIn.html with the username injected.
-def createHomePage(username):
+def createHomePage(username, pfp):
     #Read homeLoggedIn.html template.
     with open("templates/homeLoggedIn.html", "r") as file:
         f = file.read()
@@ -65,10 +65,12 @@ def createHomePage(username):
         #Inject username.
         editUsername = f.split('<div class="item" id="header-user">{username}</div>')
         fileVer1 = editUsername[0] + '<div class="item" id="header-user">' + username + '</div>' + editUsername[1]
+        fileVer1 = fileVer1.replace("{{pfp}}", pfp)
+
         return fileVer1
 
 #Create a string body for a response: Serve the homeLoggedIn.html with the param -> username.
-def createMakerPage(username):
+def createMakerPage(username, pfp):
     #Read homeLoggedIn.html template.
     with open("templates/elephant-maker.html", "r") as file:
         f = file.read()
@@ -82,10 +84,12 @@ def createMakerPage(username):
         for section in editUsername:
             fileVer1 = fileVer1 + username + section
 
+        fileVer1 = fileVer1.replace("{{pfp}}", pfp)
+
         return fileVer1
 
 #Create a string body for a response: Serve the homeLoggedIn.html with the param -> username.
-def createFeedPage(username):
+def createFeedPage(username, pfp):
     #Read homeLoggedIn.html template.
     with open("templates/elephant-feed.html", "r") as file:
         f = file.read()
@@ -98,7 +102,19 @@ def createFeedPage(username):
         for section in editUsername:
             fileVer1 = fileVer1 + username + section
 
+        fileVer1 = fileVer1.replace("{{pfp}}", pfp)
+
         return fileVer1
+
+def createProfilePage(username, pfp):
+    # Read profile.html template
+    with open("templates/profile.html", "r") as file:
+        f = file.read()
+
+        f = f.replace('{username}', username)
+        f = f.replace('{{pfp}}', pfp)
+
+        return f
 
 #Generate and store authentication token for user.
 def generateAuthToken(username, cursor, response, mydb):
@@ -129,8 +145,6 @@ def generateAuthToken(username, cursor, response, mydb):
 
     #Create authToken cookie to store unhashed authToken.
     response.set_cookie("authToken", unhashedAuthToken.decode(), httponly=True, max_age=7200)
-
-
 
 def getUser(request, mydb):
     #Create cursor.

@@ -2,21 +2,25 @@ import json
 from flask import Flask, render_template, request, make_response, redirect, flash
 import mysql.connector
 import hashlib
+
+from werkzeug.utils import secure_filename
+
 from utilities import *
 import uuid
 from markupsafe import Markup
 import html
+from flask_socketio import SocketIO
 
 app=Flask(__name__)
 # app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.secret_key = "elephantsmalls"
+# socketio = SocketIO(app)
 
 @app.after_request #Sets the nosniff header on each responses
 def add_security(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
     print(response.headers)
     return response
-
 
 # Create credentials database if it doesn't exist at startup.
 def createDatabase():
@@ -38,7 +42,7 @@ def createDatabase():
         dbCursor.execute(statement)
 
         #Create table: logins -> To store usernames associated with hashed + salted passwords during registration.
-        statement = "CREATE TABLE IF NOT EXISTS logins(username VARCHAR(255), hashedPass VARCHAR(255))"
+        statement = "CREATE TABLE IF NOT EXISTS logins(username VARCHAR(255), hashedPass VARCHAR(255), profilePicture VARCHAR(255))"
         dbCursor.execute(statement)
 
         #Create table: posts -> To store elephant posts associated with information during elephant submission.
@@ -70,7 +74,6 @@ createDatabase()
 
 #Connect to database: credentials.
 mydb = mysql.connector.connect(host = "mysql", user = "root", password = "iloveelephantsmalls", database = "credentials")
-
 @app.route('/', methods = ["POST", "GET"])
 def home():
 
@@ -84,7 +87,6 @@ def home():
     #statement = "SELECT * FROM authTokens"
     #cursor.execute(statement)
     #print(cursor.fetchall())
-
 
     #If an authToken is set in cookies -> A user is logged in.
     if "authToken" in request.cookies:
@@ -110,10 +112,15 @@ def home():
             #Grab username from record in authTokens.
             record = result[0][0]
 
-            #Create body: homeLoggedIn.html with username injected to be served in response.
-            body = createHomePage(record)
+            statement = "SELECT profilePicture FROM logins WHERE username = %s"
+            cursor.execute(statement, (record,))
+            result = cursor.fetchall()
+            pfp = result[0][0]
 
-            #Make and return the home page response.
+            #Create body: homeLoggedIn.html with username injected to be served in response.
+            body = createHomePage(record, pfp)
+
+            # Make and return the home page response.
             response = make_response()
             response.data = body.encode('utf-8')
             response.content_type = "text/html; charset=utf-8"
@@ -130,7 +137,6 @@ def home():
     cursor.close()
     return render_template("home.html")
 
-
 @app.route("/register")
 def register():
     return render_template("register.html")
@@ -144,7 +150,7 @@ def registerForm():
     cursor = mydb.cursor(prepared=True)
 
     #Create logins table if it doesn't exist (for precautions).
-    statement = "CREATE TABLE IF NOT EXISTS logins(username VARCHAR(255), hashedPass VARCHAR(255))"
+    statement = "CREATE TABLE IF NOT EXISTS logins(username VARCHAR(255), hashedPass VARCHAR(255), profilePicture VARCHAR(255))"
     cursor.execute(statement)
 
     #Create authTokens table if it doesn't exist (for precautions).
@@ -180,10 +186,9 @@ def registerForm():
             hashPass = bcrypt.hashpw(password.encode('utf-8'), salt)
             stringHash = hashPass.decode('utf-8')
 
-
             #Stored salted + hashed password in database, along with the username.
-            statement = "INSERT INTO logins(username, hashedPass) VALUES (%s, %s)"
-            values = (username, stringHash)
+            statement = "INSERT INTO logins(username, hashedPass, profilePicture) VALUES (%s, %s, %s)"
+            values = (username, stringHash, '/static/images/test-profile-picture.png')
             cursor.execute(statement, values)
 
             #Generate authToken for user.
@@ -279,8 +284,13 @@ def loginForm():
         #Generate authToken for user.
         generateAuthToken(username, cursor, response, mydb)
 
+        # statement = "SELECT profilePicture FROM logins WHERE username = %s"
+        # cursor.execute(statement, (record,))
+        # result = cursor.fetchall()
+        # pfp = result[0][0]
+
         #Create homeLoggedIn.html with injected username for response.
-        createHomePage(username)
+        createHomePage(username, "/static/images/test-profile-picture.png")
 
         #Commit.
         mydb.commit()
@@ -334,6 +344,8 @@ def logOut():
 @app.route("/elephant-maker")
 def elephantMaker():
 
+    body = ""
+
     #Create cursor.
     cursor = mydb.cursor(prepared=True)
 
@@ -355,14 +367,18 @@ def elephantMaker():
 
         #If there is a match to a username.
         if (len(result) == 1):
-
-            #Grab username.
+            # Grab username.
             record = result[0][0]
 
-            #Create body: elephant-maker.html with username injected to be served in response.
-            body = createMakerPage(record)
+            statement = "SELECT profilePicture FROM logins WHERE username = %s"
+            cursor.execute(statement, (record,))
+            result = cursor.fetchall()
+            pfp = result[0][0]
 
-            #Make and return the home page response.
+            # Create body: elephant-maker.html with username injected to be served in response.
+            body = createMakerPage(record, pfp)
+
+            # Make and return the home page response.
             response = make_response()
             response.data = body.encode('utf-8')
             response.content_type = "text/html; charset=utf-8"
@@ -493,20 +509,27 @@ def elephantFeed():
     for post in post_data:
         print("Post: ",post)
 
+        curr_username = post[0]
+        statement = "SELECT profilePicture FROM logins WHERE username = %s"
+        cursor.execute(statement, (curr_username,))
+        result = cursor.fetchall()
+        pfp = result[0][0]
+
         #Use post.html template to create div element of post.
         with open("templates/post.html", 'r') as template:
             f = template.read()
             curr_post = f
 
             #Inject properties of post based on what's stored in the database.
-            #Database infos tored in format = (username, title, description, file, event, str(hashedID), likes)
+            #Database infos stored in format = (username, title, description, file, event, str(hashedID), likes)
             curr_post = curr_post.replace("{{elephant_title}}", post[1])
             curr_post = curr_post.replace("{{post_num}}", str(post_num))
-            curr_post = curr_post.replace("{{username}}", post[0])
+            curr_post = curr_post.replace("{{username}}", curr_username)
             curr_post = curr_post.replace("{{description}}", post[2])
             curr_post = curr_post.replace("{like-count}", str(post[6]))
             curr_post = curr_post.replace("{{post_id}}", str(post[5])) #sets post ID in hidden form
             curr_post = curr_post.replace("{{elephant_image}}", str(post[3]))
+            curr_post = curr_post.replace("{{pfp}}", pfp)
 
             #IMPORTANT: Logic not implemented yet for profile picture
 
@@ -527,7 +550,6 @@ def elephantFeed():
     #elephant_title = "Replaced"
     # Delete the section above
 
-
     #Grab username.
     username = getUser(request, mydb)
     #print(username)
@@ -536,8 +558,14 @@ def elephantFeed():
     f = ''
 
     if(username != "null"):
+        # Retrieve pfp associated with user
+        statement = "SELECT profilePicture FROM logins WHERE username = %s"
+        cursor.execute(statement, (username,))
+        result = cursor.fetchall()
+        pfp = result[0][0]
+
         #Create feed-page with username injected.
-        f = createFeedPage(username)
+        f = createFeedPage(username, pfp)
 
     elif(username == "null"):
         # with open("templates/elephant-feedNotLoggedIn.html", 'r') as template:
@@ -597,7 +625,85 @@ def like():
 
 @app.route("/profile")
 def profile():
-    return render_template("profile.html")
+    cursor = mydb.cursor(prepared=True)
+
+    if "authToken" in request.cookies:
+        auth_token = request.cookies["authToken"]
+        hashed_token = hashlib.sha256(auth_token.encode()).hexdigest()
+
+        # Find username associated with authToken
+        statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
+        t = hashed_token
+        cursor.execute(statement, (t,))
+        result = cursor.fetchall()
+
+        if len(result) == 1:
+            username = result[0][0]
+
+            # Retrieve pfp associated with user account
+            statement = "SELECT profilePicture FROM logins WHERE username = %s"
+            cursor.execute(statement, (username,))
+            result = cursor.fetchall()
+            pfp = result[0][0]
+            print("Profile Pic: " + pfp)
+
+            body = createProfilePage(username, pfp)
+        else:
+            body = createProfilePage("Guest", "/static/images/test-profile-picture.png")
+    else:
+        body = createProfilePage("Guest", "/static/images/test-profile-picture.png")
+
+    response = make_response()
+    response.data = body.encode('utf-8')
+    response.content_type = "text/html; charset=utf-8"
+    response.content_length = len(body.encode('utf-8'))
+
+    mydb.commit()
+    cursor.close()
+
+    print("Body :" + response.data.decode('utf-8'))
+    return response
+
+# Submit button for changing user profile picture
+@app.route("/change-pfp", methods = {"POST"})
+def change_pfp():
+    cursor = mydb.cursor(prepared=True)
+
+    if "authToken" in request.cookies:
+        # Retrieve user file and save to disk
+        data = request.files["pfp"]
+        filename = secure_filename(data.filename)
+        pfp = data.read()
+        with open("static/pfp/" + filename, "wb") as f:
+            f.write(pfp)
+
+        # Find associated user and update their pfp (with path to their pfp)
+        auth_token = request.cookies["authToken"]
+        hashed_token = hashlib.sha256(auth_token.encode()).hexdigest()
+
+        # Find username associated with authToken
+        statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
+        t = hashed_token
+        cursor.execute(statement, (t,))
+        result = cursor.fetchall()
+
+        if len(result) == 1:
+
+            username = result[0][0]
+
+            # Update user pfp
+            statement = "UPDATE logins SET profilePicture=%s WHERE username = %s"
+            cursor.execute(statement, ("/static/pfp/" + data.filename, username))
+
+            # statement = "SELECT profilePicture FROM logins WHERE username = %s"
+            # cursor.execute(statement, (username,))
+            # result = cursor.fetchall()
+            # print("Result: " + str(result))
+
+    # Redirect to home page
+    mydb.commit()
+    cursor.close()
+    return redirect("/profile", code=302)
 
 # We aren't worried about unliking yet
 @app.route("/unlike", methods = {"POST"})
@@ -625,5 +731,12 @@ def unlike():
     cursor.close()
     return redirect("/elephant-feed", code=302)
 
+@app.route("/deleteDB")
+def deleteDB():
+    cursor = mydb.cursor(prepared=True)
+    statement = "DROP DATABASE credentials"
+    cursor.execute(statement)
+
 if __name__=='__main__':
+    # socketio.run(app, host='0.0.0.0', port=8080, use_reloader=False, log_output=False)
     app.run(host="0.0.0.0",port=8080)

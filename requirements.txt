@@ -5,3 +5,5 @@ mysql
 mysql-connector-python
 uuid
 MarkupSafe
+flask-socketio
+eventlet
