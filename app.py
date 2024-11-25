@@ -1,5 +1,7 @@
 import json
-from flask import Flask, render_template, request, make_response, redirect, flash
+from socket import socket
+
+from flask import Flask, render_template, request, make_response, redirect, flash, jsonify
 import mysql.connector
 import hashlib
 
@@ -9,12 +11,13 @@ from utilities import *
 import uuid
 from markupsafe import Markup
 import html
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 
 app=Flask(__name__)
 # app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.config['DEBUG'] = True
 app.secret_key = "elephantsmalls"
-# socketio = SocketIO(app)
+socketio = SocketIO(app, async_mode='eventlet')
 
 @app.after_request #Sets the nosniff header on each responses
 def add_security(response):
@@ -458,7 +461,9 @@ def submit_elephant():
     return redirect("/elephant-feed", code = 302)
 
 
+
 # HTML for elephant post (need to structure each post individually in a loop)
+post_num = 1
 
 @app.route("/elephant-feed")
 def elephantFeed():
@@ -490,7 +495,7 @@ def elephantFeed():
     #"""
 
     #Counter for posts to be injected into elephant-feed.html.
-    post_num = 1
+    global post_num
 
     #Basic logic: run a loop and create separate divs for each post in the database
     #IMPORTANT: check elephant-feed.html for better understanding/content
@@ -507,7 +512,7 @@ def elephantFeed():
     posts = ""
 
     for post in post_data:
-        print("Post: ",post)
+        # print("Post: ",post)
 
         curr_username = post[0]
         statement = "SELECT profilePicture FROM logins WHERE username = %s"
@@ -592,6 +597,86 @@ def elephantFeed():
     #return render_template("elephant-feed.html", elephant_title=elephant_title, test_post=Markup(test_post), test_post2=Markup(test_post2))
     #Delete above print statement and replace with commented out line
 
+# When user navigates to elephant feed, this event triggers in js of elephant-feed.html
+@socketio.on("connect")
+def live_elephantFeed():
+    # Add logic here to receive and display submitted elephant posts live (while loop?)
+    # Comment: while loop was not needed (check receive_post_data function below)
+    print("Hit connection path!")
+
+@socketio.on("postData")
+def receive_post_data(post_data):
+    global post_num
+
+    parsed_data = json.loads(post_data)
+    # print("Post Data: " + str(parsed_data))
+
+    cursor = mydb.cursor(prepared=True)
+    cursor.execute("SELECT * FROM posts")
+    post_data = cursor.fetchall()
+
+    # Contains HTML of all posts to send to JS script to display in real-time
+    posts_dict = {}
+
+    # Following code: taken from /submit_elephant route
+    for post in post_data:
+
+        curr_username = post[0]
+        statement = "SELECT profilePicture FROM logins WHERE username = %s"
+        cursor.execute(statement, (curr_username,))
+        result = cursor.fetchall()
+        pfp = result[0][0]
+
+        with open("templates/post.html", 'r') as template:
+            f = template.read()
+            curr_post = f
+
+            curr_post = curr_post.replace("{{elephant_title}}", post[1])
+            curr_post = curr_post.replace("{{post_num}}", str(post_num))
+            curr_post = curr_post.replace("{{username}}", curr_username)
+            curr_post = curr_post.replace("{{description}}", post[2])
+            curr_post = curr_post.replace("{like-count}", str(post[6]))
+            curr_post = curr_post.replace("{{post_id}}", str(post[5]))  # sets post ID in hidden form
+            curr_post = curr_post.replace("{{elephant_image}}", str(post[3]))
+            curr_post = curr_post.replace("{{pfp}}", pfp)
+
+            posts_dict[post_num] = curr_post
+            post_num += 1
+
+    # Create and add HTML for new post
+    id = uuid.uuid4().bytes
+    hashedID = hashlib.sha256()
+    hashedID.update(id)
+    hashedID = hashedID.hexdigest()
+    with open("templates/post.html", 'r') as template:
+        f = template.read()
+        new_post = f
+
+        elephant_image_path = "/static/images/" + str(parsed_data["elephant_image"].split("images/")[1])
+        pfp_path = "/static/images/" + str(parsed_data["pfp"].split("images/")[1])
+
+        new_post = new_post.replace("{{elephant_title}}", parsed_data["elephant_title"])
+        new_post = new_post.replace("{{post_num}}", str(post_num))
+        new_post = new_post.replace("{{username}}", parsed_data["username"])
+        new_post = new_post.replace("{{description}}", parsed_data["description"])
+        new_post = new_post.replace("{like-count}", str(0))
+        new_post = new_post.replace("{{post_id}}", str(hashedID))  # sets post ID in hidden form
+        new_post = new_post.replace("{{elephant_image}}", elephant_image_path)
+        new_post = new_post.replace("{{pfp}}", pfp_path)
+
+        posts_dict[post_num] = new_post
+        post_num += 1
+
+    # print(posts_dict)
+
+    # This updates the feed in real-time (broadcast=True needed to send to all connected users)
+    emit("feed", json.dumps(posts_dict), broadcast=True)
+
+# Websocket disconnects automatically upon refresh or leaving elephantFeed page
+@socketio.on("disconnect")
+def handle_disconnect():
+    # Disconnect websocket when user leaves elephantFeed page
+    print("Disconnected!")
 
 @app.route("/like", methods = {"POST"})
 def like():
@@ -738,5 +823,5 @@ def deleteDB():
     cursor.execute(statement)
 
 if __name__=='__main__':
-    # socketio.run(app, host='0.0.0.0', port=8080, use_reloader=False, log_output=False)
-    app.run(host="0.0.0.0",port=8080)
+    socketio.run(app, host='0.0.0.0', port=8080, use_reloader=False, log_output=False)
+    # app.run(host="0.0.0.0",port=8080)

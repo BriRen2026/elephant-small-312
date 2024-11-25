@@ -30,7 +30,7 @@
 						</a>
 					</div>
 					<div class="item" id="header-user">{username}</div>
-					<div class="item" id="profile-picture"><a href="/profile"><img src="{{pfp}}"></a></div>
+					<div class="item" id="profile-picture"><a href="/profile"><img id="pfp-src" src="{{pfp}}"></a></div>
 
 					<!--When pressing logout, GET request is made-->
 					<div class="item" id="logout">
@@ -66,7 +66,7 @@
 			<div class="grid-col2" id="elephant">
 				<p id="section-header-middle"> Your Elephant </p>
 				<div class="inner-elephant">
-					<div id="elephant-pic"><img src="/static/images/elephant.png"></div>
+					<div id="elephant-pic"><img id="elephant-pic-src" src="/static/images/elephant.png"></div>
 					<div class="container" id="elephant-info">
 					<!---------------------------------------------SAVE ELEPHANT-------------------------------------------->
 						<button class="dialog-button-save" onclick="openDialog2()">Save Elephant</button>
@@ -83,12 +83,12 @@
 									<input id="elephant" type="text" name="file" value="/static/images/elephant.png" hidden/>
 								</label>
 								<!-- Close dialog and submit at the same time -->
-								<input type="submit" class="container-child" id="outfit-button-submit" value="Submit Outfit"/>
+								<input type="submit" class="container-child" id="outfit-button-save" value="Submit Outfit"/>
 
 							</dialog>
 						</form>
 					<!----------------------------------------------------------------------------------------->
-						<button class="dialog-button-submit" onclick="openDialog()">Submit Elephant (Post Feature)</button>
+						<button class="dialog-button-submit" id="dialog-submit-elephant" onclick="openDialog()">Submit Elephant (Post Feature)</button>
 						<div id="shadow">
 						<form action="/submit-elephant" method="post" enctype="multipart/form-data" id="elephant-submit-form">
 							<dialog id="dialog-submit">
@@ -96,13 +96,13 @@
 								<h1>Post Your Elephant</h1>
 								Title:<br/>
 								<label>
-									  <input id="title" type="text" name="title" placeholder="Name your elephant" maxlength="35"/>
+									  <input id="postTitle" type="text" name="title" placeholder="Name your elephant" maxlength="35"/>
 								</label>
 								<br/>
 								Description (250 Characters):
 								<br/>
 								<label>
-									  <textarea id="title" type="text" name="description" rows="5" cols="50" maxlength="250" placeholder="Give your elephant a description"></textarea>
+									  <textarea id="description-val" type="text" name="description" rows="5" cols="50" maxlength="250" placeholder="Give your elephant a description"></textarea>
 								</label>
 								<br/> <!-- As a placeholder, saving the url to our static elephant image-->
 									  <!-- In the future, I imagine the saving of elements to paths -->
@@ -203,5 +203,39 @@
 	</footer>
   <script src="/static/javascript/function.js"></script>
   <script src="/static/javascript/submissions.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+	  <script type="text/javascript" charset="utf-8">
+		  const socket = io({autoConnect: false});
+		  let postData;
+
+		  // Connect to websocket when submitting an elephant to send updated html to every client
+		  // Issue: user has to click another element besides description box to send ws info properly
+		  const testButton = document.getElementById("description-val");
+
+		  testButton.addEventListener("change", function () {
+			  console.log("This should print");
+
+			  let elephant_title = document.getElementById("postTitle").value;
+			  let username = document.getElementById("header-user").textContent;
+			  // Description Fix: only update once when description is edited
+			  let description = document.getElementById("description-val").value;
+			  let elephant_image = document.getElementById("elephant-pic-src").src;
+			  let pfp = document.getElementById("pfp-src").src;
+
+			  console.log("Text Area: " + description);
+
+			  postData = {"elephant_title": elephant_title, "username": username,
+				  "description": description, "elephant_image": elephant_image, "pfp": pfp};
+
+			  console.log("Post Data: " + JSON.stringify(postData));
+
+			  socket.connect();
+
+			  // Sends all user input to the server (app.py) from the elephant post form
+			  socket.on('connect', function() {
+				  socket.emit('postData', JSON.stringify(postData));
+			  })
+		  })
+	  </script>
   </body>
 </html>
