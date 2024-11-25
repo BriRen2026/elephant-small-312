@@ -203,39 +203,41 @@
 	</footer>
   <script src="/static/javascript/function.js"></script>
   <script src="/static/javascript/submissions.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-	  <script type="text/javascript" charset="utf-8">
-		  const socket = io({autoConnect: false});
-		  let postData;
+<!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>-->
+<!--	  <script type="text/javascript" charset="utf-8">-->
+<!--		  const socket = io({autoConnect: false});-->
+<!--		  let postData;-->
 
-		  // Connect to websocket when submitting an elephant to send updated html to every client
-		  // Issue: user has to click another element besides description box to send ws info properly
-		  const testButton = document.getElementById("description-val");
+<!--		  // Connect to websocket when submitting an elephant to send updated html to every client-->
+<!--		  // Issue: user has to click another element besides description box to send ws info properly-->
+<!--		  // const testButton = document.getElementById("description-val");-->
+<!--		  const testButton = document.getElementById("outfit-button-submit");-->
 
-		  testButton.addEventListener("change", function () {
-			  console.log("This should print");
+<!--		  // Event listener originally: change-->
+<!--		  testButton.addEventListener("click", function () {-->
+<!--			  console.log("This should print");-->
 
-			  let elephant_title = document.getElementById("postTitle").value;
-			  let username = document.getElementById("header-user").textContent;
-			  // Description Fix: only update once when description is edited
-			  let description = document.getElementById("description-val").value;
-			  let elephant_image = document.getElementById("elephant-pic-src").src;
-			  let pfp = document.getElementById("pfp-src").src;
+<!--			  let elephant_title = document.getElementById("postTitle").value;-->
+<!--			  let username = document.getElementById("header-user").textContent;-->
+<!--			  // Description Fix: only update once when description is edited-->
+<!--			  let description = document.getElementById("description-val").value;-->
+<!--			  let elephant_image = document.getElementById("elephant-pic-src").src;-->
+<!--			  let pfp = document.getElementById("pfp-src").src;-->
 
-			  console.log("Text Area: " + description);
+<!--			  console.log("Text Area: " + description);-->
 
-			  postData = {"elephant_title": elephant_title, "username": username,
-				  "description": description, "elephant_image": elephant_image, "pfp": pfp};
+<!--			  postData = {"elephant_title": elephant_title, "username": username,-->
+<!--				  "description": description, "elephant_image": elephant_image, "pfp": pfp};-->
 
-			  console.log("Post Data: " + JSON.stringify(postData));
+<!--			  console.log("Post Data: " + JSON.stringify(postData));-->
 
-			  socket.connect();
+<!--			  socket.connect();-->
 
-			  // Sends all user input to the server (app.py) from the elephant post form
-			  socket.on('connect', function() {
-				  socket.emit('postData', JSON.stringify(postData));
-			  })
-		  })
-	  </script>
+<!--			  // Sends all user input to the server (app.py) from the elephant post form-->
+<!--			  socket.on('connect', function() {-->
+<!--				  socket.emit('postData', JSON.stringify(postData));-->
+<!--			  })-->
+<!--		  })-->
+<!--	  </script>-->
   </body>
 </html>

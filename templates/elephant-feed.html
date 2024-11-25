@@ -163,27 +163,27 @@
 		</div>
 	</footer>
   <script src="/static/javascript/function.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-	  <script type="text/javascript" charset="utf-8">
-		  const socket = io();
-		  // socket.on('connect', function() {
-			//   socket.emit('my event', {data: 'I\'m connected!'});
-		  // });
+<!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>-->
+<!--	  <script type="text/javascript" charset="utf-8">-->
+<!--		  const socket = io();-->
+<!--		  // socket.on('connect', function() {-->
+<!--			//   socket.emit('my event', {data: 'I\'m connected!'});-->
+<!--		  // });-->
 
-		  socket.on("feed", function(feedHTML) {
-			  feedHTML = JSON.parse(feedHTML);
-			  // console.log(feedHTML);
-			  let posts = "";
-			  // Reverse order of posts to maintain correct order during ws interaction
-			  const reversedPosts = Object.keys(feedHTML).reverse();
-			  for (const post of reversedPosts){
-				  posts += feedHTML[post];
-			  }
-			  // console.log("Posts: " + posts);
+<!--		  socket.on("feed", function(feedHTML) {-->
+<!--			  feedHTML = JSON.parse(feedHTML);-->
+<!--			  // console.log(feedHTML);-->
+<!--			  let posts = "";-->
+<!--			  // Reverse order of posts to maintain correct order during ws interaction-->
+<!--			  const reversedPosts = Object.keys(feedHTML).reverse();-->
+<!--			  for (const post of reversedPosts){-->
+<!--				  posts += feedHTML[post];-->
+<!--			  }-->
+<!--			  // console.log("Posts: " + posts);-->
 
-			  // Updates/sets the HTML of the elephant feed live
-			  document.getElementById("elephant-feed").innerHTML = posts;
-		  })
-	  </script>
+<!--			  // Updates/sets the HTML of the elephant feed live-->
+<!--			  document.getElementById("elephant-feed").innerHTML = posts;-->
+<!--		  })-->
+<!--	  </script>-->
   </body>
 </html>
