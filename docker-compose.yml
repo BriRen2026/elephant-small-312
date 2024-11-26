@@ -4,7 +4,7 @@ services:
     image: mysql:latest
     restart: always
     ports:
-      - '3306:3306'
+      - '3306:3306' #Not an issue since SQL requires a username and password
     environment:
 #      MYSQL_USER: "Brian"
 #      MYSQL_PASSWORD: "Destiny2"

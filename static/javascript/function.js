@@ -107,3 +107,34 @@ function openDesc(parent){
 	});
 
 }
+
+var commentsCount = 0;
+
+function openComments(parent){
+	console.log("Open Comments: ",commentsCount);
+	const parent2 = document.getElementById(parent);
+	let hide = parent2.querySelector('#view-comments');
+	let comments = parent2.querySelector('#comments');
+
+	//Show comments of current elephant post
+	comments.style.display = "block";
+
+	//Change button text to Close Comments and consider cases where a desc has already closed & commentsCount will be 0
+	if (hide.innerHTML === "Close Comments"){
+		commentsCount++;
+	}
+	hide.innerHTML = 'Close Comments';
+
+	//If it's clicked on again, set it back to normal
+	hide.addEventListener("click", function(){
+		if (hide.innerHTML === "Close Comments"){
+			if (commentsCount >= 1) {
+				console.log("Close Comments: ",commentsCount);
+				comments.style.display = "none";
+				hide.innerHTML = 'View Comments';
+				commentsCount=0;
+			}
+		}
+	});
+
+}

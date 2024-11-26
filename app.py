@@ -411,6 +411,19 @@ def save_elephant():
 
 #Elephants are submitted in the form:
 #[('title', '<title>'), ('event', <'event name'>), ('file', '<submitted elephants url>')]
+@app.route("/leave-comment", methods=["POST"])
+def leave_comment():
+    print("Tried leaving a comment: ")
+    print("Message: ",html.escape(request.form.get("comment-message")))
+    print("Left by user: ",html.escape(request.form.get("username")))
+    print("On post num: ",request.form.get("post_id"))
+
+    cursor = mydb.cursor(prepared=True)
+    cursor.execute("SELECT * FROM posts")
+    post_data = cursor.fetchall()
+    print(post_data)
+
+    return redirect("/elephant-feed", code = 302)
 
 @app.route("/submit-elephant", methods=["POST"])
 def submit_elephant():
