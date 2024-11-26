@@ -64,8 +64,10 @@ def createHomePage(username, pfp):
         f = file.read()
 
         #Inject username.
-        editUsername = f.split('<div class="item" id="header-user">{username}</div>')
-        fileVer1 = editUsername[0] + '<div class="item" id="header-user">' + username + '</div>' + editUsername[1]
+        #vvvv old code in case what i did was secretly horrifically wrong vvvv
+        #editUsername = f.split('<div class="item" id="header-user">{username}</div>')
+        #fileVer1 = editUsername[0] + '<div class="item" id="header-user">' + username + '</div>' + editUsername[1]
+        fileVer1 = f.replace("{username}", username)
         fileVer1 = fileVer1.replace("{{pfp}}", pfp)
 
         return fileVer1

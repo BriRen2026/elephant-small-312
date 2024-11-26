@@ -422,6 +422,8 @@ def leave_comment():
     cursor.execute("SELECT * FROM posts")
     post_data = cursor.fetchall()
     print(post_data)
+    #ALL THIS DOES RIGHT NOW IS PRINT DATA FROM THE POSTS ( i was checking that my values were correct )
+    #MUST SAVE COMMENTS IN DB AND ASSOCIATE IT WITH THE POST NUMBER
 
     return redirect("/elephant-feed", code = 302)
 
