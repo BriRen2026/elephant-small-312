@@ -849,6 +849,10 @@ def unlike():
     cursor.close()
     return redirect("/elephant-feed", code=302)
 
+@app.route("/testgame")
+def testGame():
+    return render_template("testgame.html")
+
 @app.route("/deleteDB")
 def deleteDB():
     cursor = mydb.cursor(prepared=True)

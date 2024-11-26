@@ -9,8 +9,13 @@
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	  <!--Following 3 scripts are for p5play game library-->
+	<script src="/static/javascript/q5.js"></script>
+  	<script src="/static/javascript/planckmin.js"></script>
+  	<script src="/static/javascript/p5play.js"></script>
+	  <!--comment out until post test with HTML canvas for positioning-->
   </head>
-  
+
   <body>
 	<!--------------Header---------------------->
 	  <header>
@@ -44,29 +49,32 @@
 	  </header>
 
     <main>
+		<div id="elephant-pic-src" hidden><img src="/static/images/elephant.png"></div>
 
 		<div class="grid-container">
 
 			<div class="grid-col1" id="currentlyWearing">
 				<p id="section-header-left" style="color: pink;"> - </p>
 				<!--Worn items get added to the item-list-->
-				<div class="item-list">
-					<div class="item-image" style="background-image: url('/static/images/elephant-small.jpg');"></div> <!--Make bckground-img the clothing. 36px by 36px-->
-					<div class="item-image" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-					<div class="item-image" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-					<div class="item-image" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-					<div class="item-image" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-					<div class="item-image" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-					<div class="item-image" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-					<div class="item-image" style="background-image: url('/static/images/elephant-small.jpg');"></div>
-					<div class="item-image" style="background-image: url('/static/images/elephant-small.jpg');"></div>
+				<div class="item-list" id="item-list">
+					<div class="item-image"><img id="0" src="/static/images/elephant-small.jpg" width="36" height="36" onmouseover="iconHoverOver(this)" onmouseout="iconHoverOff(this)" onclick="deleteViaIcon(this)"></div> <!--Make bckground-img the clothing. 36px by 36px-->
+					<div class="item-image"><img id="1" src="/static/images/elephant-small.jpg" width="36" height="36" onmouseover="iconHoverOver(this)" onmouseout="iconHoverOff(this)" onclick="deleteViaIcon(this)"></div>
+					<div class="item-image"><img id="2" src="/static/images/elephant-small.jpg" width="36" height="36" onmouseover="iconHoverOver(this)" onmouseout="iconHoverOff(this)" onclick="deleteViaIcon(this)"></div>
+					<div class="item-image"><img id="3" src="/static/images/elephant-small.jpg" width="36" height="36" onmouseover="iconHoverOver(this)" onmouseout="iconHoverOff(this)" onclick="deleteViaIcon(this)"></div>
+					<div class="item-image"><img id="4" src="/static/images/elephant-small.jpg" width="36" height="36" onmouseover="iconHoverOver(this)" onmouseout="iconHoverOff(this)" onclick="deleteViaIcon(this)"></div>
+					<div class="item-image"><img id="5" src="/static/images/elephant-small.jpg" width="36" height="36" onmouseover="iconHoverOver(this)" onmouseout="iconHoverOff(this)" onclick="deleteViaIcon(this)"></div>
+					<div class="item-image"><img id="6" src="/static/images/elephant-small.jpg" width="36" height="36" onmouseover="iconHoverOver(this)" onmouseout="iconHoverOff(this)" onclick="deleteViaIcon(this)"></div>
+					<div class="item-image"><img id="7" src="/static/images/elephant-small.jpg" width="36" height="36" onmouseover="iconHoverOver(this)" onmouseout="iconHoverOff(this)" onclick="deleteViaIcon(this)"></div>
+					<div class="item-image"><img id="8" src="/static/images/elephant-small.jpg" width="36" height="36" onmouseover="iconHoverOver(this)" onmouseout="iconHoverOff(this)" onclick="deleteViaIcon(this)"></div>
+					<div class="item-image"><img id="9" src="/static/images/elephant-small.jpg" width="36" height="36" onmouseover="iconHoverOver(this)" onmouseout="iconHoverOff(this)" onclick="betterSave()"></div>
 				</div>
 			</div>
 
 			<div class="grid-col2" id="elephant">
 				<p id="section-header-middle"> Your Elephant </p>
 				<div class="inner-elephant">
-					<div id="elephant-pic"><img id="elephant-pic-src" src="/static/images/elephant.png"></div>
+<!--					<div id="elephant-pic"><img src="/static/images/elephant.png"></div>-->
+						<div id="forCanvas"></div>
 					<div class="container" id="elephant-info">
 					<!---------------------------------------------SAVE ELEPHANT-------------------------------------------->
 						<button class="dialog-button-save" onclick="openDialog2()">Save Elephant</button>
@@ -76,7 +84,7 @@
 								<h1>Save Elephant to Your Closet</h1>
 								Title:<br/>
 								<label>
-									  <input id="title" type="text" name="title" placeholder="Name your elephant" maxlength="35"/>
+									  <input id="postTitle" type="text" name="title" placeholder="Name your elephant" maxlength="35"/>
 								</label>
 										<br/>
 								<label>
@@ -96,7 +104,7 @@
 								<h1>Post Your Elephant</h1>
 								Title:<br/>
 								<label>
-									  <input id="postTitle" type="text" name="title" placeholder="Name your elephant" maxlength="35"/>
+									  <input id="title" type="text" name="title" placeholder="Name your elephant" maxlength="35"/>
 								</label>
 								<br/>
 								Description (250 Characters):
@@ -125,6 +133,7 @@
 					<!----------------------------------------------------------------------------------------->
 					</div>
 				</div>
+				<img id="checkCanvas" src="/static/images/elephant.png" hidden>
 			</div>
 
 			<div class="grid-col3">
@@ -143,37 +152,41 @@
 				<!--OPTIONS FOR SELECTING AN ELEPHANT BASE-->
 					<div id="elephant-selector" style="display: block;">
 						<div class= "row">
-							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/elephant.png"/></button></div>
-							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/old-elephant.jpg"/></button></div>
-							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/phanpy.jpg"/></button></div>
-							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/playful-elephant.jpg"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/elephant.png"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/old-elephant.jpg"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/phanpy.jpg"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/playful-elephant.jpg"/></button></div>
 						</div>
 						<div class= "row">
-							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/scrungly-elephant.jpg"/></button></div>
-							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/serene-elephant.jpg"/></button></div>
-							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/baby-elephant.jpg"/></button></div>
-							<div class="column-item-elephant"><button id="selector-img" onclick="selectElephant(this)"><img src="/static/images/sleek-mammoth.jpeg"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/scrungly-elephant.jpg"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/serene-elephant.jpg"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/baby-elephant.jpg"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/sleek-mammoth.jpeg"/></button></div>
 						</div>
 					</div>
 
 					<!--------OPTIONS FOR SELECTING HEAD ACCESSORIES------------>
 					<div id="head-selector" style="display: none;">
 						<div class= "row">
-							<div class="column-item"><button id="selector-img"><img src="elephant.png"/></button></div>
-							<div class="column-item"><button id="selector-img"><img src="old-elephant.jpg"/></button></div>
-							<div class="column-item"><button id="selector-img"><img src="phanpy.jpg"/></button></div>
-							<div class="column-item"><button id="selector-img"><img src="playful-elephant.jpg"/></button></div>
+							<div class="column-item"><button class="selector-img"><img id="partyhat" src="/static/images/fashion/partyhat.png" width="50" height="50" draggable="true" ondragstart="drag(event, this.id)"/></button></div>
+							<div class="column-item"><button class="selector-img"><img id="cowboyhat" src="/static/images/fashion/cowboyhat.png" width="50" height="50" draggable="true" ondragstart="drag(event, this.id)"/></button></div>
+							<div class="column-item"><button class="selector-img"><img src="/static/images/elephant-small.jpg" width="50" height="50" draggable="true" ondragstart="drag(event,this.id)"/></button></div>
+							<div class="column-item"><button class="selector-img"><img src="/static/images/elephant-small.jpg" width="50" height="50" draggable="true" ondragstart="drag(event,this.id)"/></button></div>
 						</div>
 						<div class= "row">
-							<div class="column-item"><button id="selector-img"><img src="scrungly-elephant.jpg"/></button></div>
-							<div class="column-item"><button id="selector-img"><img src="serene-elephant.jpg"/></button></div>
-							<div class="column-item"><button id="selector-img"><img src="baby-elephant.jpg"/></button></div>
-							<div class="column-item"><button id="selector-img"><img src="sleek-mammoth.jpeg"/></button></div>
+							<div class="column-item"><button class="selector-img"><img src="/static/images/elephant-small.jpg" width="50" height="50" draggable="true" ondragstart="drag(event,this.id)"/></button></div>
+							<div class="column-item"><button class="selector-img"><img src="/static/images/elephant-small.jpg" width="50" height="50" draggable="true" ondragstart="drag(event,this.id)"/></button></div>
+							<div class="column-item"><button class="selector-img"><img src="/static/images/elephant-small.jpg" width="50" height="50" draggable="true" ondragstart="drag(event,this.id)"/></button></div>
+							<div class="column-item"><button class="selector-img"><img src="/static/images/elephant-small.jpg" width="50" height="50" draggable="true" ondragstart="drag(event,this.id)"/></button></div>
 						</div>
 					</div>
 				</div>
 			</div>
 
+		</div>
+		<div id="fashion-icons" hidden>
+			<img id="partyhat-icon" src="/static/images/icons/partyhat-icon.png">
+			<img id="cowboyhat-icon" src="/static/images/icons/cowboyhat-icon.png">
 		</div>
     </main>
 
@@ -201,43 +214,43 @@
 			</div>
 		</div>
 	</footer>
-  <script src="/static/javascript/function.js"></script>
-  <script src="/static/javascript/submissions.js"></script>
-<!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>-->
-<!--	  <script type="text/javascript" charset="utf-8">-->
-<!--		  const socket = io({autoConnect: false});-->
-<!--		  let postData;-->
+  	<script src="/static/javascript/function.js"></script>
+  	<script src="/static/javascript/submissions.js"></script>
+	<script type="text/javascript" src="/static/javascript/fashion-game.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+	<script type="text/javascript" charset="utf-8">
+		  const socket = io({autoConnect: false});
+		  let postData;
 
-<!--		  // Connect to websocket when submitting an elephant to send updated html to every client-->
-<!--		  // Issue: user has to click another element besides description box to send ws info properly-->
-<!--		  // const testButton = document.getElementById("description-val");-->
-<!--		  const testButton = document.getElementById("outfit-button-submit");-->
+		  // Connect to websocket when submitting an elephant to send updated html to every client
+		  // Issue: user has to click another element besides description box to send ws info properly
+		  const testButton = document.getElementById("description-val");
 
-<!--		  // Event listener originally: change-->
-<!--		  testButton.addEventListener("click", function () {-->
-<!--			  console.log("This should print");-->
+		  testButton.addEventListener("change", function () {
+			  console.log("This should print");
 
-<!--			  let elephant_title = document.getElementById("postTitle").value;-->
-<!--			  let username = document.getElementById("header-user").textContent;-->
-<!--			  // Description Fix: only update once when description is edited-->
-<!--			  let description = document.getElementById("description-val").value;-->
-<!--			  let elephant_image = document.getElementById("elephant-pic-src").src;-->
-<!--			  let pfp = document.getElementById("pfp-src").src;-->
+			  let elephant_title = document.getElementById("postTitle").value;
+			  let username = document.getElementById("header-user").textContent;
+			  // Description Fix: only update once when description is edited
+			  let description = document.getElementById("description-val").value;
+			  let elephant_image = document.getElementById("elephant-pic-src").src;
+			  let pfp = document.getElementById("pfp-src").src;
 
-<!--			  console.log("Text Area: " + description);-->
+			  console.log("Text Area: " + description);
 
-<!--			  postData = {"elephant_title": elephant_title, "username": username,-->
-<!--				  "description": description, "elephant_image": elephant_image, "pfp": pfp};-->
+			  postData = {"elephant_title": elephant_title, "username": username,
+				  "description": description, "elephant_image": elephant_image, "pfp": pfp};
 
-<!--			  console.log("Post Data: " + JSON.stringify(postData));-->
+			  console.log("Post Data: " + JSON.stringify(postData));
 
-<!--			  socket.connect();-->
+			  socket.connect();
 
-<!--			  // Sends all user input to the server (app.py) from the elephant post form-->
-<!--			  socket.on('connect', function() {-->
-<!--				  socket.emit('postData', JSON.stringify(postData));-->
-<!--			  })-->
-<!--		  })-->
-<!--	  </script>-->
+			  // Sends all user input to the server (app.py) from the elephant post form
+			  socket.on('connect', function() {
+				  socket.emit('postData', JSON.stringify(postData));
+			  })
+		  })
+	  </script>
+
   </body>
 </html>

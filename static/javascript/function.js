@@ -108,6 +108,16 @@ function openDesc(parent){
 
 }
 
+function iconHoverOver(element) {
+	if (!element.src.includes("ele")) {
+		element.setAttribute("style","opacity: 0.2");
+	}
+}
+
+function iconHoverOff(element) {
+	element.removeAttribute("style");
+}
+
 var commentsCount = 0;
 
 function openComments(parent){

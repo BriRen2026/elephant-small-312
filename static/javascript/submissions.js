@@ -56,7 +56,7 @@ function headSelector(){
 //Actually choosing an elephant to dress up
 function selectElephant(div){
 	//Change the img source for our elephant-pic img
-	const elephantpic = document.getElementById("elephant-pic");
+	const elephantpic = document.getElementById("elephant-pic-src");
 	const submitForm = document.forms["elephant-submit-form"]
 	const saveForm = document.forms["elephant-save-form"]
 
