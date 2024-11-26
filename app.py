@@ -413,17 +413,34 @@ def save_elephant():
 #[('title', '<title>'), ('event', <'event name'>), ('file', '<submitted elephants url>')]
 @app.route("/leave-comment", methods=["POST"])
 def leave_comment():
-    print("Tried leaving a comment: ")
-    print("Message: ",html.escape(request.form.get("comment-message")))
-    print("Left by user: ",html.escape(request.form.get("username")))
-    print("On post num: ",request.form.get("post_id"))
 
+    username = getUser(request,mydb)
+    comment = html.escape(request.form.get("comment-message"))
+    postid = request.form.get("post_id")
+
+    print(username," tried leaving a comment on postID ",postid," which says: ",comment)
+
+    #We CANNOT store lists in SQL as it's a relational database
+    #We must create a table for each post where a comment is left
     cursor = mydb.cursor(prepared=True)
-    cursor.execute("SELECT * FROM posts")
-    post_data = cursor.fetchall()
-    print(post_data)
-    #ALL THIS DOES RIGHT NOW IS PRINT DATA FROM THE POSTS ( i was checking that my values were correct )
-    #MUST SAVE COMMENTS IN DB AND ASSOCIATE IT WITH THE POST NUMBER
+
+    #First, create a table if it doesn't already exist where the name of the table is the unique postID
+    #The columns will contain the commenter's username and their comment
+    #This could theoretically also be used to store the likes associated with this post, but im not thinking ab that yet
+    statement = "CREATE TABLE IF NOT EXISTS postid(username VARCHAR(255), comment VARCHAR(255))"
+    cursor.execute(statement)
+
+    #Now, the table is created whether it existed or not. Either way, we must insert our data into it.
+    statement2 = "INSERT INTO postid(username, comment) VALUES (%s, %s)"
+    values = (username, comment)
+    cursor.execute(statement2,values)
+
+    printstatement = "SELECT * FROM postid"
+    cursor.execute(printstatement)
+    print("Added comment to table: ",cursor.fetchall())
+
+    mydb.commit()
+    cursor.close()
 
     return redirect("/elephant-feed", code = 302)
 
@@ -549,6 +566,8 @@ def elephantFeed():
             curr_post = curr_post.replace("{{post_id}}", str(post[5])) #sets post ID in hidden form
             curr_post = curr_post.replace("{{elephant_image}}", str(post[3]))
             curr_post = curr_post.replace("{{pfp}}", pfp)
+
+
 
             #IMPORTANT: Logic not implemented yet for profile picture
 

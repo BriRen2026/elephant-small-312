@@ -28,15 +28,17 @@ def createDatabase():
         dbCursor.execute(statement)
 
         #Create table: posts -> To store elephant posts associated with information during elephant submission.
-
         statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), event VARCHAR(255), id VARCHAR(255), likes INT)"
         dbCursor.execute(statement)
-
 
         #added by zane, DB that contains username and post's div ID
         #Created table: likes -> To store usernames associated with post's div ID.
         statement = "CREATE TABLE IF NOT EXISTS likes(username VARCHAR(255), postID VARCHAR(255))"
         dbCursor.execute(statement)
+
+        #Jenna has also made tables for each post to have their comments stored. This all occurs in /leavecomment
+        #Created table: {postid} <-- whatever the unique postid is will be the name of the table. stored within will have the comments
+        #Looks like this: {postid}(username VARCHAR(255), comment VARCHAR(255))
 
         #Commit to server and database connections.
         myDB.commit()

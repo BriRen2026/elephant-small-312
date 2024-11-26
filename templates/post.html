@@ -24,7 +24,7 @@
                          <button type="button" id="view-description" onclick="openDesc('elephant-post.{{post_num}}')">View Description</button>
                       </div>
                       <div id="description" style="display: none;">
-                         {description}
+                         {{description}}
                       </div>
 					  <div id="comments" style="display: none;">
 
@@ -37,7 +37,7 @@
 								</label>
 								
 								<!--Username of commenter must be stored-->
-								<input id="username" type="text" name="username" value="{{username}}" hidden/>
+								<input id="username" type="text" name="username" value="" hidden/>
 								<!--Post number that a user is commenting on-->
 								<!-- Im not sure if the current value for this input actually works, so replace it if it doesn't.-->
 								<input id="post_id" name="post_id" value="{{post_id}}" hidden/>
