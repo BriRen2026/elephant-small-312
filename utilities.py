@@ -41,9 +41,8 @@ def createDatabase():
 
         #DB titled {postId}Comments which contains all comments and commenter usernames associated with a postID
         #Created table: {postID}Comments(username VARCHAR(255), comment VARCHAR(255))
-
-        #DB titled {postID}LikedBy which contains a list of all usernames who have liked the current post
-        #Created table: {postID}LikedBy(username VARCHAR(255))
+        statement = "CREATE TABLE IF NOT EXISTS comments(username VARCHAR(255), postID VARCHAR(255), comment VARCHAR(255))"
+        dbCursor.execute(statement)
 
 
         #Commit to server and database connections.

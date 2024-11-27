@@ -55,7 +55,7 @@ def createDatabase():
 
         #added by zane, DB that contains username and post's div ID
         #Created table: likes -> To store usernames associated with post's div ID.
-        statement = "CREATE TABLE IF NOT EXISTS likes(username VARCHAR(255), postID VARCHAR(255))"
+        statement = "CREATE TABLE IF NOT EXISTS likes(username VARCHAR(255), postid VARCHAR(255))"
         dbCursor.execute(statement)
 
         #For documentation purposes, Jenna has also made 2 tables (but it happens in submit elephant)
@@ -63,6 +63,8 @@ def createDatabase():
 
         #DB titled {postId}Comments which contains all comments and commenter usernames associated with a postID
         #Created table: {postID}Comments(username VARCHAR(255), comment VARCHAR(255))
+        statement = "CREATE TABLE IF NOT EXISTS comments(username VARCHAR(255), postid VARCHAR(255), comment VARCHAR(255))"
+        dbCursor.execute(statement)
 
         #DB titled {postID}LikedBy which contains a list of all usernames who have liked the current post
         #Created table: {postID}LikedBy(username VARCHAR(255))
@@ -429,20 +431,13 @@ def leave_comment():
 
     cursor = mydb.cursor(prepared=True)
 
-    #We CANNOT store lists in SQL as it's a relational database. tables should exist for each specific post
-    #First, create a table if it doesn't already exist where the name of the table is the unique postID+"Comment"
-    #The columns will contain the commenter's username and the comment they left
-    #If this table has already been made via a comment or something, this execution of statement will not do anything
-    statement = "CREATE TABLE IF NOT EXISTS "+str(postid)+"Comment(username VARCHAR(255), comment VARCHAR(255))"
-    cursor.execute(statement)
-
-    #Now, the table is created whether it existed or not. Either way, we must insert our data into it.
-    statement2 = "INSERT INTO "+str(postid)+"Comment(username, comment) VALUES (%s, %s)"
-    values = (username, comment)
+    #Add comment to comment database
+    statement2 = "INSERT INTO comments(username, postid, comment) VALUES (%s, %s, %s)"
+    values = (username, postid, comment)
     cursor.execute(statement2,values)
 
-    printstatement = "SELECT * FROM "+str(postid)+"Comment" #This is printing to sanity check the comments left on each post
-    cursor.execute(printstatement)
+    printstatement = "SELECT * FROM comments WHERE postid = %s" #This is printing to sanity check the comments left on each post
+    cursor.execute(printstatement, (postid,))
     print("Added comment to table: ",cursor.fetchall())
 
     mydb.commit()
@@ -482,7 +477,7 @@ def submit_elephant():
     hashedID = hashlib.sha256()
     hashedID.update(id)
     hashedID = hashedID.hexdigest()
-    hashedID = hashedID[:57] #I have to splice for sql length restrictions.... -Jenna
+    hashedID = hashedID
     #likedby = [] #set list of people who have liked the post
 
     #convert initial generated id to string for unique file path
@@ -500,12 +495,6 @@ def submit_elephant():
 
     #Commit changes to database.
     mydb.commit()
-
-    #Create {postID}LikedBy and {postID}Comment tables for the current post. This makes my (jenna's) life easier during liking/unliking and comments
-    statement2 = "CREATE TABLE IF NOT EXISTS "+str(hashedID)+"Comment(username VARCHAR(255), comment VARCHAR(255))"
-    cursor.execute(statement2)
-    statement3 = "CREATE TABLE IF NOT EXISTS " + str(hashedID) + "Likedby(username VARCHAR(255))"
-    cursor.execute(statement3)
 
 
     #Create elephant-maker.html for user to serve in response.
@@ -604,9 +593,10 @@ def elephantFeed():
             #(Written by Jenna)
             #For liking and unliking, we must check the postIDLIkedBy database for the current user on the page
             #If it comes back as [], then the user viewing the page has NOT liked this post
-            displayLike = "SELECT * FROM "+str(post[5])+"Likedby WHERE username = %s"
-            cursor.execute(displayLike, (username,))
+            displayLike = "SELECT * FROM likes WHERE username = %s AND postid = %s"
+            cursor.execute(displayLike, (username, str(post[5])))
             result = str(cursor.fetchall())
+            print("Has user liked before?: ",result)
 
             unlikeHTMLBlock = "<button type = 'button' style='display: block' class='button-unlike' onclick = "+ 'unlikeElephant("elephant-post.'+str(post_num)+'")>'+" <i class ='fa-solid fa-heart' id='like-child'></i></button>"
             likeHTMLBlock = "<button type = 'button' style='display: block' class='button-like' onclick = "+ 'likeElephant("elephant-post.'+str(post_num)+'")>'+" <i class ='fa-regular fa-heart' id='like-child'></i></button>"
@@ -771,35 +761,33 @@ def like():
 
     cursor = mydb.cursor(prepared=True)
 
-    #We CANNOT store lists in SQL as it's a relational database. tables should exist for each specific post
-    #First, create a table if it doesn't already exist where the name of the table is the unique postID+"Likedby"
-    #The columns will contain the liker's username
-    #If this table has already been made via some user already liking it, this execution of statement will not do anything
-    statement = "CREATE TABLE IF NOT EXISTS "+str(postid)+"Likedby(username VARCHAR(255))"
-    print("Created table")
-    cursor.execute(statement)
-
-    #Now, the table is created whether it existed or not.
+    #Likes database should already be made.
     #Now that the table exists, we HAVE to make sure the current user hasn't liked this post already
-    statement2 = "SELECT * FROM "+str(postid)+"Likedby WHERE username = %s"
-    cursor.execute(statement2, (username,))
+    statement2 = "SELECT * FROM likes WHERE username = %s AND postid = %s"
+    cursor.execute(statement2, (username,postid))
     result = str(cursor.fetchall())
     print("Did the user like this post?: ",result)
 
     if result == "[]":
         print("User did not like this post already")
-        statement2 = "INSERT INTO "+str(postid)+"Likedby(username) VALUES (%s)"
-        cursor.execute(statement2,(username,))
+        statement = "INSERT INTO likes(username, postid) VALUES (%s, %s)"
+        values = (username, postid)
+        cursor.execute(statement,values)
         #Update like count on post
-        statement = "UPDATE posts SET likes = likes+1 WHERE id = %s"
-        cursor.execute(statement, (postid,))
+        statement4 = "UPDATE posts SET likes = likes+1 WHERE id = %s"
+        cursor.execute(statement4, (postid,))
+
     else:
         print("YOU CANNOT LIKE AGAIN!!!!!!!!!!!!!!!!!!!!!!!")
         abort(400)
 
-    printstatement = "SELECT * FROM "+str(postid)+"Likedby" #This is printing to sanity check the likes left on each post
-    cursor.execute(printstatement)
+    printstatement = "SELECT * FROM likes WHERE postid = %s" #This is printing to sanity check the likes left on each post
+    cursor.execute(printstatement, (postid,))
     print("User liked the post: ",cursor.fetchall())
+
+    printstatement2 = "SELECT likes FROM posts WHERE id = %s"
+    cursor.execute(printstatement2, (postid,))
+    print(cursor.fetchall())
 
     mydb.commit()
     cursor.close()
@@ -928,35 +916,30 @@ def unlike():
 
     cursor = mydb.cursor(prepared=True)
 
-    # We CANNOT store lists in SQL as it's a relational database. tables should exist for each specific post
-    # We should assume that if a user is unliking, then a table containing this posts likers exists, but we should be positive
-    statement = "SELECT EXISTS (SELECT * FROM information_schema.tables WHERE table_schema = 'credentials' AND table_name = '"+str(postid)+"Likedby')"
-    cursor.execute(statement)
-    result = str(cursor.fetchall())
-    if result == "[]":
-        abort(400)
-
     # Now, we shooould be sure that a table exists with this posts usernames of people who've currently liked it
     # Check if the user even HAS liked this post
-    statement2 = "SELECT * FROM "+str(postid)+"Likedby WHERE username = %s"
-    cursor.execute(statement2, (username,))
+    statement2 = "SELECT * FROM likes WHERE username = %s AND postid = %s"
+    cursor.execute(statement2, (username, postid))
     result = str(cursor.fetchall())
-    print("Did the user like this post?: ",result)
+    print("Did the user like this post?: ", result)
 
     #if the user has liked this post, we can allow them to unlike
     if result != "[]":
         print("User has liked this post already, allow them to unlike")
-        statement3 = "DELETE FROM "+str(postid)+"Likedby WHERE username = %s"
-        cursor.execute(statement3,(username,))
+        statement3 = "DELETE FROM likes WHERE username = %s AND postid = %s"
+        cursor.execute(statement3,(username,postid))
         #Update like count on post
         statement4 = "UPDATE posts SET likes = likes-1 WHERE id = %s"
         cursor.execute(statement4, (postid,))
     else:
         abort(400)
 
-    printstatement = "SELECT * FROM "+str(postid)+"Likedby" #This is printing to sanity check the likes left on each post
-    cursor.execute(printstatement)
-    print("User liked the post: ",cursor.fetchall())
+    printstatement = "SELECT * FROM likes WHERE postid = %s" #This is printing to sanity check the likes left on each post
+    cursor.execute(printstatement, (postid,))
+    print("User unliked the post: ",cursor.fetchall())
+    printstatement2 = "SELECT likes FROM posts WHERE id = %s"
+    cursor.execute(printstatement2, (postid,))
+    print(cursor.fetchall())
 
     mydb.commit()
     cursor.close()
