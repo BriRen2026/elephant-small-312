@@ -37,19 +37,71 @@ function closeDialog2(){
 
 //Elephant filter stuff
 
-const elephants = document.getElementById("elephant-selector")
-const headacc = document.getElementById("head-selector")
+const elephants = document.getElementById("elephant-selector");
+const headacc = document.getElementById("head-selector");
+const trunkacc=document.getElementById("trunk-selector");
+const bodyacc=document.getElementById("body-selector");
+const shoeacc=document.getElementById("shoe-selector");
+const accacc=document.getElementById("accessory-selector");
 
 function elephantSelector(){
 	console.log("Show elephants");
 	elephants.style.display = "block";
 	headacc.style.display = "none";
+	trunkacc.style.display = "none";
+	bodyacc.style.display = "none";
+	shoeacc.style.display = "none";
+	accacc.style.display = "none";
 }
 
 function headSelector(){
 	console.log("Show heads");
 	elephants.style.display = "none";
 	headacc.style.display = "block";
+	trunkacc.style.display = "none";
+	bodyacc.style.display = "none";
+	shoeacc.style.display = "none";
+	accacc.style.display = "none";
+}
+
+function trunkSelector(){
+	console.log("Show trunk");
+	elephants.style.display = "none";
+	headacc.style.display = "none";
+	trunkacc.style.display = "block";
+	bodyacc.style.display = "none";
+	shoeacc.style.display = "none";
+	accacc.style.display = "none";
+}
+
+function bodySelector(){
+	console.log("Show body");
+	elephants.style.display = "none";
+	headacc.style.display = "none";
+	trunkacc.style.display = "none";
+	bodyacc.style.display = "block";
+	shoeacc.style.display = "none";
+	accacc.style.display = "none";
+}
+
+function shoeSelector(){
+	console.log("Show shoes");
+	elephants.style.display = "none";
+	headacc.style.display = "none";
+	trunkacc.style.display = "none";
+	bodyacc.style.display = "none";
+	shoeacc.style.display = "block";
+	accacc.style.display = "none";
+}
+
+function accessorySelector(){
+	console.log("Show accessories");
+	elephants.style.display = "none";
+	headacc.style.display = "none";
+	trunkacc.style.display = "none";
+	bodyacc.style.display = "none";
+	shoeacc.style.display = "none";
+	accacc.style.display = "block";
 }
 
 
@@ -71,3 +123,17 @@ function selectElephant(div){
 	submitForm.elements["file"].setAttribute("value",decodeURIComponent(changeToThis.src));
 	saveForm.elements["file"].setAttribute("value",decodeURIComponent(changeToThis.src));
 }
+
+//delay form submission so it has time to set new data url value of form
+// let form=document.getElementById("elephant-submit-form");
+// form.addEventListener('submit',submissionHandler);
+// let timer;
+//
+// function submissionHandler(ev) {
+// 	console.log("timer?");
+// 	ev.preventDefault();
+// 	timer=setTimeout(() => {
+// 		this.submit();
+// 		console.log("delayed submission");
+// 	}, 1000);
+// }

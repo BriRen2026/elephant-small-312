@@ -1,4 +1,5 @@
 import json
+import base64
 from socket import socket
 
 from flask import Flask, render_template, request, make_response, redirect, flash, jsonify
@@ -450,8 +451,8 @@ def submit_elephant():
     #Create cursor.
     cursor = mydb.cursor(prepared=True)
 
-    print("Name: ",request.form.get("file"))
-    print("Name: ",html.escape(request.form.get("file")))
+    # print("Name: ",request.form.get("file"))
+    # print("Name: ",html.escape(request.form.get("file")))
 
     #Parse data from form: username, title, description, file name, and event.
     username = html.escape(request.form.get('username'))
@@ -459,7 +460,14 @@ def submit_elephant():
     title = html.escape(request.form.get('title'))
     description = html.escape(request.form.get('description'))
     file = html.escape(request.form.get('file'))
+    print("FILE: "+file)
     event = html.escape(request.form.get('event'))
+
+    #converts html canvas datauri to bytearray for image
+    encData=file.split(',',1)
+    print(encData)
+    decData=base64.b64decode(encData[1])
+    #print(decData)
 
     #Set initial likes to 0.
     likes = 0
@@ -471,9 +479,17 @@ def submit_elephant():
     hashedID = hashedID.hexdigest()
     #likedby = [] #set list of people who have liked the post
 
+    #convert initial generated id to string for unique file path
+    uuidObj=uuid.UUID(bytes=id)
+    uuidFileId=str(uuidObj)
+    path="static/canvasPost/"+"canv"+uuidFileId
+    with open(path,"wb") as f:
+        f.write(decData)
+    f.close()
+
     #Insert post into posts table.
     statement = "INSERT INTO posts(username, title, description, filePath, event, id, likes) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    values = (username, title, description, file, event, str(hashedID), likes)
+    values = (username, title, description, path, event, str(hashedID), likes)
     cursor.execute(statement, values)
 
     #Commit changes to database.
