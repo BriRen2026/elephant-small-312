@@ -10,7 +10,7 @@ function likeElephant(parent) {
 	const parent2 = document.getElementById(parent);
 	console.log(parent)
 	console.log(parent2)
-	//Button starts in unlike state.
+	//Button starts in unliked state.
 	//button-like is the non-solid heart. When you click it, it should become the button-unlike so its in a state where you can unlike after liking
 	let id = parent2.querySelector("#post_id").value
 	console.log(id)
@@ -20,7 +20,7 @@ function likeElephant(parent) {
 	//Visually Increment the amount of likes
 	let amountOfLikes = parent2.querySelector('#like-counter'); //Shows "<Num> Likes"
 	let likes = amountOfLikes.innerHTML;
-	console.log("Likes: ",likes);
+	console.log("Likes:",likes);
 	let likesArray = likes.split(" "); //Split on the space -> ["", "<Num>" "Likes"]
   	console.log("Array: ",likesArray);
 	let likeNum = likesArray[0];
@@ -29,7 +29,7 @@ function likeElephant(parent) {
 	console.log("New LikeNum: ",likeNum);
   	amountOfLikes.innerHTML = likeNum+" Likes"; //Update javascript on front end
 
-	//Keep track of who has liked posts
+	//Get username of the liker and postID of the post liked
 	let username = document.getElementById('header-user');
 	const data = {"username": username.innerText, "id": id}; //id : id added by zane, sends the post ID
 	const request = new XMLHttpRequest();
@@ -54,7 +54,7 @@ function unlikeElephant(parent){
 	//Decrement the amount of likes
 	let amountOfLikes = parent2.querySelector('#like-counter');
 	let likes = amountOfLikes.innerHTML;
-	console.log("Likes: ",likes);
+	console.log("Likes:",likes);
 	//To string innerHTML
 	let likesArray = likes.split(" "); //Split on the space -> ["", "<Num>" "Likes"]
   	console.log("Array: ",likesArray);

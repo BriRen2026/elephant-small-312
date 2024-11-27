@@ -36,9 +36,15 @@ def createDatabase():
         statement = "CREATE TABLE IF NOT EXISTS likes(username VARCHAR(255), postID VARCHAR(255))"
         dbCursor.execute(statement)
 
-        #Jenna has also made tables for each post to have their comments stored. This all occurs in /leavecomment
-        #Created table: {postid} <-- whatever the unique postid is will be the name of the table. stored within will have the comments
-        #Looks like this: {postid}(username VARCHAR(255), comment VARCHAR(255))
+        #For documentation purposes, Jenna has also made 2 tables.
+        #Because SQL CANNOT store lists, its best to have tables created associated with a SPECIFIC post to store data for that specific post
+
+        #DB titled {postId}Comments which contains all comments and commenter usernames associated with a postID
+        #Created table: {postID}Comments(username VARCHAR(255), comment VARCHAR(255))
+
+        #DB titled {postID}LikedBy which contains a list of all usernames who have liked the current post
+        #Created table: {postID}LikedBy(username VARCHAR(255))
+
 
         #Commit to server and database connections.
         myDB.commit()
