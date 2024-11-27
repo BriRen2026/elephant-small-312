@@ -36,7 +36,7 @@ def createDatabase():
         statement = "CREATE TABLE IF NOT EXISTS likes(username VARCHAR(255), postID VARCHAR(255))"
         dbCursor.execute(statement)
 
-        #For documentation purposes, Jenna has also made 2 tables.
+        #For documentation purposes, Jenna has also made 2 tables (but it happens in submit elephant)
         #Because SQL CANNOT store lists, its best to have tables created associated with a SPECIFIC post to store data for that specific post
 
         #DB titled {postId}Comments which contains all comments and commenter usernames associated with a postID

@@ -53,11 +53,19 @@ def createDatabase():
         statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), event VARCHAR(255), id VARCHAR(255), likes INT)"
         dbCursor.execute(statement)
 
-
         #added by zane, DB that contains username and post's div ID
         #Created table: likes -> To store usernames associated with post's div ID.
         statement = "CREATE TABLE IF NOT EXISTS likes(username VARCHAR(255), postID VARCHAR(255))"
         dbCursor.execute(statement)
+
+        #For documentation purposes, Jenna has also made 2 tables (but it happens in submit elephant)
+        #Because SQL CANNOT store lists, its best to have tables created associated with a SPECIFIC post to store data for that specific post
+
+        #DB titled {postId}Comments which contains all comments and commenter usernames associated with a postID
+        #Created table: {postID}Comments(username VARCHAR(255), comment VARCHAR(255))
+
+        #DB titled {postID}LikedBy which contains a list of all usernames who have liked the current post
+        #Created table: {postID}LikedBy(username VARCHAR(255))
 
         #Commit to server and database connections.
         myDB.commit()
@@ -870,33 +878,40 @@ def change_pfp():
     if "authToken" in request.cookies:
         # Retrieve user file and save to disk
         data = request.files["pfp"]
-        filename = secure_filename(data.filename)
-        pfp = data.read()
-        with open("static/pfp/" + filename, "wb") as f:
-            f.write(pfp)
+        mime = str(data.content_type)
+        print("Mime type of uploaded file: ",str(data.content_type))
+        #only accept IMAGES and GIFS
+        if mime == "image/gif" or mime == "image/jpeg" or mime == "image/png":
+            filename = secure_filename(data.filename)
+            pfp = data.read()
+            with open("static/pfp/" + filename, "wb") as f:
+                f.write(pfp)
 
-        # Find associated user and update their pfp (with path to their pfp)
-        auth_token = request.cookies["authToken"]
-        hashed_token = hashlib.sha256(auth_token.encode()).hexdigest()
+            # Find associated user and update their pfp (with path to their pfp)
+            auth_token = request.cookies["authToken"]
+            hashed_token = hashlib.sha256(auth_token.encode()).hexdigest()
 
-        # Find username associated with authToken
-        statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
-        t = hashed_token
-        cursor.execute(statement, (t,))
-        result = cursor.fetchall()
+            # Find username associated with authToken
+            statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
+            t = hashed_token
+            cursor.execute(statement, (t,))
+            result = cursor.fetchall()
 
-        if len(result) == 1:
+            if len(result) == 1:
 
-            username = result[0][0]
+                username = result[0][0]
 
-            # Update user pfp
-            statement = "UPDATE logins SET profilePicture=%s WHERE username = %s"
-            cursor.execute(statement, ("/static/pfp/" + data.filename, username))
+                # Update user pfp
+                statement = "UPDATE logins SET profilePicture=%s WHERE username = %s"
+                cursor.execute(statement, ("/static/pfp/" + data.filename, username))
 
-            # statement = "SELECT profilePicture FROM logins WHERE username = %s"
-            # cursor.execute(statement, (username,))
-            # result = cursor.fetchall()
-            # print("Result: " + str(result))
+                # statement = "SELECT profilePicture FROM logins WHERE username = %s"
+                # cursor.execute(statement, (username,))
+                # result = cursor.fetchall()
+                # print("Result: " + str(result))
+        else:
+            print("Unallowed File Type")
+            abort(400)
 
     # Redirect to home page
     mydb.commit()
