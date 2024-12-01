@@ -49,7 +49,7 @@
 	  </header>
 
     <main>
-		<div id="elephant-pic-src" hidden><img src="/static/images/elephant.png"></div>
+		<div id="elephant-pic-src"><img hidden id="ep-img-src" src="/static/images/elephant.png"></div>
 
 		<div class="grid-container">
 
@@ -153,12 +153,12 @@
 						<div class= "row">
 							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/elephant.png"/></button></div>
 							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/old-elephant.jpg"/></button></div>
-							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/phanpy.jpg"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/phanpy.png"/></button></div>
 							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/playful-elephant.jpg"/></button></div>
 						</div>
 						<div class= "row">
 							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/scrungly-elephant.jpg"/></button></div>
-							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/serene-elephant.jpg"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/cute-elephant.jpg"/></button></div>
 							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/baby-elephant.jpg"/></button></div>
 							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/sleek-mammoth.jpeg"/></button></div>
 						</div>
@@ -249,8 +249,52 @@
 
 		</div>
 		<div id="fashion-icons" hidden>
+<!--			hats-->
 			<img id="partyhat-icon" src="/static/images/icons/partyhat-icon.png">
 			<img id="cowboyhat-icon" src="/static/images/icons/cowboyhat-icon.png">
+			<img id="fringe-icon" src="/static/images/icons/fringe.png">
+			<img id="fishfearme-icon" src="/static/images/icons/fishfearme.png">
+			<img id="propellerhat-icon" src="/static/images/icons/propellerhat.png">
+			<img id="cloudhair-icon" src="/static/images/icons/cloudhair.png">
+			<img id="beanie-icon" src="/static/images/icons/beanie-icon.png">
+			<img id="fedora-icon" src="/static/images/icons/fedora.png">
+<!--			trunk-->
+			<img id="goggle-icon" src="/static/images/icons/goggle.png">
+			<img id="blush-icon" src="/static/images/icons/blush.png">
+			<img id="cloutgoggles-icon" src="/static/images/icons/cloutgoggles.png">
+			<img id="dealwithit-icon" src="/static/images/icons/dealwithit.png">
+			<img id="happy2018-icon" src="/static/images/icons/happy2018.png">
+			<img id="incognito-icon" src="/static/images/icons/incognito.png">
+			<img id="shuttershades-icon" src="/static/images/icons/shuttershades.png">
+			<img id="triangleshades-icon" src="/static/images/icons/triangleshades.png">
+<!--			body-->
+			<img id="diller-icon" src="/static/images/icons/diller.png">
+			<img id="hamster-icon" src="/static/images/icons/hamster.png">
+			<img id="luffy-icon" src="/static/images/icons/luffy.png">
+			<img id="Mordecai-icon" src="/static/images/icons/Mordecai.png">
+			<img id="nyanpng-icon" src="/static/images/icons/nyanpng.png">
+			<img id="optimusprime-icon" src="/static/images/icons/optimusprime.png">
+			<img id="penguincute-icon" src="/static/images/icons/penguincute.png">
+			<img id="twilightsparkle-icon" src="/static/images/icons/twilightsparkle.png">
+<!--			shoe-->
+			<img id="birk-icon" src="/static/images/icons/birk.png">
+			<img id="crocs-icon" src="/static/images/icons/crocs.png">
+			<img id="heel-icon" src="/static/images/icons/heel.png">
+			<img id="doc-icon" src="/static/images/icons/doc.png">
+			<img id="bigredboot-icon" src="/static/images/icons/bigredboot-icon.png">
+			<img id="jordan-icon" src="/static/images/icons/jordan.png">
+			<img id="tim-icon" src="/static/images/icons/tim.png">
+			<img id="ugg-icon" src="/static/images/icons/ugg.png">
+<!--			misc-->
+			<img id="magicwand-icon" src="/static/images/icons/magicwand.png">
+			<img id="discoball-icon" src="/static/images/icons/discoball.png">
+			<img id="bustersword-icon" src="/static/images/icons/bustersword.png">
+			<img id="cane-icon" src="/static/images/icons/cane.png">
+			<img id="birkin-icon" src="/static/images/icons/birkin.png">
+			<img id="lollipop-icon" src="/static/images/icons/lollipop.png">
+			<img id="bowtie-icon" src="/static/images/icons/bowtie.png">
+			<img id="baseballbat-icon" src="/static/images/icons/baseballbat-icon.png">
+
 		</div>
     </main>
 
@@ -285,39 +329,39 @@
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"></script>
 	<script src="/static/javascript/fashion-game.js"></script>
   	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-	<script type="text/javascript" charset="utf-8">
-		  const socket = io({autoConnect: false});
-		  let postData;
+<!--	<script type="text/javascript" charset="utf-8">-->
+<!--		  const socket = io({autoConnect: false});-->
+<!--		  let postData;-->
 
-		  // Connect to websocket when submitting an elephant to send updated html to every client
-		  // Issue: user has to click another element besides description box to send ws info properly
-		  const testButton = document.getElementById("description-val");
+<!--		  // Connect to websocket when submitting an elephant to send updated html to every client-->
+<!--		  // Issue: user has to click another element besides description box to send ws info properly-->
+<!--		  const testButton = document.getElementById("description-val");-->
 
-		  testButton.addEventListener("change", function () {
-			  console.log("This should print");
+<!--		  testButton.addEventListener("change", function () {-->
+<!--			  console.log("This should print");-->
 
-			  let elephant_title = document.getElementById("postTitle").value;
-			  let username = document.getElementById("header-user").textContent;
-			  // Description Fix: only update once when description is edited
-			  let description = document.getElementById("description-val").value;
-			  let elephant_image = document.getElementById("elephant-pic-src").src;
-			  let pfp = document.getElementById("pfp-src").src;
+<!--			  let elephant_title = document.getElementById("postTitle").value;-->
+<!--			  let username = document.getElementById("header-user").textContent;-->
+<!--			  // Description Fix: only update once when description is edited-->
+<!--			  let description = document.getElementById("description-val").value;-->
+<!--			  let elephant_image = document.getElementById("elephant-pic-src").src;-->
+<!--			  let pfp = document.getElementById("pfp-src").src;-->
 
-			  console.log("Text Area: " + description);
+<!--			  console.log("Text Area: " + description);-->
 
-			  postData = {"elephant_title": elephant_title, "username": username,
-				  "description": description, "elephant_image": elephant_image, "pfp": pfp};
+<!--			  postData = {"elephant_title": elephant_title, "username": username,-->
+<!--				  "description": description, "elephant_image": elephant_image, "pfp": pfp};-->
 
-			  console.log("Post Data: " + JSON.stringify(postData));
+<!--			  console.log("Post Data: " + JSON.stringify(postData));-->
 
-			  socket.connect();
+<!--			  socket.connect();-->
 
-			  // Sends all user input to the server (app.py) from the elephant post form
-			  socket.on('connect', function() {
-				  socket.emit('postData', JSON.stringify(postData));
-			  })
-		  })
-	  </script>
+<!--			  // Sends all user input to the server (app.py) from the elephant post form-->
+<!--			  socket.on('connect', function() {-->
+<!--				  socket.emit('postData', JSON.stringify(postData));-->
+<!--			  })-->
+<!--		  })-->
+<!--	  </script>-->
 
   </body>
 </html>
