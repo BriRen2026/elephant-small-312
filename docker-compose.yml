@@ -10,9 +10,14 @@ services:
 #      MYSQL_PASSWORD: "Destiny2"
       MYSQL_ROOT_PASSWORD: "iloveelephantsmalls"
 #      MYSQL_DATABASE: "credentials"
+    volumes:
+      - dbData:/var/lib/mysql
   app:
     build: .
     environment:
       WAIT_HOSTS: mysql:3306
     ports:
       - '8080:8080'
+volumes:
+  dbData:
+    driver: local

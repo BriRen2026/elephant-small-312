@@ -452,12 +452,12 @@ def submit_elephant():
     title = html.escape(request.form.get('title'))
     description = html.escape(request.form.get('description'))
     file = html.escape(request.form.get('file'))
-    print("FILE: "+file)
+    # print("FILE: "+file)
     event = html.escape(request.form.get('event'))
 
     #converts html canvas datauri to bytearray for image
     encData=file.split(',',1)
-    print(encData)
+    # print(encData)
     decData=base64.b64decode(encData[1])
     #print(decData)
 
