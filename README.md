@@ -20,5 +20,5 @@
 * Currently, when a user posts a comment, it closes that comment box for all other users. However, they are not actually disconnected from the websocket connection. This can be verified by opening the Network tab.
 # Objective 3
 * Visit "elephantsmall.com" to view our deployed website.
-* Just like objective 2, go to "View Elephant Posts" to watch Websocket Interactions occur securely :)
-* Open the Network Tab to see "wss" being used.
+* Just like objective 2, go to "View Elephant Posts" to watch Websocket Interactions occur securely via wss :)
+* When creating an elephant post to comment on, if the submission results in a "413 Entity Too Large" error, please go back and submit a new elephant with a different elephant base image!
