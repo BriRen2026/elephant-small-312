@@ -147,4 +147,25 @@ function openComments(parent){
 		}
 	});
 
+	// IMPORTANT (issue with this solution): requires duplicate ws connections on each tab opened
+	// Connect to websocket and send live comment data to server-side
+	// const socket = io({autoConnect: false});
+	// let post = parent2.querySelector('#comment-button');
+	// let idContainer = parent2.querySelector("#post_id")
+	// let commentContainer = parent2.querySelector("#form-comment-message");
+	//
+	// post.addEventListener("click", function() {
+	// 	let username = document.getElementById("header-user").textContent;
+	// 	let postID = idContainer.value;
+	// 	let comment = commentContainer.value;
+	//
+	// 	console.log("User " + username + " commented: " + comment);
+	//
+	// 	let commentData = {"username": username, "post_id": postID, "comment": comment};
+	//
+	// 	socket.connect();
+	//
+	// 	// Sends data in real time to 'commentData' socket route in app.py
+	// 	socket.emit('commentData', JSON.stringify(commentData));
+	// });
 }

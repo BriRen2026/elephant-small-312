@@ -104,7 +104,6 @@ function accessorySelector(){
 	accacc.style.display = "block";
 }
 
-
 //Actually choosing an elephant to dress up
 function selectElephant(div){
 	//Change the img source for our elephant-pic img
@@ -123,6 +122,18 @@ function selectElephant(div){
 	submitForm.elements["file"].setAttribute("value",decodeURIComponent(changeToThis.src));
 	saveForm.elements["file"].setAttribute("value",decodeURIComponent(changeToThis.src));
 }
+
+// Ignore this code: following Jesse's method for homeworks (no need and ws has different structure)
+// let socket = io();
+//
+// function leaveComment() {
+// 	const commentBox = document.getElementById("form-comment-message");
+// 	const comment = commentBox.value;
+// 	const username = document.getElementById("header-user").textContent;
+// 	socket.on("message", function() {
+//
+// 	})
+// }
 
 //delay form submission so it has time to set new data url value of form
 // let form=document.getElementById("elephant-submit-form");

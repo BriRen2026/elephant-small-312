@@ -31,7 +31,7 @@
 
                           <!--------------LEAVING COMMENTS------------------->
                           <div id="leave-comment">
-							<form action="/leave-comment" method="post" enctype="application/x-www-form-urlencoded" style="text-align: left;">
+							<form style="text-align: left;">
 								<!--Comment left by commenter-->
 								<label>
 									<textarea id="form-comment-message" type="text" name="comment-message" rows="5" cols="50" maxlength="250" placeholder="Compliment this wonderfully fashionable elephant!"></textarea>
@@ -41,8 +41,8 @@
 								<input id="username" type="text" name="username" value="" hidden/>
 								<!--Post number that a user is commenting on-->
 								<!-- Im not sure if the current value for this input actually works, so replace it if it doesn't.-->
-								<input id="post_id" name="post_id" value="{{post_id}}" hidden/>
-								<label><input type="submit" value="Post Comment"/></label>
+								<input id="post_id_inner" name="post_id" value="{{post_id}}" hidden/>
+								<label><input id="comment-button" type="button" onclick="sendComment('elephant-post.{{post_num}}')" value="Post Comment"/></label>
 							</form>
 						</div>
 						

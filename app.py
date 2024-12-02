@@ -414,28 +414,164 @@ def save_elephant():
 
 #Elephants are submitted in the form:
 #[('title', '<title>'), ('event', <'event name'>), ('file', '<submitted elephants url>')]
-@app.route("/leave-comment", methods=["POST"])
-def leave_comment():
-    username = getUser(request,mydb)
-    comment = html.escape(request.form.get("comment-message"))
-    postid = request.form.get("post_id")
-    print(username," tried leaving a comment on postID ",postid," which says: ",comment)
+# @app.route("/leave-comment")
+# def leave_comment():
+    # username = getUser(request,mydb)
+    # comment = html.escape(request.form.get("comment-message"))
+    # postid = request.form.get("post_id")
+    # print(username," tried leaving a comment on postID ",postid," which says: ",comment)
+    #
+    # cursor = mydb.cursor(prepared=True)
+    #
+    # #Add comment to comment database
+    # statement2 = "INSERT INTO comments(username, postid, comment) VALUES (%s, %s, %s)"
+    # values = (username, postid, comment)
+    # cursor.execute(statement2,values)
+    #
+    # printstatement = "SELECT * FROM comments WHERE postid = %s" #This is printing to sanity check the comments left on each post
+    # cursor.execute(printstatement, (postid,))
+    # print("Added comment to table: ",cursor.fetchall())
+    #
+    # mydb.commit()
+    # cursor.close()
+
+    # response = make_response()
+    # response.data = html.encode('utf-8')
+    # response.content_type = "text/html; charset=utf-8"
+    # response.content_length = len(html.encode('utf-8'))
+
+    # return make_response('', 204)
+    # return redirect("/elephant-feed", code = 302)
+
+@socketio.on("commentData")
+def receive_comment_data(comment_data):
+    # if request.is_secure:
+    #     print("WebSocket connections are secure!!!")
+    parsed_data = json.loads(comment_data)
+    print("Comment Data: " + str(parsed_data))
+
+    username = parsed_data["username"]
+    comment = html.escape(parsed_data["comment"])
+    post_id = parsed_data["post_id"]
+    print(username," tried leaving a comment on postID ",post_id," which says: ",comment)
 
     cursor = mydb.cursor(prepared=True)
 
     #Add comment to comment database
     statement2 = "INSERT INTO comments(username, postid, comment) VALUES (%s, %s, %s)"
-    values = (username, postid, comment)
+    values = (username, post_id, comment)
     cursor.execute(statement2,values)
 
     printstatement = "SELECT * FROM comments WHERE postid = %s" #This is printing to sanity check the comments left on each post
-    cursor.execute(printstatement, (postid,))
+    cursor.execute(printstatement, (post_id,))
     print("Added comment to table: ",cursor.fetchall())
 
     mydb.commit()
-    cursor.close()
 
-    return redirect("/elephant-feed", code = 302)
+    global post_num
+
+    # Temporary Solution/Fix: code below updates the entire feed live instead of just the one comment
+    # Permanent Solution/Fix: find a way to ONLY add the one comment and not update the whole feed
+
+    # Fetch all comments from comments table
+    cursor = mydb.cursor(prepared=True)
+    cursor.execute("SELECT * FROM comments")
+    comment_data = cursor.fetchall()
+
+    comments = {}
+
+    for comment in comment_data:
+
+        post_id = comment[1]
+
+        with open("templates/postComment.html", 'r') as template:
+            f = template.read()
+            curr_comment = f
+
+            curr_comment = curr_comment.replace("{commenter}", comment[0])
+            curr_comment = curr_comment.replace("{comment-message}", comment[2])
+
+            if not post_id in comments:
+                comments[post_id] = curr_comment
+            else:
+                comment_section = comments[post_id]
+                comments[post_id] = comment_section + curr_comment
+
+    # Fetch all posts from posts table.
+    cursor = mydb.cursor(prepared=True)
+    cursor.execute("SELECT * FROM posts")
+    post_data = cursor.fetchall()
+
+    # Basic logic: run a loop and create separate divs for each post in the database
+    # IMPORTANT: check elephant-feed.html for better understanding/content
+
+    # posts: String to inject into elephant-feed.html.
+    posts = ""
+
+    for post in post_data:
+        # print("Post: ",post)
+
+        curr_username = post[0]
+        statement = "SELECT profilePicture FROM logins WHERE username = %s"
+        cursor.execute(statement, (curr_username,))
+        result = cursor.fetchall()
+        pfp = result[0][0]
+
+        # Use post.html template to create div element of post.
+        with open("templates/post.html", 'r') as template:
+            f = template.read()
+            curr_post = f
+
+            # Inject properties of post based on what's stored in the database.
+            # Database infos stored in format = (username, title, description, file, event, str(hashedID), likes)
+            curr_post = curr_post.replace("{{elephant_title}}", post[1])
+            curr_post = curr_post.replace("{{post_num}}", str(post_num))
+            curr_post = curr_post.replace("{{username}}", curr_username)
+            curr_post = curr_post.replace("{{description}}", post[2])
+            curr_post = curr_post.replace("{like-count}", str(post[6]))
+            curr_post = curr_post.replace("{{post_id}}", str(post[5]))  # sets post ID in hidden form
+            curr_post = curr_post.replace("{{elephant_image}}", str(post[3]))
+            curr_post = curr_post.replace("{{pfp}}", pfp)
+
+            if post[5] in comments:
+                curr_post = curr_post.replace("{{comments}}", comments[post[5]])
+            else:
+                curr_post = curr_post.replace("{{comments}}", "No Comments")
+
+            # (Written by Jenna)
+            # For liking and unliking, we must check the postIDLIkedBy database for the current user on the page
+            # If it comes back as [], then the user viewing the page has NOT liked this post
+            displayLike = "SELECT * FROM likes WHERE username = %s AND postid = %s"
+            cursor.execute(displayLike, (username, str(post[5])))
+            result = str(cursor.fetchall())
+            print("Has user liked before?: ", result)
+
+            unlikeHTMLBlock = "<button type = 'button' style='display: block' class='button-unlike' onclick = " + 'unlikeElephant("elephant-post.' + str(
+                post_num) + '")>' + " <i class ='fa-solid fa-heart' id='like-child'></i></button>"
+            likeHTMLBlock = "<button type = 'button' style='display: block' class='button-like' onclick = " + 'likeElephant("elephant-post.' + str(
+                post_num) + '")>' + " <i class ='fa-regular fa-heart' id='like-child'></i></button>"
+            unlikeHTMLNone = "<button type = 'button' style='display: none;' class='button-unlike' onclick = " + 'unlikeElephant("elephant-post.' + str(
+                post_num) + '")>' + " <i class ='fa-solid fa-heart' id='like-child'></i></button>"
+            likeHTMLNone = "<button type = 'button'  style='display: none;' class='button-like' onclick = " + 'likeElephant("elephant-post.' + str(
+                post_num) + '")>' + " <i class ='fa-regular fa-heart' id='like-child'></i></button>"
+
+            # IF user has not liked the post, display: block the likeHTML and display:none the unlikeHTML
+            if result == "[]":
+                curr_post = curr_post.replace("{{like-status}}", likeHTMLBlock + unlikeHTMLNone)
+
+            # IF user has liked the post, display: none the likeHTML and display:block the unlikeHTML
+            else:
+                curr_post = curr_post.replace("{{like-status}}", unlikeHTMLBlock + likeHTMLNone)
+
+            # IMPORTANT: Logic not implemented yet for profile picture
+
+            post_num += 1
+
+            # Concatenate post to feed string.
+            posts = curr_post + posts
+
+    emit("feed", json.dumps({"posts": posts}), broadcast=True)
+    cursor.close()
 
 @app.route("/submit-elephant", methods=["POST"])
 def submit_elephant():
@@ -545,6 +681,31 @@ def elephantFeed():
     #Basic logic: run a loop and create separate divs for each post in the database
     #IMPORTANT: check elephant-feed.html for better understanding/content
 
+    # Fetch all comments from comments table
+    cursor = mydb.cursor(prepared=True)
+    cursor.execute("SELECT * FROM comments")
+    comment_data = cursor.fetchall()
+
+    comments = {}
+
+    for comment in comment_data:
+
+        post_id = comment[1]
+
+        with open("templates/postComment.html", 'r') as template:
+            f = template.read()
+            curr_comment = f
+
+            curr_comment = curr_comment.replace("{commenter}", comment[0])
+            curr_comment = curr_comment.replace("{comment-message}", comment[2])
+
+            if not post_id in comments:
+                comments[post_id] = curr_comment
+            else:
+                comment_section = comments[post_id]
+                comments[post_id] = comment_section + curr_comment
+
+
     #Fetch all posts from posts table.
     cursor = mydb.cursor(prepared=True)
     cursor.execute("SELECT * FROM posts")
@@ -581,6 +742,10 @@ def elephantFeed():
             curr_post = curr_post.replace("{{elephant_image}}", str(post[3]))
             curr_post = curr_post.replace("{{pfp}}", pfp)
 
+            if post[5] in comments:
+                curr_post = curr_post.replace("{{comments}}", comments[post[5]])
+            else:
+                curr_post = curr_post.replace("{{comments}}", "No Comments")
 
             #(Written by Jenna)
             #For liking and unliking, we must check the postIDLIkedBy database for the current user on the page
@@ -663,13 +828,15 @@ def elephantFeed():
     #return render_template("elephant-feed.html", elephant_title=elephant_title, test_post=Markup(test_post), test_post2=Markup(test_post2))
     #Delete above print statement and replace with commented out line
 
-# # When user navigates to elephant feed, this event triggers in js of elephant-feed.html
-# @socketio.on("connect")
-# def live_elephantFeed():
-#     # Add logic here to receive and display submitted elephant posts live (while loop?)
-#     # Comment: while loop was not needed (check receive_post_data function below)
-#     print("Hit connection path!")
-#
+# When user navigates to elephant feed, this event triggers in js of elephant-feed.html
+@socketio.on("connect")
+def live_comment_feed():
+    # Add logic here to receive and display submitted elephant posts live (while loop?)
+    # Comment: while loop was not needed (check receive_post_data function below)
+    # if request.is_secure:
+    #     print("WebSocket connections are secure!!!")
+    print("Hit connection path!")
+
 # @socketio.on("postData")
 # def receive_post_data(post_data):
 #     global post_num
@@ -737,12 +904,12 @@ def elephantFeed():
 #
 #     # This updates the feed in real-time (broadcast=True needed to send to all connected users)
 #     emit("feed", json.dumps(posts_dict), broadcast=True)
-#
-# # Websocket disconnects automatically upon refresh or leaving elephantFeed page
-# @socketio.on("disconnect")
-# def handle_disconnect():
-#     # Disconnect websocket when user leaves elephantFeed page
-#     print("Disconnected!")
+
+# Websocket disconnects automatically upon refresh or leaving elephantFeed page
+@socketio.on("disconnect")
+def handle_disconnect():
+    # Disconnect websocket when user leaves elephantFeed page
+    print("Disconnected!")
 
 @app.route("/like", methods = {"POST"})
 def like():

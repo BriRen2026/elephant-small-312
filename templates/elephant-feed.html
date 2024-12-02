@@ -161,6 +161,60 @@
 		</div>
 	</footer>
   <script src="/static/javascript/function.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+		<script type="text/javascript" charset="utf-8">
+			const socket = io();
+
+			function sendComment(postNumber) {
+				const parent = document.getElementById(postNumber);
+				let idContainer = parent.querySelector("#post_id");
+				let commentContainer = parent.querySelector("#form-comment-message");
+
+				let username = document.getElementById("header-user").textContent;
+				let postID = idContainer.value;
+				let comment = commentContainer.value;
+
+				console.log("User " + username + " commented: " + comment);
+
+				let commentData = {"username": username, "post_id": postID, "comment": comment};
+
+				// socket.connect();
+
+				// Sends data in real time to 'commentData' socket route in app.py
+				socket.emit('commentData', JSON.stringify(commentData));
+			}
+
+			socket.on("feed", function(feedHTML) {
+				feedHTML = JSON.parse(feedHTML);
+				// console.log(feedHTML);
+				// console.log("Posts: " + posts);
+
+				// Updates/sets the HTML of the elephant feed live
+				document.getElementById("elephant-feed").innerHTML = feedHTML["posts"];
+			});
+
+			// Misconception resolved: code below only triggers on initial connection (VERY IMPORTANT)
+			// socket.on('connect', function() {
+			// 	socket.emit('my event', {data: 'I\'m connected!'});
+			// });
+
+			// const commentButton = document.getElementById("comment-button");
+			//
+			// commentButton.addEventListener("click", function() {
+			// 	// console.log("This should print.");
+			//
+			// 	let username = document.getElementById("header-user").textContent;
+			// 	let postID = document.getElementById("post_id").value;
+			// 	let comment = document.getElementById("form-comment-message").value;
+			//
+			// 	console.log("User " + username + " commented: " + comment);
+			//
+			// 	let commentData = {"username": username, "post_id": postID, "comment": comment};
+			//
+			// 	socket.emit('commentData', JSON.stringify(commentData));
+			// });
+		</script>
+
 <!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>-->
 <!--	  <script type="text/javascript" charset="utf-8">-->
 <!--		  const socket = io();-->
