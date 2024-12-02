@@ -1029,7 +1029,8 @@ def change_pfp():
         print("Mime type of uploaded file: ",str(data.content_type))
         #only accept IMAGES and GIFS
         if mime == "image/gif" or mime == "image/jpeg" or mime == "image/png":
-            filename = secure_filename(data.filename)
+            filename = str(uuid.uuid4())
+            print("filename after: ",filename)
             pfp = data.read()
             with open("static/pfp/" + filename, "wb") as f:
                 f.write(pfp)
@@ -1050,7 +1051,7 @@ def change_pfp():
 
                 # Update user pfp
                 statement = "UPDATE logins SET profilePicture=%s WHERE username = %s"
-                cursor.execute(statement, ("/static/pfp/" + data.filename, username))
+                cursor.execute(statement, ("/static/pfp/" + filename, username))
 
                 # statement = "SELECT profilePicture FROM logins WHERE username = %s"
                 # cursor.execute(statement, (username,))
