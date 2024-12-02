@@ -2,6 +2,11 @@ FROM python:3.8
 ENV FLASK_APP app.py
 WORKDIR /root
 COPY . .
+
+#Create the empty directories that git cloning doesn't always do
+RUN mkdir -p static/pfp
+RUN mkdir -p static/canvasPost
+
 # RUN apt update
 # RUN apt install python3-pip -y
 RUN pip3 install -r requirements.txt
