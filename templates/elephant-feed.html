@@ -5,162 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Elephant Site</title>
-    <link rel="stylesheet" href="/static/css/elephant-feed.css">
+    <link rel="stylesheet" href="/static/css/home.css">
     <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  </head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">  </head>
 
-  <body>
-	<!--------------Header---------------------->
-	  <header>
-		<div class="header"> <!--Here for styling Not useless-->
-			<div class="header-contents">
-				<div class="logo">
-					<img src="/static/images/elephant-small.jpg" style="cursor: pointer" class="container-child" onclick="elephantSound()">
-					<p class="container-child"><a href="/" id="link"> Elephant Fashion Brawl </a></p>
-				</div>
+<body style="background-color: #d5eaed;">
 
-				<!--When logged in, set display: flex-->
-				<div class="logged-in" style="display: flex;">
-					<a class="item" href="/elephant-feed" style="padding-right: 5px;">View Posted Elephants</a>
-					<a class="item" href="/elephant-feed"><span style="padding-right: 20px;" class="fa-solid fa-bars" id="feed"></span></a>
-					<div class="item" id="wardrobe">
-						<a href="/elephant-maker">
-							<span class="material-symbols-outlined">checkroom</span>
-						</a>
-					</div>
-					<div class="item" id="header-user">{username}</div>
-					<div id = "username"></div>
-					<div class="item" id="profile-picture"><a href="profile"><img src="{{pfp}}"></a></div>
-
-					<div class="item" id="logout">
-						<a href="/logout">Log Out</a>
-					</div>
-				</div>
-			</div>
+  <header id="white-bg" role="banner">
+	<div class="container py-2 px-5 d-flex flex-row justify-content-between">
+		<div class="fs-5">
+			<span class="align-middle">
+			<img src="/static/images/elephant-small.jpg" alt="Elephant Small Site Logo" id="elephantsmalllogo" style="cursor: pointer" onclick="elephantSound()">
+			<a href="/"><h1 class="fs-5 align-middle">Elephant Fashion Brawl</h1></a>
+			</span>
 		</div>
-	  </header>
-
-	<!-------------------------- Main Begins ---------------------------------------------->
-
-    <main>
-		<div class="grid-container">
-
-			<div class="grid-col1" id="top-elephant">
-				<p id="section-header" style="font-size: 1.2rem;"> Submitted Fashionable Elephants </p>
-
-				<!-- Listing of all elephants posted -->
-				<div id="elephant-feed" class="feed-collection">
-
-					<!-- Posted elephants should receive their own elephant-post divs with all child containers-->
-					<!-- Create new divs everytime an elephant is posted. <div id="elephant-post.{CurrPostNumber}> -->
-					<!-- These div ids "{CurrPostNumbers}" must increment in order for the js to work -->
-					<!-- when the likeElephant() and openDesc JS is run, it will send the current PARENT elephant-post parent div to the function -->
-					<!-- This stops things like other posts from being liked/descriptions being opened by mistake, since they have the same formatting-->
-					<!-- I can change this if its weird.... can't think of anything else atm-->
-
-					<!-- READ THIS IF NOTHING ELSE vvvvvvvvvvvvvvvvvvvvvvvv -->
-					<!-- I have 2 elephant-post.{CurrPostNumber}s in place for example purposes. Check out what the onclick() functions use a parameter -->
-
-					<!-- The following placeholder 'posts' will contain all posts (delete all example html after this) -->
-
-					{{posts}}
-
-
-					<!--{{test_post}}
-
-					{{test_post2}}
-
-					<div id="elephant-post.1">
-						<div class="split" id="section-header">
-							<h1 class="elephant-post-child">{{elephant_title}}</h1>
-							<div class="elephant-post-child" id="profile-picture">{{username}}<img src="{{ url_for('static', filename='images/test-profile-picture.png') }}"></div>
-						</div>
-						<div class="post-container"> -->
-						<!-- Image should be what's stored in the database-->
-						<!--	<img class="submitted-elephant" src="{{ url_for('static', filename='images/elephant.png') }}" style="width: 300px; height: 300px;">
-							<div id="like-button">
-								<button type="button"  onclick="likeElephant('elephant-post.1')" class="button-like"><i class="fa-regular fa-heart" id="like-child" style="display: block"></i></button>-->
-								<!-- When liked, should increment like counter shown on page. Can do this in JS easily, but idk how it will work w the database..
-								It might be easier to pretend that this like counter incremented up for the user.
-								It will still happen in the background, but having the page refresh to show this change is probably bad UI since user will be taken to top of page-->
-							<!--	<button type="button"  onclick="unlikeElephant('elephant-post.1')" class="button-unlike"  style="display: none"><i class="fa-solid fa-heart" id="like-child"></i></button>
-								<p class="like-child" id="like-counter">{like-count} Likes</p>
-							</div>
-							<button type="button" id="view-description" onclick="openDesc('elephant-post.1')">View Description</button>
-						</div>
-						<div id="description" style="display: none;">
-							{{description}}
-						</div>
-					</div>-->
-		<!-------------------------------------------------------------------------------------------------------------->
-
-					<!--<div id="elephant-post.2">
-						<div class="split" id="section-header">
-							<h1 class="elephant-post-child">{{elephant_title}}</h1>
-							<div class="elephant-post-child" id="profile-picture">{{username}}<img src="{{ url_for('static', filename='images/test-profile-picture.png') }}"></div>
-						</div>
-
-						<div class="post-container">-->
-						<!-- Image should be what's stored in the database-->
-							<!--<img class="submitted-elephant" src="{{ url_for('static', filename='images/elephant.png') }}" style="width: 300px; height: 300px;">
-							<div id="like-button">
-								<button type="button"  onclick="likeElephant('elephant-post.2')" class="button-like"><i class="fa-regular fa-heart" id="like-child" style="display: block"></i></button>
-								<button type="button"  onclick="unlikeElephant('elephant-post.2')" class="button-unlike"  style="display: none"><i class="fa-solid fa-heart" id="like-child"></i></button>
-								<p class="like-child" id="like-counter">{like-count} Likes</p>
-							</div>
-							<button type="button" id="view-description" onclick="openDesc('elephant-post.2')">View Description</button>
-						</div>
-
-						<div id="description" style="display: none;">
-							{{description}}
-						</div>
-					</div>-->
-		<!-------------------------------------------------------------------------------------------------------------->
-
-				</div>
-			</div>
-
-			<!-- Filtering for the elephants -->
-			<div class="grid-col" id="top-elephant">
-					<p id="section-header" style="font-size: 1.2rem;"> Filter Elephants </p>
-				<div class="row">
-					Lorem
-				</div>
-			</div>
-
+		<div class="text-end">
+			<a href="/elephant-feed">
+			<span class="align-middle pe-1" id="viewElephants">View Posted Elephants</span>
+				<span class="fa-solid fa-bars align-middle"></span>
+			</a>
+			<a href="/elephant-maker">
+				<span class="material-symbols-outlined align-middle px-2">checkroom</span>
+			</a>
+			<span id="header-user">{username}</span>
+			<a href="/profile"><img class="rounded-5" src="{{pfp}}" style="width: 40px; height: 40px;" alt="Your Profile Picture"></a>
+			<a class="align-middle" href="/logout">Logout</a>
 		</div>
-    </main>
+  </header>
 
+  <!--Padding stops body content being hidden behind navbar + footer-->
+	<div class="container pt-md-5 mx-auto" style="width: 50%;">
 
+		<!------------------------------ TOP ELEPHANT --------------------------------------->
+			<div class="row text-center">
+				<div class="col-md-12 p-0 mx-auto" id="white-bg">
+					<div class="card text-center border-0">
+						<div class="mb-4 card-header border-0 p-1 fs-5" id="pink-bg">
+							<h2 class="fs-5">Submitted Fashionable Elephants</h2>
+						</div>
 
+						<div id="elephant-feed">
+							{{posts}}
+						</div>
 
-	<footer>
-		<div class="footer-container">
-			<div class="top">
-				<ul class="top-child">
-					<li href="#">Support</li>
-					<li> | </li>
-					<li href="#">Contact</li>
-				</ul>
+					</div>
+				</div>
 			</div>
-			<div class="top">
-				<ul class="top-child">
-					<li href="#">Privacy Policy</li>
-					<li> | </li>
-					<li href="#">Copyright</li>
-				</ul>
-				<ul class="top-child">
-					<li><a href="https://www.instagram.com/elephant_small.jpg?igsh=MXYxNWJndmE1ZGljcw==">Instagram <i class="fa-brands fa-instagram"></i></a></li>
-					<li> | </li>
-					<li><a href="#">Discord <i class="fa-brands fa-discord"></i></a></li>
-					<li> | </li>
-				</ul>
-			</div>
+
+	</div>
+  </body>
+
+	<footer class = "navbar fixed-bottom" style="background-color: white;">
+		<div class="container">
+			<span>Support | Contact</span>
+			<span><a href="https://www.instagram.com/elephant_small.jpg?igsh=MXYxNWJndmE1ZGljcw==">Instagram <i class="fa-brands fa-instagram"></i></a> |
+			<a href="#">Discord <i class="fa-brands fa-discord"></i></a></span>
 		</div>
 	</footer>
-  <script src="/static/javascript/function.js"></script>
+
+<script src="/static/javascript/function.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 		<script type="text/javascript" charset="utf-8">
 			const socket = io();
@@ -190,6 +95,7 @@
 				// console.log("Posts: " + posts);
 
 				// Updates/sets the HTML of the elephant feed live
+				// This collapses because it doesn't preserve that the description was open
 				document.getElementById("elephant-feed").innerHTML = feedHTML["posts"];
 			});
 
@@ -214,28 +120,5 @@
 			// 	socket.emit('commentData', JSON.stringify(commentData));
 			// });
 		</script>
-
-<!--  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>-->
-<!--	  <script type="text/javascript" charset="utf-8">-->
-<!--		  const socket = io();-->
-<!--		  // socket.on('connect', function() {-->
-<!--			//   socket.emit('my event', {data: 'I\'m connected!'});-->
-<!--		  // });-->
-
-<!--		  socket.on("feed", function(feedHTML) {-->
-<!--			  feedHTML = JSON.parse(feedHTML);-->
-<!--			  // console.log(feedHTML);-->
-<!--			  let posts = "";-->
-<!--			  // Reverse order of posts to maintain correct order during ws interaction-->
-<!--			  const reversedPosts = Object.keys(feedHTML).reverse();-->
-<!--			  for (const post of reversedPosts){-->
-<!--				  posts += feedHTML[post];-->
-<!--			  }-->
-<!--			  // console.log("Posts: " + posts);-->
-
-<!--			  // Updates/sets the HTML of the elephant feed live-->
-<!--			  document.getElementById("elephant-feed").innerHTML = posts;-->
-<!--		  })-->
-<!--	  </script>-->
   </body>
 </html>

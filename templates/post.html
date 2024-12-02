@@ -1,62 +1,68 @@
-<div id="elephant-post.{{post_num}}">
-					<div class="split" id="section-header">
-                         <h1 class="elephant-post-child">{{elephant_title}}</h1>
-                         <div class="elephant-post-child">
-                            <div>{{username}}</div>
-                             <div id="profile-picture">
-                                 <img src="{{pfp}}">
-                             </div>
-                         </div>
-                    </div>
-                      <div class="post-container">
-                      <!-- Image should be what's stored in the database-->
-                         <img class="submitted-elephant" src="{{elephant_image}}" style="width: 300px; height: 300px;">
-                        <input id="post_id" value="{{post_id}}"  hidden/>
-                         <div id="like-button">
-                           <!--<button type="button" onclick="likeElephant('elephant-post.{{post_num}}')" class="button-like" style="display: block;"><i class="fa-regular fa-heart" id="like-child"></i></button>-->
-                            {{like-status}}
-                             <!-- When liked, should increment like counter shown on page. Can do this in JS easily, but idk how it will work w the database..
-                            It might be easier to pretend that this like counter incremented up for the user.
-                            It will still happen in the background, but having the page refresh to show this change is probably bad UI since user will be taken to top of page-->
-                           <!--<button type="button"  onclick="unlikeElephant('elephant-post.{{post_num}}')" class="button-unlike" style="display: none;"><i class="fa-solid fa-heart" id="like-child"></i></button>-->
-                            <p class="like-child" id="like-counter">{like-count} Likes</p>
-                         </div>
-                         <button type="button" id="view-comments" onclick="openComments('elephant-post.{{post_num}}')">View Comments</button>
-                         <button type="button" id="view-description" onclick="openDesc('elephant-post.{{post_num}}')">View Description</button>
-                      </div>
-                      <div id="description" style="display: none;">
-                         {{description}}
-                      </div>
-					  <div id="comments" style="display: none;">
+<div class="card-body mb-4 mx-5 p-0 text-start" id="elephant-post.{{post_num}}"
+     style="margin: 0 auto; border: 4px solid pink; border-radius: 10px;">
 
-                          <!--------------LEAVING COMMENTS------------------->
-                          <div id="leave-comment">
-							<form style="text-align: left;">
-								<!--Comment left by commenter-->
-								<label>
-									<textarea id="form-comment-message" type="text" name="comment-message" rows="5" cols="50" maxlength="250" placeholder="Compliment this wonderfully fashionable elephant!"></textarea>
-								</label>
-								
-								<!--Username of commenter must be stored-->
-								<input id="username" type="text" name="username" value="" hidden/>
-								<!--Post number that a user is commenting on-->
-								<!-- Im not sure if the current value for this input actually works, so replace it if it doesn't.-->
-								<input id="post_id_inner" name="post_id" value="{{post_id}}" hidden/>
-								<label><input id="comment-button" type="button" onclick="sendComment('elephant-post.{{post_num}}')" value="Post Comment"/></label>
-							</form>
-						</div>
-						
-				<!--IF NO COMMENTS EXIST then "No Comments Yet" or something similar should be there instead-->
-						{{comments}}
-						
-						<!--<div id="comment">
-							<div id="comment-info">
-								{commenter}:
-							</div>
-							<div id="comment-message">
-								{comment-message}
-							</div>
-						</div>-->
-						
-					  </div>
+    <div class="card-header border-0 p-2 d-flex justify-content-between align-items-center" id="pink-bg">
+        <h2 class="fs-5 m-0 fw-bold text-truncate">{{elephant_title}}</h2>
+        <span class="text-end">{{username}}
+									<img class="rounded-5" src="{{pfp}}" alt="Your Profile Picture"
+                                         style="width: 40px; height: 40px;">
+									</span>
+    </div>
+
+
+    <div class="card text-center border-0" style="border: 2px solid pink;">
+
+        <div class="card-body mx-auto" style="max-width: 400px; overflow: hidden;">
+            <input id="post_id" value="{{post_id}}" hidden/>
+            <img src="{{elephant_image}}" class="object-fit-contain"
+                 style="width: 100%; height: 100%; object-fit-contain;">
+        </div>
+
+        <div class="d-flex p-1 justify-content-between align-items-center">
+            <div id="like-button" class="d-flex mt-auto">
+                {{like-status}}
+                <!-- When liked, should increment like counter shown on page. Can do this in JS easily, but idk how it will work w the database..-->
+                <!--<button type="button" onclick="likeElephant('elephant-post.{{post_num}}')" class="button-like" style="display: block; background: none; border: 0;"><i class="fa-regular fa-heart"  id="like-child"></i></button>
+                <button type="button" onclick="unlikeElephant('elephant-post.{{post_num}}')" class="button-unlike" style="display: block; background: none; border: 0;"><i class="fa-solid fa-heart"  id="like-child"></i></button>-->
+                <p class="like-child m-0" id="like-counter">{like-count} Likes</p>
+            </div>
+            <div class="vstack" style="flex: 0 0 auto;">
+                <button type="button" class="bottom-0 border-0 bg-transparent" id="view-comments"
+                        onclick="openComments('elephant-post.{{post_num}}')">View Comments
+                </button>
+                <button type="button" class="bottom-0 border-0 bg-transparent" id="view-description"
+                        onclick="openDesc('elephant-post.{{post_num}}')">View Description
+                </button>
+            </div>
+        </div>
+        <div id="description" style="display: none; background-color: pink;" class="p-2 text-start">
+            {{description}}
+        </div>
+        <div id="comments"
+             style="display: none; background-color:#ffebf5; border-top: 4px solid pink; border-radius: 0 0 8px 8px;"
+             class="p-2">
+            <div style="border-bottom: 2px solid pink;">
+                <form style="text-align: left;">
+                    <!--Comment left by commenter-->
+                    <label style="min-width: 100%;">
+                        <textarea class="form-control" id="form-comment-message" type="text" name="comment-message"
+                                  rows="5" maxlength="250"
+                                  placeholder="Compliment this wonderfully fashionable elephant!"></textarea>
+                    </label>
+
+                    <!--Username of commenter must be stored-->
+                    <input id="username" type="text" name="username" value="" hidden/>
+                    <!--Post number that a user is commenting on-->
+                    <input id="post_id_inner" name="post_id" value="{{post_id}}" hidden/><br>
+                    <label class="pb-3"><input type="button" id="pink-bg-link" class="p-1 rounded-2 border-0"
+                                               onclick="sendComment('elephant-post.{{post_num}}')"
+                                               value="Post Comment"/></label>
+                </form>
+            </div>
+            {{comments}}
+
+        </div>
+
+    </div>
+
 </div>

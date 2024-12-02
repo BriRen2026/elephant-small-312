@@ -8,6 +8,11 @@
   'opsz' 24
 }
 
+#style-link, #style-link a{
+	text-decoration: underline;
+	color: blue;
+}
+
 *{
   margin:0;
   padding:0;
@@ -17,6 +22,11 @@
 h1, h2, h3{
 	display: inline;
 }
+
+#comment{
+	border-bottom: 2px solid pink;
+}
+
 
 body{
 	background-color: #d5eaed;
@@ -46,8 +56,6 @@ input[type=submit] {
 input[type=submit]:hover{
   background-color: #eda1af;
 }
-
-
 
 #white-bg{
 	background-color: white;
@@ -81,9 +89,18 @@ input[type=submit]:hover{
 }
 
 
-@media (max-width: 576px){body{padding-bottom:110px 0;}}
-@media (min-width: 576px){body{padding-bottom:110px 0;}}
-@media (min-width: 768px){body{padding-bottom:100px 0;}}
+@media (max-width: 576px){
+	body{padding-bottom:110px 0;}
+	header{width:100%;}
+	#viewElephants,#elephantsmalllogo{display: none;}
+	}
+@media (max-width: 768px){
+	body{padding-bottom:100px 0;}
+	header{width:100%;}
+	#viewElephants,#elephantsmalllogo{
+		display: none;
+	}
+	}
 @media (min-width: 992px){body{padding-bottom:70px 0;}}
 @media (min-width: 1200px){body{padding-bottom:70px 0;}}
 @media (min-width: 1400px){body{padding-bottom:70px 0;}}

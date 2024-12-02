@@ -17,21 +17,21 @@
 	<div class="container py-2 px-5 d-flex flex-row justify-content-between">
 		<div class="fs-5">
 			<span class="align-middle">
-			<img src="/static/images/elephant-small.jpg" alt="Elephant Small Site Logo" style="cursor: pointer" onclick="elephantSound()">
+			<img src="/static/images/elephant-small.jpg" id="elephantsmalllogo" alt="Elephant Small Site Logo" style="cursor: pointer" onclick="elephantSound()">
 			<a href="/"><h1 class="fs-5 align-middle">Elephant Fashion Brawl</h1></a>
 			</span>
 		</div>
-		<div>
+		<div class="text-end">
 			<a href="/elephant-feed">
-			<span class="align-middle">View Posted Elephants</span>
+			<span class="align-middle" id="viewElephants">View Posted Elephants</span>
 				<span class="fa-solid fa-bars align-middle px-1"></span>
 			</a>
 			<a href="/elephant-maker">
 				<span class="material-symbols-outlined align-middle px-2">checkroom</span>
 			</a>
-			{username}
-			<a href="/profile"><img class="rounded-5" src="/static/images/test-profile-picture.png" alt="Your Profile Picture"></a>
-			<a class="align-middle" href="/logout">Log Out</a>
+			<span id="header-user">{username}</span>
+			<a href="/profile"><img class="rounded-5" src="{{pfp}}" style="width: 40px; height: 40px;" alt="Your Profile Picture"></a>
+			<a class="align-middle" href="/logout">Logout</a>
 	</div>
   </header>
 
@@ -45,8 +45,8 @@
 						<div class="card-header border-0 p-1 fs-5" id="pink-bg">
 							<h2 class="fs-5">This Week's Top Elephant</h2>
 						</div>
-						<div class="card-body" style="max-height: 20% !important; overflow: hidden;">
-							<img src="/static/images/elephant.png" alt="Elephant with the most likes this week" class="object-fit-contain" style="width: 100%; height: 100%; object-fit-contain;">
+						<div class="card-body mx-auto" style="max-width: 400px; overflow: hidden;">
+							<img src="/static/images/elephant.png" class="object-fit-contain" style="width: 100%; height: 100%; object-fit-contain;">
 						</div>
 						<div class="card-footer d-flex justify-content-between border-0" id="pink-bg">
 							<div>

@@ -23,7 +23,7 @@ socketio = SocketIO(app, async_mode='eventlet')
 @app.after_request #Sets the nosniff header on each responses
 def add_security(response):
     response.headers['X-Content-Type-Options'] = 'nosniff'
-    print(response.headers)
+    #print(response.headers)
     return response
 
 # Create credentials database if it doesn't exist at startup.
@@ -546,13 +546,12 @@ def receive_comment_data(comment_data):
             result = str(cursor.fetchall())
             print("Has user liked before?: ", result)
 
-            unlikeHTMLBlock = "<button type = 'button' style='display: block' class='button-unlike' onclick = " + 'unlikeElephant("elephant-post.' + str(
-                post_num) + '")>' + " <i class ='fa-solid fa-heart' id='like-child'></i></button>"
-            likeHTMLBlock = "<button type = 'button' style='display: block' class='button-like' onclick = " + 'likeElephant("elephant-post.' + str(
+            unlikeHTMLBlock = "<button type = 'button' style='display: block; background: none; border: 0;' class='button-unlike' onclick = " + 'unlikeElephant("elephant-post.' + str(post_num) + '")>' + " <i class ='fa-solid fa-heart' id='like-child'></i></button>"
+            likeHTMLBlock = "<button type = 'button' style='display: block; background: none; border: 0;' class='button-like' onclick = " + 'likeElephant("elephant-post.' + str(
                 post_num) + '")>' + " <i class ='fa-regular fa-heart' id='like-child'></i></button>"
-            unlikeHTMLNone = "<button type = 'button' style='display: none;' class='button-unlike' onclick = " + 'unlikeElephant("elephant-post.' + str(
+            unlikeHTMLNone = "<button type = 'button' style='display: none; background: none; border: 0;' class='button-unlike' onclick = " + 'unlikeElephant("elephant-post.' + str(
                 post_num) + '")>' + " <i class ='fa-solid fa-heart' id='like-child'></i></button>"
-            likeHTMLNone = "<button type = 'button'  style='display: none;' class='button-like' onclick = " + 'likeElephant("elephant-post.' + str(
+            likeHTMLNone = "<button type = 'button'  style='display: none; background: none; border: 0;' class='button-like' onclick = " + 'likeElephant("elephant-post.' + str(
                 post_num) + '")>' + " <i class ='fa-regular fa-heart' id='like-child'></i></button>"
 
             # IF user has not liked the post, display: block the likeHTML and display:none the unlikeHTML
@@ -755,17 +754,25 @@ def elephantFeed():
             result = str(cursor.fetchall())
             print("Has user liked before?: ",result)
 
-            unlikeHTMLBlock = "<button type = 'button' style='display: block' class='button-unlike' onclick = "+ 'unlikeElephant("elephant-post.'+str(post_num)+'")>'+" <i class ='fa-solid fa-heart' id='like-child'></i></button>"
-            likeHTMLBlock = "<button type = 'button' style='display: block' class='button-like' onclick = "+ 'likeElephant("elephant-post.'+str(post_num)+'")>'+" <i class ='fa-regular fa-heart' id='like-child'></i></button>"
-            unlikeHTMLNone = "<button type = 'button' style='display: none;' class='button-unlike' onclick = " + 'unlikeElephant("elephant-post.' + str(post_num) + '")>' + " <i class ='fa-solid fa-heart' id='like-child'></i></button>"
-            likeHTMLNone = "<button type = 'button'  style='display: none;' class='button-like' onclick = " + 'likeElephant("elephant-post.' + str(post_num) + '")>' + " <i class ='fa-regular fa-heart' id='like-child'></i></button>"
+            #< button type = "button" onclick = "likeElephant('elephant-post.{{post_num}}')" class ="button-like" style="display: block; background: none; border: 0;" > < i class ="fa-regular fa-heart"  id="like-child" > < / i > < / button >
+            #< button type = "button" onclick = "unlikeElephant('elephant-post.{{post_num}}')" class ="button-unlike" style="display: block; background: none; border: 0;" > < i class ="fa-solid fa-heart"  id="like-child" > < / i > < / button >
+
+            #User has not liked the post
+            unlikeHTMLBlock = "<button type = 'button' style='display: block; background: none; border:0;' class='button-unlike' onclick = "+ 'unlikeElephant("elephant-post.'+str(post_num)+'")>'+" <i class ='fa-solid fa-heart' id='like-child'></i></button>"
+            likeHTMLBlock = "<button type = 'button' style='display: block; background: none; border:0;' class='button-like' onclick = "+ 'likeElephant("elephant-post.'+str(post_num)+'")>'+" <i class ='fa-regular fa-heart' id='like-child'></i></button>"
+
+            #User has liked the post
+            unlikeHTMLNone = "<button type = 'button' style='display: none; background: none; border:0;' class='button-unlike' onclick = " + 'unlikeElephant("elephant-post.' + str(post_num) + '")>' + " <i class ='fa-solid fa-heart' id='like-child'></i></button>"
+            likeHTMLNone = "<button type = 'button'  style='display: none; background: none; border:0;' class='button-like' onclick = " + 'likeElephant("elephant-post.' + str(post_num) + '")>' + " <i class ='fa-regular fa-heart' id='like-child'></i></button>"
 
             # IF user has not liked the post, display: block the likeHTML and display:none the unlikeHTML
             if result == "[]":
+                print("User has not liked the post")
                 curr_post = curr_post.replace("{{like-status}}",likeHTMLBlock+unlikeHTMLNone)
 
             #IF user has liked the post, display: none the likeHTML and display:block the unlikeHTML
             else:
+                print("User has liked the post")
                 curr_post = curr_post.replace("{{like-status}}",unlikeHTMLBlock+likeHTMLNone)
 
 
@@ -803,10 +810,8 @@ def elephantFeed():
         #Create feed-page with username injected.
         f = createFeedPage(username, pfp)
 
+    #Do not allow non-logged in users to view posted elephants
     elif(username == "null"):
-        # with open("templates/elephant-feedNotLoggedIn.html", 'r') as template:
-        #    f = template.read()
-        #User is not logged in. Return to home page.
         return render_template("register.html")
 
         #return redirect("/login", code = 302)
@@ -953,28 +958,6 @@ def like():
 
     return redirect("/elephant-feed", code = 302)
 
-####################################################################
-    """cursor = mydb.cursor(prepared=True)
-
-    statement2 = "SELECT * FROM likes WHERE username = %s AND postID = %s"
-    cursor.execute(statement2, (username, theid,))
-    result = cursor.fetchall()
-    print("result: ")
-    print(result)
-    if len(result) != 0:
-        return redirect("/elephant-feed", code=302)
-
-    statement = "UPDATE posts SET likes = likes+1 WHERE id = %s"
-    cursor.execute(statement, (theid,))
-    statement3 = "INSERT INTO likes(username, postID) VALUES (%s, %s)"
-    cursor.execute(statement3, (username, theid,))
-    statement = "SELECT * FROM likes"
-    cursor.execute(statement)
-    print("likes content:")
-    print(cursor.fetchall())
-    mydb.commit()
-    cursor.close()
-    return redirect("/elephant-feed", code=302)"""
 
 @app.route("/profile")
 def profile():
@@ -1029,7 +1012,7 @@ def change_pfp():
         print("Mime type of uploaded file: ",str(data.content_type))
         #only accept IMAGES and GIFS
         if mime == "image/gif" or mime == "image/jpeg" or mime == "image/png":
-            filename = secure_filename(data.filename)
+            filename = str(uuid.uuid4())
             pfp = data.read()
             with open("static/pfp/" + filename, "wb") as f:
                 f.write(pfp)
@@ -1050,7 +1033,7 @@ def change_pfp():
 
                 # Update user pfp
                 statement = "UPDATE logins SET profilePicture=%s WHERE username = %s"
-                cursor.execute(statement, ("/static/pfp/" + data.filename, username))
+                cursor.execute(statement, ("/static/pfp/" + filename, username))
 
                 # statement = "SELECT profilePicture FROM logins WHERE username = %s"
                 # cursor.execute(statement, (username,))
