@@ -17,14 +17,14 @@
 	<div class="container py-2 px-5 d-flex flex-row justify-content-between">
 		<div class="fs-5">
 			<span class="align-middle">
-			<img src="/static/images/elephant-small.jpg" alt="Elephant Small Site Logo" id="elephantsmalllogo" style="cursor: pointer" onclick="elephantSound()">
+			<img src="/static/images/elephant-small.jpg" id="elephantsmalllogo" alt="Elephant Small Site Logo" style="cursor: pointer" onclick="elephantSound()">
 			<a href="/"><h1 class="fs-5 align-middle">Elephant Fashion Brawl</h1></a>
 			</span>
 		</div>
 		<div class="text-end">
 			<a href="/elephant-feed">
-			<span class="align-middle pe-1" id="viewElephants">View Posted Elephants</span>
-				<span class="fa-solid fa-bars align-middle"></span>
+			<span class="align-middle" id="viewElephants">View Posted Elephants</span>
+				<span class="fa-solid fa-bars align-middle px-1"></span>
 			</a>
 			<a href="/elephant-maker">
 				<span class="material-symbols-outlined align-middle px-2">checkroom</span>
@@ -32,7 +32,7 @@
 			<span id="header-user">{username}</span>
 			<a href="/profile"><img class="rounded-5" src="{{pfp}}" style="width: 40px; height: 40px;" alt="Your Profile Picture"></a>
 			<a class="align-middle" href="/logout">Logout</a>
-		</div>
+	</div>
   </header>
 
   <!--Padding stops body content being hidden behind navbar + footer-->
