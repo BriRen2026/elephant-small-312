@@ -1,9 +1,6 @@
-bcrypt
 flask
+bcrypt
 mysql
 mysql-connector-python
-uuid
-MarkupSafe
-python-socketio
 flask-socketio
 eventlet
