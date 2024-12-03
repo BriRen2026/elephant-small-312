@@ -28,7 +28,7 @@ def createDatabase():
         dbCursor.execute(statement)
 
         #Create table: posts -> To store elephant posts associated with information during elephant submission.
-        statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), event VARCHAR(255), id VARCHAR(255), likes INT)"
+        statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), stamp VARCHAR(255), id VARCHAR(255), likes INT)"
         dbCursor.execute(statement)
 
         #Create table: likes -> Stores all users who have liked a certain post
@@ -71,6 +71,8 @@ def createHomePage(username, pfp):
         #fileVer1 = editUsername[0] + '<div class="item" id="header-user">' + username + '</div>' + editUsername[1]
         fileVer1 = f.replace("{username}", username)
         fileVer1 = fileVer1.replace("{{pfp}}", pfp)
+
+
 
         return fileVer1
 

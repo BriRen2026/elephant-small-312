@@ -5,6 +5,7 @@ from socket import socket
 from flask import Flask, render_template, request, make_response, redirect, flash, jsonify, abort
 import mysql.connector
 import hashlib
+import datetime
 
 from werkzeug.utils import secure_filename
 
@@ -50,7 +51,7 @@ def createDatabase():
         dbCursor.execute(statement)
 
         #Create table: posts -> To store elephant posts associated with information during elephant submission.
-        statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), event VARCHAR(255), id VARCHAR(255), likes INT)"
+        statement = "CREATE TABLE IF NOT EXISTS posts(username VARCHAR(255), title VARCHAR(255),description VARCHAR(255), filePath VARCHAR(255), stamp VARCHAR(255), id VARCHAR(255), likes INT)"
         dbCursor.execute(statement)
 
         # Create table: likes -> Stores all users who have liked a certain post
@@ -125,23 +126,66 @@ def home():
 
             #Create body: homeLoggedIn.html with username injected to be served in response.
             body = createHomePage(record, pfp)
+            #Add the most recent elephant to the home page
+            body = addRecent(body)
 
             # Make and return the home page response.
-            response = make_response()
-            response.data = body.encode('utf-8')
-            response.content_type = "text/html; charset=utf-8"
-            response.content_length = len(body.encode('utf-8'))
             cursor.close()
-            return response
+            return makeHomeResponse(body)
 
         #If there is more than one authentication token for the user: invalid login.
         else:
             cursor.close()
-            return render_template("home.html")
+            f = ""
+            with open("templates/home.html", "r") as file:
+                f = file.read()
+            f = addRecent(f)
+            return makeHomeResponse(f)
 
     #If there is no authToken -> No user is logged in.
     cursor.close()
-    return render_template("home.html")
+    f = ""
+    with open("templates/home.html", "r") as file:
+        f = file.read()
+    f = addRecent(f)
+    return makeHomeResponse(f)
+
+def makeHomeResponse(info):
+    response = make_response()
+    response.data = info.encode('utf-8')
+    response.content_type = "text/html; charset=utf-8"
+    response.content_length = len(info.encode('utf-8'))
+    return response
+
+def addRecent(body):
+    #SQL query the posts table. Should exist by default
+    cursor = mydb.cursor(prepared=True)
+    #Posts are submitted with a timestamp of their submission. Therefore, we can find the latest post by finding the largest date
+    statement = "SELECT * FROM posts WHERE stamp = (SELECT MAX(stamp) FROM posts)"
+    cursor.execute(statement)
+    result = cursor.fetchall()
+    cursor.close()
+
+    print("Result of finding latest post: ",result)
+    #If there's no recent post,
+    if str(result) == "[]":
+        body=body.replace("{{recent}}","/static/images/none.png")
+        body=body.replace("{topusername}","--")
+        body=body.replace("{likes} Likes","--")
+
+    else:
+        path = result[0][3]
+        topusername = result[0][0]
+        likeCount = str(result[0][6])
+        body=body.replace("{{recent}}",path)
+        body=body.replace("{topusername}",topusername)
+        if likeCount == "1":
+            body=body.replace("{likes} Likes",likeCount+" Like")
+        else:
+            body=body.replace("{likes}",likeCount)
+
+    return body
+
 
 @app.route("/register")
 def register():
@@ -164,9 +208,9 @@ def registerForm():
     cursor.execute(statement)
 
     #Parse username, password, and reentered password from form.
-    username = html.escape(request.form.get('username'))
-    password = html.escape(request.form.get('password'))
-    repassword = html.escape(request.form.get('repassword'))
+    username = html.escape(request.form.get('username'))[:30]
+    password = html.escape(request.form.get('password'))[:30]
+    repassword = html.escape(request.form.get('repassword'))[:30]
 
     #Find potential login for input username.
     statement = "SELECT * FROM logins WHERE username = %s"
@@ -259,8 +303,8 @@ def loginForm():
     cursor.execute(statement)
 
     #Parse input username and password.
-    username = html.escape(request.form.get('username'))
-    password = html.escape(request.form.get('password'))
+    username = html.escape(request.form.get('username'))[:30]
+    password = html.escape(request.form.get('password'))[:30]
 
     #Find record of given username in database.
     statement = "SELECT hashedPass FROM logins WHERE username = %s"
@@ -450,8 +494,8 @@ def receive_comment_data(comment_data):
     parsed_data = json.loads(comment_data)
     print("Comment Data: " + str(parsed_data))
 
-    username = parsed_data["username"]
-    comment = html.escape(parsed_data["comment"])
+    username = parsed_data["username"][:30]
+    comment = html.escape(parsed_data["comment"])[:250]
     post_id = parsed_data["post_id"]
     print(username," tried leaving a comment on postID ",post_id," which says: ",comment)
 
@@ -581,14 +625,15 @@ def submit_elephant():
     # print("Name: ",request.form.get("file"))
     # print("Name: ",html.escape(request.form.get("file")))
 
-    #Parse data from form: username, title, description, file name, and event.
-    username = html.escape(request.form.get('username'))
+    #Parse data from form: username, title, description, file name (NO LONGER DOING EVENTS).
+    username = html.escape(request.form.get('username'))[:30]
     print("Username: " + username)
-    title = html.escape(request.form.get('title'))
-    description = html.escape(request.form.get('description'))
+    title = html.escape(request.form.get('title'))[:35]
+    description = html.escape(request.form.get('description'))[:250]
     file = html.escape(request.form.get('file'))
     # print("FILE: "+file)
-    event = html.escape(request.form.get('event'))
+
+    stamp = str(datetime.datetime.now())
 
     #converts html canvas datauri to bytearray for image
     encData=file.split(',',1)
@@ -616,8 +661,8 @@ def submit_elephant():
     f.close()
 
     #Insert post into posts table.
-    statement = "INSERT INTO posts(username, title, description, filePath, event, id, likes) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-    values = (username, title, description, path, event, str(hashedID), likes)
+    statement = "INSERT INTO posts(username, title, description, filePath, stamp, id, likes) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    values = (username, title, description, path, stamp, str(hashedID), likes)
     cursor.execute(statement, values)
 
     #Commit changes to database.
@@ -919,7 +964,7 @@ def handle_disconnect():
 @app.route("/like", methods = {"POST"})
 def like():
     data = json.loads(request.data)
-    username = data["username"]
+    username = data["username"][:30]
     postid = data["id"]
     print("User ",username," is liking postID: ",postid)
 
@@ -1052,7 +1097,7 @@ def change_pfp():
 @app.route("/unlike", methods = {"POST"})
 def unlike():
     data = json.loads(request.data)
-    username = data["username"]
+    username = data["username"][:30]
     postid = data["id"]
     print("User ",username," is liking postID: ",postid)
 
