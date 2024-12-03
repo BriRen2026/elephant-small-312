@@ -1,5 +1,6 @@
 import json
 import base64
+import os
 from socket import socket
 
 from flask import Flask, render_template, request, make_response, redirect, flash, jsonify, abort
@@ -7,17 +8,18 @@ import mysql.connector
 import hashlib
 import datetime
 
-from werkzeug.utils import secure_filename
 
 from utilities import *
 import uuid
-from markupsafe import Markup
 import html
 from flask_socketio import SocketIO, emit
+import magic
+
 
 app=Flask(__name__)
 # app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config['DEBUG'] = True
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024 #5MB Limit on posted content
 app.secret_key = "elephantsmalls"
 socketio = SocketIO(app, async_mode='eventlet')
 
@@ -150,6 +152,7 @@ def home():
     f = addRecent(f)
     return makeHomeResponse(f)
 
+#Helper function to makes HTML responses with a given body (stored in parameter "info")
 def makeHomeResponse(info):
     response = make_response()
     response.data = info.encode('utf-8')
@@ -157,11 +160,12 @@ def makeHomeResponse(info):
     response.content_length = len(info.encode('utf-8'))
     return response
 
+#Returns the most recent post posted on the elephant site
 def addRecent(body):
     #SQL query the posts table. Should exist by default
     cursor = mydb.cursor(prepared=True)
     #Posts are submitted with a timestamp of their submission. Therefore, we can find the latest post by finding the largest date
-    statement = "SELECT * FROM posts WHERE stamp = (SELECT MAX(stamp) FROM posts)"
+    statement = "SELECT username, filePath, likes FROM posts WHERE stamp = (SELECT MAX(stamp) FROM posts)"
     cursor.execute(statement)
     result = cursor.fetchall()
     cursor.close()
@@ -174,9 +178,9 @@ def addRecent(body):
         body=body.replace("{likes} Likes","--")
 
     else:
-        path = result[0][3]
+        path = result[0][1]
         topusername = result[0][0]
-        likeCount = str(result[0][6])
+        likeCount = str(result[0][2])
         body=body.replace("{{recent}}",path)
         body=body.replace("{topusername}",topusername)
         if likeCount == "1":
@@ -505,10 +509,6 @@ def receive_comment_data(comment_data):
     statement2 = "INSERT INTO comments(username, postid, comment) VALUES (%s, %s, %s)"
     values = (username, post_id, comment)
     cursor.execute(statement2,values)
-
-    printstatement = "SELECT * FROM comments WHERE postid = %s" #This is printing to sanity check the comments left on each post
-    cursor.execute(printstatement, (post_id,))
-    print("Added comment to table: ",cursor.fetchall())
 
     mydb.commit()
 
@@ -961,6 +961,40 @@ def handle_disconnect():
     # Disconnect websocket when user leaves elephantFeed page
     print("Disconnected!")
 
+@app.route("/unlike", methods = {"POST"})
+def unlike():
+    data = json.loads(request.data)
+    username = data["username"][:30]
+    postid = data["id"]
+    print("User ",username," is liking postID: ",postid)
+
+    cursor = mydb.cursor(prepared=True)
+
+    # Now, we shooould be sure that a table exists with this posts usernames of people who've currently liked it
+    # Check if the user even HAS liked this post
+    #Just checking if an instance of the user liking this exists at all, so check for 1 column (Shouldn't SELECT *)
+    statement2 = "SELECT username FROM likes WHERE username = %s AND postid = %s"
+    cursor.execute(statement2, (username, postid))
+    result = str(cursor.fetchall())
+    print("Did the user like this post?: ", result)
+
+    #if the user has liked this post, we can allow them to unlike
+    if result != "[]":
+        print("User has liked this post already, allow them to unlike")
+        statement3 = "DELETE FROM likes WHERE username = %s AND postid = %s"
+        cursor.execute(statement3,(username,postid))
+        #Update like count on post
+        statement4 = "UPDATE posts SET likes = likes-1 WHERE id = %s"
+        cursor.execute(statement4, (postid,))
+    else:
+        print("YOU CANNOT UNLIKE THIS!!!")
+        abort(400)
+
+    mydb.commit()
+    cursor.close()
+
+    return redirect("/elephant-feed", code = 302)
+
 @app.route("/like", methods = {"POST"})
 def like():
     data = json.loads(request.data)
@@ -972,7 +1006,8 @@ def like():
 
     #Likes database should already be made.
     #Now that the table exists, we HAVE to make sure the current user hasn't liked this post already
-    statement2 = "SELECT * FROM likes WHERE username = %s AND postid = %s"
+    #Just checking if an instance of the user liking this exists at all, so check for 1 column (Shouldn't SELECT *)
+    statement2 = "SELECT username FROM likes WHERE username = %s AND postid = %s"
     cursor.execute(statement2, (username,postid))
     result = str(cursor.fetchall())
     print("Did the user like this post?: ",result)
@@ -990,13 +1025,6 @@ def like():
         print("YOU CANNOT LIKE AGAIN!!!!!!!!!!!!!!!!!!!!!!!")
         abort(400)
 
-    printstatement = "SELECT * FROM likes WHERE postid = %s" #This is printing to sanity check the likes left on each post
-    cursor.execute(printstatement, (postid,))
-    print("User liked the post: ",cursor.fetchall())
-
-    printstatement2 = "SELECT likes FROM posts WHERE id = %s"
-    cursor.execute(printstatement2, (postid,))
-    print(cursor.fetchall())
 
     mydb.commit()
     cursor.close()
@@ -1026,13 +1054,12 @@ def profile():
             cursor.execute(statement, (username,))
             result = cursor.fetchall()
             pfp = result[0][0]
-            print("Profile Pic: " + pfp)
 
             body = createProfilePage(username, pfp)
         else:
-            body = createProfilePage("Guest", "/static/images/test-profile-picture.png")
+            return render_template("register.html")
     else:
-        body = createProfilePage("Guest", "/static/images/test-profile-picture.png")
+        return render_template("register.html")
 
     response = make_response()
     response.data = body.encode('utf-8')
@@ -1045,6 +1072,11 @@ def profile():
     print("Body :" + response.data.decode('utf-8'))
     return response
 
+#Gets mime type via file signature (Doesn't trust user input)
+def get_mimetype(data: bytes) -> str:
+    f = magic.Magic(mime=True)
+    return f.from_buffer(data)
+
 # Submit button for changing user profile picture
 @app.route("/change-pfp", methods = {"POST"})
 def change_pfp():
@@ -1052,9 +1084,15 @@ def change_pfp():
 
     if "authToken" in request.cookies:
         # Retrieve user file and save to disk
-        data = request.files["pfp"]
-        mime = str(data.content_type)
-        print("Mime type of uploaded file: ",str(data.content_type))
+
+        data = request.files['pfp']
+        file_bytes = data.read(2048) #First few bytes of the file will contain the mime type
+        # Determine the MIME type
+        mime = magic.from_buffer(file_bytes, mime=True)
+        # Reset file pointer to the beginning
+        data.seek(0)
+        print("Mime type of uploaded file: ",str(mime))
+
         #only accept IMAGES and GIFS
         if mime == "image/gif" or mime == "image/jpeg" or mime == "image/png":
             filename = str(uuid.uuid4())
@@ -1076,62 +1114,32 @@ def change_pfp():
 
                 username = result[0][0]
 
-                # Update user pfp
+                #DELETE the old profile pic if a previous one was updated
+                #We need to make sure we don't have too much storage taken up
+                statement = "SELECT profilePicture FROM logins WHERE username = %s"
+                cursor.execute(statement, (username,))
+                previousResult = cursor.fetchall()
+
+                if len(previousResult) == 1:
+                    if os.path.exists(previousResult[0][0][1:]): #Make sure we only delete it if it exists (dc forcerecreate may remove)
+                        if previousResult[0][0] != "/static/images/test-profile-picture.png": #Don't delete the test-profile-picture
+                            print("Before removing: ",os.listdir("static/pfp"))
+                            os.remove(previousResult[0][0][1:])
+                            print("Previous pfp deleted from storage")
+                            print("After removing: ",os.listdir("static/pfp"))
+
+                #Update the value stored in logins to be the new directory for a user's profile picture
                 statement = "UPDATE logins SET profilePicture=%s WHERE username = %s"
                 cursor.execute(statement, ("/static/pfp/" + filename, username))
 
-                # statement = "SELECT profilePicture FROM logins WHERE username = %s"
-                # cursor.execute(statement, (username,))
-                # result = cursor.fetchall()
-                # print("Result: " + str(result))
         else:
             print("Unallowed File Type")
-            abort(400)
+            return "<h1>403</h1>Allowed File Types: .jpg, .png, .gif",403
 
     # Redirect to home page
     mydb.commit()
     cursor.close()
     return redirect("/profile", code=302)
-
-# We aren't worried about unliking yet
-@app.route("/unlike", methods = {"POST"})
-def unlike():
-    data = json.loads(request.data)
-    username = data["username"][:30]
-    postid = data["id"]
-    print("User ",username," is liking postID: ",postid)
-
-    cursor = mydb.cursor(prepared=True)
-
-    # Now, we shooould be sure that a table exists with this posts usernames of people who've currently liked it
-    # Check if the user even HAS liked this post
-    statement2 = "SELECT * FROM likes WHERE username = %s AND postid = %s"
-    cursor.execute(statement2, (username, postid))
-    result = str(cursor.fetchall())
-    print("Did the user like this post?: ", result)
-
-    #if the user has liked this post, we can allow them to unlike
-    if result != "[]":
-        print("User has liked this post already, allow them to unlike")
-        statement3 = "DELETE FROM likes WHERE username = %s AND postid = %s"
-        cursor.execute(statement3,(username,postid))
-        #Update like count on post
-        statement4 = "UPDATE posts SET likes = likes-1 WHERE id = %s"
-        cursor.execute(statement4, (postid,))
-    else:
-        abort(400)
-
-    printstatement = "SELECT * FROM likes WHERE postid = %s" #This is printing to sanity check the likes left on each post
-    cursor.execute(printstatement, (postid,))
-    print("User unliked the post: ",cursor.fetchall())
-    printstatement2 = "SELECT likes FROM posts WHERE id = %s"
-    cursor.execute(printstatement2, (postid,))
-    print(cursor.fetchall())
-
-    mydb.commit()
-    cursor.close()
-
-    return redirect("/elephant-feed", code = 302)
 
 @app.route("/testgame")
 def testGame():

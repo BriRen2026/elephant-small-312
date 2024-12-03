@@ -3,17 +3,15 @@ ENV FLASK_APP app.py
 WORKDIR /root
 COPY . .
 
-#Create the empty directories that git cloning doesn't always do
+#Create the empty directories that git cloning doesn't do
 RUN mkdir -p static/pfp
 RUN mkdir -p static/canvasPost
 
 # RUN apt update
 # RUN apt install python3-pip -y
 RUN pip3 install -r requirements.txt
-RUN pip3 install Flask
 
 # Following commands are for websockets
-RUN pip3 install flask-socketio
 RUN pip3 install -U eventlet
 
 EXPOSE 8080
