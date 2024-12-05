@@ -89,14 +89,26 @@
 				socket.emit('commentData', JSON.stringify(commentData));
 			}
 
-			socket.on("feed", function(feedHTML) {
-				feedHTML = JSON.parse(feedHTML);
+			socket.on("feed", function(newComment) {
+				newComment = JSON.parse(newComment);
+
+				// Identifies post by the correct hashedID (same for every user)
+				let postID = newComment["postID"];
+				let postTag = "elephant-post." + postID;
+
 				// console.log(feedHTML);
 				// console.log("Posts: " + posts);
 
 				// Updates/sets the HTML of the elephant feed live
 				// This collapses because it doesn't preserve that the description was open
-				document.getElementById("elephant-feed").innerHTML = feedHTML["posts"];
+
+				// FIXED: only updates the comments section of the post that was commented on
+				if (document.getElementById(postTag)) {
+					let parent = document.getElementById(postTag);
+					let comments = parent.querySelector("#comments");
+
+					comments.innerHTML += newComment["comment"];
+				}
 			});
 
 			// Misconception resolved: code below only triggers on initial connection (VERY IMPORTANT)

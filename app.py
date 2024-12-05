@@ -512,108 +512,19 @@ def receive_comment_data(comment_data):
 
     mydb.commit()
 
-    global post_num
-
     # Temporary Solution/Fix: code below updates the entire feed live instead of just the one comment
+
     # Permanent Solution/Fix: find a way to ONLY add the one comment and not update the whole feed
 
-    # Fetch all comments from comments table
-    cursor = mydb.cursor(prepared=True)
-    cursor.execute("SELECT * FROM comments")
-    comment_data = cursor.fetchall()
+    # Implemented: ONLY writes the HTML for the post that was commented on (new comment)
+    with open("templates/postComment.html", 'r') as template:
+        f = template.read()
+        new_comment = f
 
-    comments = {}
+        new_comment = new_comment.replace("{commenter}", username)
+        new_comment = new_comment.replace("{comment-message}", comment)
 
-    for comment in comment_data:
-
-        post_id = comment[1]
-
-        with open("templates/postComment.html", 'r') as template:
-            f = template.read()
-            curr_comment = f
-
-            curr_comment = curr_comment.replace("{commenter}", comment[0])
-            curr_comment = curr_comment.replace("{comment-message}", comment[2])
-
-            if not post_id in comments:
-                comments[post_id] = curr_comment
-            else:
-                comment_section = comments[post_id]
-                comments[post_id] = comment_section + curr_comment
-
-    # Fetch all posts from posts table.
-    cursor = mydb.cursor(prepared=True)
-    cursor.execute("SELECT * FROM posts")
-    post_data = cursor.fetchall()
-
-    # Basic logic: run a loop and create separate divs for each post in the database
-    # IMPORTANT: check elephant-feed.html for better understanding/content
-
-    # posts: String to inject into elephant-feed.html.
-    posts = ""
-
-    for post in post_data:
-        # print("Post: ",post)
-
-        curr_username = post[0]
-        statement = "SELECT profilePicture FROM logins WHERE username = %s"
-        cursor.execute(statement, (curr_username,))
-        result = cursor.fetchall()
-        pfp = result[0][0]
-
-        # Use post.html template to create div element of post.
-        with open("templates/post.html", 'r') as template:
-            f = template.read()
-            curr_post = f
-
-            # Inject properties of post based on what's stored in the database.
-            # Database infos stored in format = (username, title, description, file, event, str(hashedID), likes)
-            curr_post = curr_post.replace("{{elephant_title}}", post[1])
-            curr_post = curr_post.replace("{{post_num}}", str(post_num))
-            curr_post = curr_post.replace("{{username}}", curr_username)
-            curr_post = curr_post.replace("{{description}}", post[2])
-            curr_post = curr_post.replace("{like-count}", str(post[6]))
-            curr_post = curr_post.replace("{{post_id}}", str(post[5]))  # sets post ID in hidden form
-            curr_post = curr_post.replace("{{elephant_image}}", str(post[3]))
-            curr_post = curr_post.replace("{{pfp}}", pfp)
-
-            if post[5] in comments:
-                curr_post = curr_post.replace("{{comments}}", comments[post[5]])
-            else:
-                curr_post = curr_post.replace("{{comments}}", "No Comments")
-
-            # (Written by Jenna)
-            # For liking and unliking, we must check the postIDLIkedBy database for the current user on the page
-            # If it comes back as [], then the user viewing the page has NOT liked this post
-            displayLike = "SELECT * FROM likes WHERE username = %s AND postid = %s"
-            cursor.execute(displayLike, (username, str(post[5])))
-            result = str(cursor.fetchall())
-            print("Has user liked before?: ", result)
-
-            unlikeHTMLBlock = "<button type = 'button' style='display: block; background: none; border: 0;' class='button-unlike' onclick = " + 'unlikeElephant("elephant-post.' + str(post_num) + '")>' + " <i class ='fa-solid fa-heart' id='like-child'></i></button>"
-            likeHTMLBlock = "<button type = 'button' style='display: block; background: none; border: 0;' class='button-like' onclick = " + 'likeElephant("elephant-post.' + str(
-                post_num) + '")>' + " <i class ='fa-regular fa-heart' id='like-child'></i></button>"
-            unlikeHTMLNone = "<button type = 'button' style='display: none; background: none; border: 0;' class='button-unlike' onclick = " + 'unlikeElephant("elephant-post.' + str(
-                post_num) + '")>' + " <i class ='fa-solid fa-heart' id='like-child'></i></button>"
-            likeHTMLNone = "<button type = 'button'  style='display: none; background: none; border: 0;' class='button-like' onclick = " + 'likeElephant("elephant-post.' + str(
-                post_num) + '")>' + " <i class ='fa-regular fa-heart' id='like-child'></i></button>"
-
-            # IF user has not liked the post, display: block the likeHTML and display:none the unlikeHTML
-            if result == "[]":
-                curr_post = curr_post.replace("{{like-status}}", likeHTMLBlock + unlikeHTMLNone)
-
-            # IF user has liked the post, display: none the likeHTML and display:block the unlikeHTML
-            else:
-                curr_post = curr_post.replace("{{like-status}}", unlikeHTMLBlock + likeHTMLNone)
-
-            # IMPORTANT: Logic not implemented yet for profile picture
-
-            post_num += 1
-
-            # Concatenate post to feed string.
-            posts = curr_post + posts
-
-    emit("feed", json.dumps({"posts": posts}), broadcast=True)
+    emit("feed", json.dumps({"comment": new_comment, "postID": post_id}), broadcast=True)
     cursor.close()
 
 @app.route("/submit-elephant", methods=["POST"])
@@ -684,6 +595,7 @@ def submit_elephant():
     return redirect("/elephant-feed", code = 302)
 
 # HTML for elephant post (need to structure each post individually in a loop)
+# IMPORTANT: variable below is NOT being used anymore (pot for hashedIDs)
 post_num = 1
 
 @app.route("/elephant-feed")
@@ -778,7 +690,9 @@ def elephantFeed():
             #Inject properties of post based on what's stored in the database.
             #Database infos stored in format = (username, title, description, file, event, str(hashedID), likes)
             curr_post = curr_post.replace("{{elephant_title}}", post[1])
-            curr_post = curr_post.replace("{{post_num}}", str(post_num))
+            # Line below was originally str(post_num): change so post ids are consistent for every user
+            curr_post = curr_post.replace("{{post_num}}", str(post[5]))
+            # IMPORTANT: check above comment
             curr_post = curr_post.replace("{{username}}", curr_username)
             curr_post = curr_post.replace("{{description}}", post[2])
             curr_post = curr_post.replace("{like-count}", str(post[6]))
@@ -802,13 +716,16 @@ def elephantFeed():
             #< button type = "button" onclick = "likeElephant('elephant-post.{{post_num}}')" class ="button-like" style="display: block; background: none; border: 0;" > < i class ="fa-regular fa-heart"  id="like-child" > < / i > < / button >
             #< button type = "button" onclick = "unlikeElephant('elephant-post.{{post_num}}')" class ="button-unlike" style="display: block; background: none; border: 0;" > < i class ="fa-solid fa-heart"  id="like-child" > < / i > < / button >
 
+            # IMPORTANT: changed postIDs to hashedIDs instead of global post_num for
+            # consistent identification for every user
+
             #User has not liked the post
-            unlikeHTMLBlock = "<button type = 'button' style='display: block; background: none; border:0;' class='button-unlike' onclick = "+ 'unlikeElephant("elephant-post.'+str(post_num)+'")>'+" <i class ='fa-solid fa-heart' id='like-child'></i></button>"
-            likeHTMLBlock = "<button type = 'button' style='display: block; background: none; border:0;' class='button-like' onclick = "+ 'likeElephant("elephant-post.'+str(post_num)+'")>'+" <i class ='fa-regular fa-heart' id='like-child'></i></button>"
+            unlikeHTMLBlock = "<button type = 'button' style='display: block; background: none; border:0;' class='button-unlike' onclick = "+ 'unlikeElephant("elephant-post.'+str(post[5])+'")>'+" <i class ='fa-solid fa-heart' id='like-child'></i></button>"
+            likeHTMLBlock = "<button type = 'button' style='display: block; background: none; border:0;' class='button-like' onclick = "+ 'likeElephant("elephant-post.'+str(post[5])+'")>'+" <i class ='fa-regular fa-heart' id='like-child'></i></button>"
 
             #User has liked the post
-            unlikeHTMLNone = "<button type = 'button' style='display: none; background: none; border:0;' class='button-unlike' onclick = " + 'unlikeElephant("elephant-post.' + str(post_num) + '")>' + " <i class ='fa-solid fa-heart' id='like-child'></i></button>"
-            likeHTMLNone = "<button type = 'button'  style='display: none; background: none; border:0;' class='button-like' onclick = " + 'likeElephant("elephant-post.' + str(post_num) + '")>' + " <i class ='fa-regular fa-heart' id='like-child'></i></button>"
+            unlikeHTMLNone = "<button type = 'button' style='display: none; background: none; border:0;' class='button-unlike' onclick = " + 'unlikeElephant("elephant-post.' + str(post[5]) + '")>' + " <i class ='fa-solid fa-heart' id='like-child'></i></button>"
+            likeHTMLNone = "<button type = 'button'  style='display: none; background: none; border:0;' class='button-like' onclick = " + 'likeElephant("elephant-post.' + str(post[5]) + '")>' + " <i class ='fa-regular fa-heart' id='like-child'></i></button>"
 
             # IF user has not liked the post, display: block the likeHTML and display:none the unlikeHTML
             if result == "[]":
