@@ -38,7 +38,9 @@ function canvasDrop() {
          console.log("X="+mouse.x);
         console.log("Y="+mouse.y);
         let sprite=new Sprite(150,150);
-        sprite.img=loadImage(currSprite.src);
+        // Changed to background image because it decreases load time of /elephant-maker by THREE SECONDS ( a lot ).
+        //console.log("Background image of sprite: ",currSprite.style.backgroundImage.slice(4, -1).replace(/"/g, ""))
+        sprite.img=loadImage(currSprite.style.backgroundImage.slice(4, -1).replace(/"/g, ""));
         // console.log("SPRITE IMG "+sprite.img);
         sprite.position=createVector(150,150);
         sprite.drag=10;
@@ -46,8 +48,9 @@ function canvasDrop() {
         spriteCount++;
         let i=0;
         for (let icon of iconCol.children) {
+            //console.log("Src of icon[0]:icon.childNodes[0].src)
             if (icon.childNodes[0].src.includes("ele")) {
-                icon.childNodes[0].src=currSprite.src;
+                icon.childNodes[0].src=currSprite.style.backgroundImage.slice(4,-1).replace(/"/g,"");
                 spriteIcons.set(sprite,i);
                 iconSprites.set(icon.childNodes[0].id,sprite);
                 break;
@@ -64,7 +67,7 @@ function drop(ev) {
   ev.preventDefault();
   const data = ev.dataTransfer.getData("text");
   // console.log("data!");
-  // console.log(data);
+  console.log("Data: ",data);
   canvasDrop();
 }
 
@@ -79,6 +82,7 @@ function makeCanvasDroppable() {
 function setBackground() {
     //console.log(document.getElementById("elephant-pic-src"));
     let bckgrnd=document.getElementById("elephant-pic-src").childNodes[0];
+    //console.log("Setting background")
     // console.log("bckgrnd "+bckgrnd);
     bckgrndSrc=bckgrnd.src;
     backgroundImg=loadImage(bckgrndSrc);
@@ -88,12 +92,13 @@ function setBackground() {
 //build canvas and place in correct column on elephant maker page
 //invokes makeCanvasDroppable so that canvasDrop works
 function setup() {
-    createCanvas(350,350);
+    let myCanv = createCanvas(350,350, {alpha: true});
     let canvLocation=document.getElementById("forCanvas");
     let canvas=document.getElementById("q5Canvas0");
-    canvLocation.append(canvas);
+    myCanv.parent("forCanvas")
+
     makeCanvasDroppable();
-    rectMode(CENTER);
+    //rectMode(CENTER);
     allSprites.rotationLock=true;
     // console.log("setup happens");
     // console.log(allSprites);

@@ -14,7 +14,8 @@
 
         <div class="card-body mx-auto" style="max-width: 400px; overflow: hidden;">
             <input id="post_id" value="{{post_id}}" hidden/>
-            <img src="{{elephant_image}}" class="object-fit-contain"
+            <!--Lazy loading decreases the amount of requests made on page load-->
+            <img loading="lazy" src="{{elephant_image}}" class="object-fit-contain"
                  style="width: 100%; height: 100%; object-fit-contain;">
         </div>
 
