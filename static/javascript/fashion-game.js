@@ -139,7 +139,7 @@ function setup() {
     makeCanvasDroppable();
     // rectMode(CENTER);
     allSprites.rotationLock=true;
-    changed=false;
+    changed=true;
     backgroundImg=elephant;
     console.log("BACKGROUND",backgroundImg);
     image(backgroundImg,0,0,350,350);
@@ -163,7 +163,7 @@ function setup() {
 //active game canvas functionality; set background (allows updates) and move sprites
 //checks for move out of bounds and updates maps accordingly
 function draw() {
-    clear();
+    // clear();
     // console.log("DRAW");
     if (changed) {
         // background(backgroundImg);
