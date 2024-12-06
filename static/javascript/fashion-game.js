@@ -28,6 +28,7 @@ let mammoth;
 
 function preload() {
     elephant=loadImage("static/images/elephant.png");
+    backgroundImg=elephant;
     old=loadImage("static/images/old-elephant.jpg");
     phan=loadImage("static/images/phanpy.png");
     play=loadImage("static/images/shaped-elephant.jpg");
