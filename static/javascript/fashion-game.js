@@ -43,7 +43,7 @@ function preload() {
     allBckgrnds.set("static/images/crafty-elephant.jpg",scrung);
     allBckgrnds.set("static/images/cute-elephant.jpg",cute);
     allBckgrnds.set("static/images/greattusk.jpg",baby);
-    console.log(allBckgrnds,"????????");
+    // console.log(allBckgrnds,"????????");
 }
 
 //make canvas droppable
@@ -81,6 +81,7 @@ function canvasDrop() {
         for (let icon of iconCol.children) {
             console.log("i**",i);
             console.log(icon.childNodes);
+            console.log("%%",icon.childNodes[0].src);
             if (icon.childNodes[0].src.includes("ele")) {
                 console.log("found open slot");
                 icon.childNodes[0].src=currSprite.style.backgroundImage.slice(4,-1).replace(/"/g,"");
@@ -116,14 +117,19 @@ function makeCanvasDroppable() {
 function setBackground() {
     //console.log(document.getElementById("elephant-pic-src"));
     let bckgrnd=document.getElementById("ep-img-src");
-    let fragments=bckgrnd.src.split("https://elephantsmall.com/");
+    let fragments=bckgrnd.src.split("/static/images");
     // console.log("bckgrnd "+bckgrnd);
     // backgroundImg=loadImage(bckgrnd.src);
     // console.log(bckgrnd.src);
     // console.log(allBckgrnds.get(bckgrnd.src));
-    backgroundImg=allBckgrnds.get(fragments[1]);
+    console.log(fragments);
+    backgroundImg=allBckgrnds.get("static/images"+fragments[1]);
     changed=true;
-    // return backgroundImg;
+    // // return backgroundImg;
+    // let bckgrnd=imgTag.src;
+    // let fragments=bckgrnd.split("/static/images");
+    // backgroundImg=allBckgrnds.get("/static/images"+fragments[1]);
+    // changed=true;
 }
 
 //build canvas and place in correct column on elephant maker page
@@ -132,7 +138,7 @@ function setup() {
     createCanvas(350,350);
     // let other=document.getElementById("q5Canvas0");
     // other.style.visibility="hidden";
-    console.log("WHERE IS THE CANVAS");
+    // console.log("WHERE IS THE CANVAS");
     // let canvLocation=document.getElementById("forCanvas");
     // let canvas=document.getElementById("q5Canvas0");
     // canv.parent("forCanvas");
@@ -141,7 +147,7 @@ function setup() {
     allSprites.rotationLock=true;
     changed=true;
     backgroundImg=elephant;
-    console.log("BACKGROUND",backgroundImg);
+    // console.log("BACKGROUND",backgroundImg);
     // image(backgroundImg,0,0,350,350);
     // console.log("setup happens");
     // console.log(allSprites);
@@ -165,11 +171,11 @@ function setup() {
 function draw() {
     // clear();
     console.log("DRAW2");
-    console.log("***bgi",backgroundImg);
+    // console.log("***bgi",backgroundImg);
     if (changed) {
         // background(backgroundImg);
         image(backgroundImg,0,0,350,350);
-        console.log("CHANGED");
+        // console.log("CHANGED");
         changed=false;
     }
 
