@@ -78,15 +78,19 @@
 				let username = document.getElementById("header-user").textContent;
 				let postID = idContainer.value;
 				let comment = commentContainer.value;
+				console.log("Comment length: ",comment.length);
+				// Only post the comment if they didn't say nothing
+				if (comment && comment.trim()){
 
-				console.log("User " + username + " commented: " + comment);
+					console.log("User " + username + " commented: " + comment);
 
-				let commentData = {"username": username, "post_id": postID, "comment": comment};
+					let commentData = {"username": username, "post_id": postID, "comment": comment};
 
-				// socket.connect();
+					// socket.connect();
 
-				// Sends data in real time to 'commentData' socket route in app.py
-				socket.emit('commentData', JSON.stringify(commentData));
+					// Sends data in real time to 'commentData' socket route in app.py
+					socket.emit('commentData', JSON.stringify(commentData));
+				}
 			}
 
 			socket.on("feed", function(newComment) {
