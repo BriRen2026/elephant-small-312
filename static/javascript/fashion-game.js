@@ -163,7 +163,8 @@ function draw() {
     clear();
     // console.log("DRAW");
     if (changed) {
-        background(backgroundImg);
+        // background(backgroundImg);
+        image(backgroundImg,0,0,350,350);
         changed=false;
     }
 
