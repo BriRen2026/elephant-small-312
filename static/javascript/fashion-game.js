@@ -164,12 +164,12 @@ function setup() {
 //checks for move out of bounds and updates maps accordingly
 function draw() {
     // clear();
-    console.log("DRAW");
+    console.log("DRAW2");
+    console.log("***bgi",backgroundImg);
     if (changed) {
         // background(backgroundImg);
         image(backgroundImg,0,0,350,350);
         console.log("CHANGED");
-        console.log("***bgi",backgroundImg);
         changed=false;
     }
 
