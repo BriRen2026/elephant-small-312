@@ -106,8 +106,8 @@ function drop(ev) {
 
 //after canvas tag is created on page load, allow drop & dragover
 function makeCanvasDroppable() {
-    // let canvas=document.getElementById("defaultCanvas0");
-    let canvas=document.getElementById("q5Canvas0");
+    let canvas=document.getElementById("defaultCanvas0");
+    // let canvas=document.getElementById("q5Canvas0");
     canvas.setAttribute("ondrop","drop(event)");
     canvas.setAttribute("ondragover","allowDrop(event)");
 }
