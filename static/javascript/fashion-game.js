@@ -28,7 +28,6 @@ let mammoth;
 
 function preload() {
     elephant=loadImage("static/images/elephant.png");
-    backgroundImg=elephant;
     old=loadImage("static/images/old-elephant.jpg");
     phan=loadImage("static/images/phanpy.png");
     play=loadImage("static/images/shaped-elephant.jpg");
@@ -141,6 +140,9 @@ function setup() {
     // rectMode(CENTER);
     allSprites.rotationLock=true;
     changed=false;
+    backgroundImg=elephant;
+    console.log("BACKGROUND",backgroundImg);
+    image(backgroundImg,0,0,350,350);
     // console.log("setup happens");
     // console.log(allSprites);
 }
