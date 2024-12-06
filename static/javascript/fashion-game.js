@@ -79,7 +79,11 @@ function canvasDrop() {
         spriteCount++;
         let i=0;
         for (let icon of iconCol.children) {
+            console.log("i**",i);
+            console.log(icon.childNodes);
             if (icon.childNodes[0].src.includes("ele")) {
+
+                console.log("found open slot");
                 icon.childNodes[0].src=currSprite.style.backgroundImage.slice(4,-1).replace(/"/g,"");
                 spriteIcons.set(sprite,i);
                 iconSprites.set(icon.childNodes[0].id,sprite);
@@ -125,7 +129,8 @@ function setBackground() {
 //build canvas and place in correct column on elephant maker page
 //invokes makeCanvasDroppable so that canvasDrop works
 function setup() {
-    let canv=createCanvas(350,350);
+    createCanvas(350,350);
+    console.log("WHERE IS THE CANVAS");
     // let canvLocation=document.getElementById("forCanvas");
     // let canvas=document.getElementById("q5Canvas0");
     // canv.parent("forCanvas");
