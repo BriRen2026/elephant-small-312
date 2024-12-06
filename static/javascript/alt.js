@@ -1,12 +1,10 @@
 let backgroundImg;
-// let bckgrndSrc;
+let bckgrndSrc;
 let spriteIcons=new Map(); //maps sprites to icon index
 let iconSprites=new Map(); //maps icon indices (as strings) to sprites
 let currSprite;
 let iconCol=document.getElementById("item-list"); //all sidebar icons for fashion items
 let spriteCount=1;
-let allBckgrnds=new Map();
-let changed;
 
 // for (let [spriteo,coords] of sprites) {
 //     let sprite=new Sprite(sprites.get(spriteo)[0],sprites.get(spriteo)[1]);
@@ -16,35 +14,6 @@ let changed;
 //     sprite.collider="kinematic";
 //     sprites.set(sprite,[sprites.get(spriteo)[0],sprites.get(spriteo)[1]]);
 // }
-
-let elephant;
-let old;
-let phan;
-let play;
-let scrung;
-let cute;
-let baby;
-let mammoth;
-
-function preload() {
-    elephant=loadImage("static/images/elephant.png");
-    old=loadImage("static/images/old-elephant.jpg");
-    phan=loadImage("static/images/phanpy.png");
-    play=loadImage("static/images/shaped-elephant.jpg");
-    scrung=loadImage("static/images/crafty-elephant.jpg");
-    cute=loadImage("static/images/cute-elephant.jpg");
-    baby=loadImage("static/images/greattusk.jpg");
-    mammoth=loadImage("static/images/sleek-mammoth.jpeg");
-    allBckgrnds.set("static/images/sleek-mammoth.jpeg",mammoth);
-    allBckgrnds.set("static/images/old-elephant.jpg",old);
-    allBckgrnds.set("static/images/elephant.png",elephant);
-    allBckgrnds.set("static/images/phanpy.png",phan);
-    allBckgrnds.set("static/images/shaped-elephant.jpg",play);
-    allBckgrnds.set("static/images/crafty-elephant.jpg",scrung);
-    allBckgrnds.set("static/images/cute-elephant.jpg",cute);
-    allBckgrnds.set("static/images/greattusk.jpg",baby);
-    console.log(allBckgrnds,"????????");
-}
 
 //make canvas droppable
 function allowDrop(ev) {
@@ -79,6 +48,7 @@ function canvasDrop() {
         spriteCount++;
         let i=0;
         for (let icon of iconCol.children) {
+            //console.log("Src of icon[0]:icon.childNodes[0].src)
             if (icon.childNodes[0].src.includes("ele")) {
                 icon.childNodes[0].src=currSprite.style.backgroundImage.slice(4,-1).replace(/"/g,"");
                 spriteIcons.set(sprite,i);
@@ -97,7 +67,7 @@ function drop(ev) {
   ev.preventDefault();
   const data = ev.dataTransfer.getData("text");
   // console.log("data!");
-  // console.log(data);
+  console.log("Data: ",data);
   canvasDrop();
 }
 
@@ -112,27 +82,24 @@ function makeCanvasDroppable() {
 function setBackground() {
     //console.log(document.getElementById("elephant-pic-src"));
     let bckgrnd=document.getElementById("ep-img-src");
-    let fragments=bckgrnd.src.split("http://localhost:8080/");
+    //console.log("Setting background")
     // console.log("bckgrnd "+bckgrnd);
-    // backgroundImg=loadImage(bckgrnd.src);
-    // console.log(bckgrnd.src);
-    // console.log(allBckgrnds.get(bckgrnd.src));
-    backgroundImg=allBckgrnds.get(fragments[1]);
-    changed=true;
-    // return backgroundImg;
+    bckgrndSrc=bckgrnd.src;
+    backgroundImg=loadImage(bckgrndSrc);
+    return backgroundImg;
 }
 
 //build canvas and place in correct column on elephant maker page
 //invokes makeCanvasDroppable so that canvasDrop works
 function setup() {
-    let canv=createCanvas(350,350);
-    // let canvLocation=document.getElementById("forCanvas");
-    // let canvas=document.getElementById("q5Canvas0");
-    // canv.parent("forCanvas");
+    let myCanv = createCanvas(350,350, {alpha: true});
+    let canvLocation=document.getElementById("forCanvas");
+    let canvas=document.getElementById("q5Canvas0");
+    myCanv.parent("forCanvas")
+
     makeCanvasDroppable();
-    // rectMode(CENTER);
+    //rectMode(CENTER);
     allSprites.rotationLock=true;
-    changed=false;
     // console.log("setup happens");
     // console.log(allSprites);
 }
@@ -153,17 +120,9 @@ function setup() {
 //active game canvas functionality; set background (allows updates) and move sprites
 //checks for move out of bounds and updates maps accordingly
 function draw() {
-    clear();
-    // console.log("DRAW");
-    if (changed) {
-        background(backgroundImg);
-        changed=false;
-    }
-
+    background(setBackground());
     for (let sprite of allSprites) {
-        // console.log(sprite);
-        // console.log("???",allSprites);
-        // console.log("si**",spriteIcons);
+        //console.log(sprite);
         if (sprite.mouse.dragging()) {
             sprite.moveTowards(mouse.x+sprite.mouse.x,mouse.y+sprite.mouse.y,1);
         } else {
@@ -171,20 +130,14 @@ function draw() {
             sprite.velocity.y=0;
         }
         if (sprite.x>350 || sprite.y>350) {
-            console.log("out of bounds");
-            // console.log(spriteIcons.get(sprite).toString());
-            // iconSprites.delete(spriteIcons.get(sprite).toString());
-            // spriteIcons.delete(sprite);
-            // iconCol.children.item(spriteIcons.get(sprite)).childNodes[0].src="/static/images/elephant-small.jpg";
-            // console.log("***",sprite,"***",spriteIcons);
-            // // console.log(spriteIcons.get(sprite).toString());
-            // // iconSprites.delete(spriteIcons.get(sprite).toString());
-            // // spriteIcons.delete(sprite);
-            // spriteCount--;
+            // console.log("out of bounds");
+            iconCol.children.item(spriteIcons.get(sprite)).childNodes[0].src="/static/images/elephant-small.jpg";
+            iconSprites.delete(spriteIcons.get(sprite).toString());
+            spriteIcons.delete(sprite);
+            spriteCount--;
             // console.log("!!!! "+spriteCount);
         }
     }
-    setBackground();
 }
 
 //when corresponding sidebar icon is clicked, delete the sprite from the canvas and open new sidebar slot
@@ -252,8 +205,4 @@ function saveCanvasToImage() {
     ec.setAttribute("value",cd);
     // console.log("*** "+localStorage.getItem("cimg"));
     // console.log(ec.value);
-}
-
-function addPage() {
-
 }

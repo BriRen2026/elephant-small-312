@@ -88,22 +88,24 @@ function accessorySelector(){
 }
 
 //Actually choosing an elephant to dress up
-function selectElephant(div){
+function selectElephant(img){
 	//Change the img source for our elephant-pic img
-	const elephantpic = document.getElementById("elephant-pic-src");
-	const submitForm = document.forms["elephant-submit-form"]
-	const saveForm = document.forms["elephant-save-form"]
-
-	//Changes the Big Selected elephant image to whatever a user selects
-	const changeYourElephantPic = elephantpic.childNodes[0]
-	const changeToThis = div.childNodes[0]
-
-	//Change Your Elephant source to whatever the user selected
-	changeYourElephantPic.src = changeToThis.src;
+	// const elephantpic = document.getElementById("elephant-pic-src");
+	// const submitForm = document.forms["elephant-submit-form"]
+	// const saveForm = document.forms["elephant-save-form"]
+	//
+	// //Changes the Big Selected elephant image to whatever a user selects
+	// const changeYourElephantPic = elephantpic.childNodes[0]
+	// const changeToThis = div.childNodes[0]
+	//
+	// //Change Your Elephant source to whatever the user selected
+	// changeYourElephantPic.src = changeToThis.src;
 
 	//Change form's file value to the img u want to upload
-	submitForm.elements["file"].setAttribute("value",decodeURIComponent(changeToThis.src));
-	saveForm.elements["file"].setAttribute("value",decodeURIComponent(changeToThis.src));
+	// submitForm.elements["file"].setAttribute("value",decodeURIComponent(changeToThis.src));
+	// saveForm.elements["file"].setAttribute("value",decodeURIComponent(changeToThis.src));
+	let ep=document.getElementById("ep-img-src");
+	ep.src=img.src;
 }
 
 // Ignore this code: following Jesse's method for homeworks (no need and ws has different structure)
@@ -131,3 +133,21 @@ function selectElephant(div){
 // 		console.log("delayed submission");
 // 	}, 1000);
 // }
+
+function customForm() {
+	let form=document.getElementById("elephant-submit-form");
+	form.addEventListener('submit',function(event) {
+		event.preventDefault();
+		let formObj=new FormData();
+		let title=document.getElementById('title').value;
+		let desc=document.getElementById("description").value;
+		let user=document.getElementById("username").value;
+		formObj.append('title',title);
+		formObj.append('description',desc);
+		formObj.append('username',user);
+		fetch('/submit-elephant', {
+			method: "POST",
+			body: "formObj"
+		});
+	});
+}

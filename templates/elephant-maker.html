@@ -13,7 +13,6 @@
 	<script src="/static/javascript/q5.js"></script>
   	<script src="/static/javascript/planckmin.js"></script>
   	<script src="/static/javascript/p5play.js"></script>
-	  <!--comment out until post test with HTML canvas for positioning-->
   </head>
 
   <body>
@@ -48,9 +47,12 @@
 		</div>
 	  </header>
 
-    <main>
-		<div id="elephant-pic-src"><img hidden id="ep-img-src" src="/static/images/elephant.png"></div>
-
+<!--    <main>-->
+<!--		<div id="elephant-pic-src"><img id="ep-img-src" src="/static/images/elephant.png" width="700" height="700"></div>-->
+		<img id="ep-img-src" src="/static/images/elephant.png" hidden>
+<!--		<script>-->
+<!--			document.getElementById("ep-img-src").style.visibility="hidden";-->
+<!--		</script>-->
 		<div class="grid-container">
 
 			<div class="grid-col1" id="currentlyWearing">
@@ -74,7 +76,8 @@
 				<p id="section-header-middle"> Your Elephant </p>
 				<div class="inner-elephant">
 <!--					<div id="elephant-pic"><img src="/static/images/elephant.png"></div>-->
-						<div id="forCanvas"></div>
+<!--						<div id="forCanvas" style="width: 350px; height: 350px; display: block; position: relative"></div>-->
+                    <main></main>
 					<div class="container" id="elephant-info">
 
 					<!----------------------------------------SUBMIT ELEPHANT------------------------------------------------->
@@ -97,10 +100,10 @@
 								</label>
 								<br/> <!-- As a placeholder, saving the url to our static elephant image-->
 									  <!-- In the future, I imagine the saving of elements to paths -->
-									<input id="elephantImg" type="text" name="file" value="/static/images/elephant.png" hidden/>
+									<input id="elephantImg" type="text" name="file" hidden/>
 									<input id="username" type="text" name="username" value="{username}" hidden/>
 								<!-- Close dialog and submit at the same time -->
-								
+
 								<input type="submit" class="container-child" id="outfit-button-submit" value="Submit Outfit"/>
 							</dialog>
 						</form>
@@ -127,16 +130,16 @@
 				<!--OPTIONS FOR SELECTING AN ELEPHANT BASE-->
 					<div id="elephant-selector" style="display: block;"">
 						<div class= "row">
-							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/elephant.png"/></button></div>
-							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/old-elephant.jpg"/></button></div>
-							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/phanpy.png"/></button></div>
-							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/playful-elephant.jpg"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/elephant.png" draggable="false" onclick="selectElephant(this)"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/old-elephant.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/phanpy.png" draggable="false" onclick="selectElephant(this)"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/shaped-elephant.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>
 						</div>
 						<div class= "row">
-							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/scrungly-elephant.jpg"/></button></div>
-							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/cute-elephant.jpg"/></button></div>
-							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/baby-elephant.jpg"/></button></div>
-							<div class="column-item-elephant"><button class="selector-img" onclick="selectElephant(this)"><img src="/static/images/sleek-mammoth.jpeg"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/crafty-elephant.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/cute-elephant.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/greattusk.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>
+							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/sleek-mammoth.jpeg" draggable="false" onclick="selectElephant(this)"/></button></div>
 						</div>
 					</div>
 
@@ -272,7 +275,7 @@
 			<img id="baseballbat-icon" style="background-size: contain; background-image:url('/static/images/icons/baseballbat-icon.png'); background-repeat: no-repeat; background-position: center center;">
 
 		</div>
-    </main>
+<!--    </main>-->
 
 	<footer>
 		<div class="footer-container">
@@ -303,7 +306,8 @@
   	<script src="/static/javascript/function.js"></script>
   	<script src="/static/javascript/submissions.js"></script>
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"></script>
-	<script src="/static/javascript/fashion-game.js"></script>
+<!--	<script type="text/javascript" src="/static/javascript/load-images.js" defer></script>-->
+	<script src="/static/javascript/fashion-game.js" defer></script>
   	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 <!--	<script type="text/javascript" charset="utf-8">-->
 <!--		  const socket = io({autoConnect: false});-->

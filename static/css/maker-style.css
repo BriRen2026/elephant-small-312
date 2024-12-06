@@ -16,10 +16,10 @@ body {
 	background-color:#d5eaed;
 }
 
-main{
-	width: 60%;
-	margin: 0 auto;
-}
+/*main{*/
+/*	width: 60%;*/
+/*	margin: 0 auto;*/
+/*}*/
 
 /*--------------------------Header---------------*/
 
@@ -162,6 +162,7 @@ input[type=submit] {
 
 .grid-col2{
 	margin: 50px 0px;
+	width: 350px;
 }
 
 .grid-col3{
@@ -393,7 +394,14 @@ input[type=submit] {
     display: inline-block;
 }
 
-#myCanvas {
-	border: 4px dashed;
-	padding-bottom: 350px;
+canvas {
+	display: block;
+	transform: none;
+	z-index: 2;
+}
+
+main {
+	/*position: sticky;*/
+	margin-right: 200px;
+
 }

@@ -540,7 +540,9 @@ def submit_elephant():
     username = html.escape(request.form.get('username'))[:30]
     print("Username: " + username)
     title = html.escape(request.form.get('title'))[:35]
+    print("Title: "+title)
     description = html.escape(request.form.get('description'))[:250]
+    print("Description: "+description)
     file = html.escape(request.form.get('file'))
     # print("FILE: "+file)
 
@@ -548,9 +550,10 @@ def submit_elephant():
 
     #converts html canvas datauri to bytearray for image
     encData=file.split(',',1)
-    # print(encData)
+    # # print(encData)
     decData=base64.b64decode(encData[1])
-    #print(decData)
+    # decData=b'\x00\x00'
+    # #print(decData)
 
     #Set initial likes to 0.
     likes = 0
@@ -1060,7 +1063,7 @@ def change_pfp():
 
 @app.route("/testgame")
 def testGame():
-    return render_template("testgame.html")
+    return render_template("testgame2.html")
 
 @app.route("/deleteDB")
 def deleteDB():
