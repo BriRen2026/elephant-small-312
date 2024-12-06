@@ -66,8 +66,8 @@ function canvasDrop() {
     // console.log("!!!! "+spriteCount);
     if (spriteCount<=10) {
         // console.log("why are we here");
-         console.log("X="+mouse.x);
-        console.log("Y="+mouse.y);
+        //  console.log("X="+mouse.x);
+        // console.log("Y="+mouse.y);
         let sprite=new Sprite(150,150);
         // Changed to background image because it decreases load time of /elephant-maker by THREE SECONDS ( a lot ).
         //console.log("Background image of sprite: ",currSprite.style.backgroundImage.slice(4, -1).replace(/"/g, ""))
@@ -82,7 +82,6 @@ function canvasDrop() {
             console.log("i**",i);
             console.log(icon.childNodes);
             if (icon.childNodes[0].src.includes("ele")) {
-
                 console.log("found open slot");
                 icon.childNodes[0].src=currSprite.style.backgroundImage.slice(4,-1).replace(/"/g,"");
                 spriteIcons.set(sprite,i);
@@ -107,7 +106,7 @@ function drop(ev) {
 
 //after canvas tag is created on page load, allow drop & dragover
 function makeCanvasDroppable() {
-    let canvas=document.getElementById("q5Canvas0");
+    let canvas=document.getElementById("defaultCanvas0");
     canvas.setAttribute("ondrop","drop(event)");
     canvas.setAttribute("ondragover","allowDrop(event)");
 }
@@ -130,6 +129,8 @@ function setBackground() {
 //invokes makeCanvasDroppable so that canvasDrop works
 function setup() {
     createCanvas(350,350);
+    // let other=document.getElementById("q5Canvas0");
+    // other.style.visibility="hidden";
     console.log("WHERE IS THE CANVAS");
     // let canvLocation=document.getElementById("forCanvas");
     // let canvas=document.getElementById("q5Canvas0");
