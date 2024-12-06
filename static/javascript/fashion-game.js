@@ -142,7 +142,7 @@ function setup() {
     changed=true;
     backgroundImg=elephant;
     console.log("BACKGROUND",backgroundImg);
-    image(backgroundImg,0,0,350,350);
+    // image(backgroundImg,0,0,350,350);
     // console.log("setup happens");
     // console.log(allSprites);
 }
@@ -164,7 +164,7 @@ function setup() {
 //checks for move out of bounds and updates maps accordingly
 function draw() {
     // clear();
-    // console.log("DRAW");
+    console.log("DRAW");
     if (changed) {
         // background(backgroundImg);
         image(backgroundImg,0,0,350,350);
