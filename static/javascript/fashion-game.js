@@ -78,11 +78,12 @@ function canvasDrop() {
         sprite.collider="kinematic";
         spriteCount++;
         let i=0;
+        // console.log("iconCol children",iconCol.children);
         for (let icon of iconCol.children) {
             console.log("i**",i);
             console.log(icon.childNodes);
             console.log("%%",icon.childNodes[0].src);
-            if (icon.childNodes[0].src.includes("ele")) {
+            if (icon.childNodes[0].src.includes("-small")) {
                 console.log("found open slot");
                 icon.childNodes[0].src=currSprite.style.backgroundImage.slice(4,-1).replace(/"/g,"");
                 spriteIcons.set(sprite,i);
@@ -122,7 +123,7 @@ function setBackground() {
     // backgroundImg=loadImage(bckgrnd.src);
     // console.log(bckgrnd.src);
     // console.log(allBckgrnds.get(bckgrnd.src));
-    console.log(fragments);
+    // console.log(fragments);
     backgroundImg=allBckgrnds.get("static/images"+fragments[1]);
     changed=true;
     // // return backgroundImg;
@@ -170,7 +171,7 @@ function setup() {
 //checks for move out of bounds and updates maps accordingly
 function draw() {
     // clear();
-    console.log("DRAW2");
+    // console.log("DRAW2");
     // console.log("***bgi",backgroundImg);
     if (changed) {
         // background(backgroundImg);
@@ -264,7 +265,7 @@ function deleteViaIcon(element) {
 //saves canvas to dataURL and sets value of file in submit POST form (name="file")
 // *backend eventually converts to byte array for file writing/stored path in sql
 function saveCanvasToImage() {
-    let c=document.getElementById("q5Canvas0");
+    let c=document.getElementById("defaultCanvas0");
     let cd=c.toDataURL('image/png');
     // console.log(cd);
     let ec=document.getElementById("elephantImg");
