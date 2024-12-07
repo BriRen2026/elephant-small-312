@@ -1,7 +1,7 @@
 flask
-python-magic #for checking file signatures without trusting user input
+flask-socketio
+eventlet
+python-magic    #for checking file signatures without trusting user input
 bcrypt
 mysql
 mysql-connector-python
-flask-socketio
-eventlet

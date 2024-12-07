@@ -3,7 +3,9 @@ import base64
 import os
 from socket import socket
 
-from flask import Flask, render_template, request, make_response, redirect, flash, jsonify, abort
+
+from flask import Flask, render_template, request, make_response, redirect, flash, jsonify, abort, url_for, send_from_directory
+from gatekeeper import GateKeeper, IP
 import mysql.connector
 import hashlib
 import datetime
@@ -21,7 +23,10 @@ app=Flask(__name__)
 app.config['DEBUG'] = True
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024 #5MB Limit on posted content
 app.secret_key = "elephantsmalls"
+app.config["RATELIMIT_ENABLED"] = True
 socketio = SocketIO(app, async_mode='eventlet')
+
+
 
 @app.after_request #Sets the nosniff header on each responses
 def add_security(response):
@@ -83,6 +88,33 @@ createDatabase()
 
 #Connect to database: credentials.
 mydb = mysql.connector.connect(host = "mysql", user = "root", password = "iloveelephantsmalls", database = "credentials")
+
+
+#Bans IPs when Rate Limit is reached
+gk = GateKeeper(app,
+                ip_header="X-Real-IP",
+                ban_rule={"count": 1, "window": 2, "duration": 30},   #Ban for 30 seconds after receving 1 report in a 2 second window
+                rate_limit_rules=[{"count": 50, "window": 10}],       #Global Rate-limit requests. 20reqs/10seconds
+                excluded_methods=["HEAD"])
+
+#Routes for all the front end stuff
+@app.route('/static/css/<filename>')
+def css(filename):
+    print("Serving css: ",filename)
+    return send_from_directory('static',"css/"+filename)
+
+@app.route('/static/images/<filename>')
+def images(filename):
+    #print("Serving image: ",filename)
+    return send_from_directory('static',"images/"+filename)
+
+
+@app.route('/static/javascript/<filename>')
+def js(filename):
+    #print("Serving JS: ",filename)
+    return send_from_directory('static',"javascript/"+filename)
+
+
 @app.route('/', methods = ["POST", "GET"])
 def home():
 
