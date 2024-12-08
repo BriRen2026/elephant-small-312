@@ -576,13 +576,15 @@ def submit_elephant():
     description = html.escape(request.form.get('description'))[:250]
     print("Description: "+description)
     file = html.escape(request.form.get('file'))
-    # print("FILE: "+file)
+    print("FILE: "+file)
+
+
 
     stamp = str(datetime.datetime.now())
 
     #converts html canvas datauri to bytearray for image
     encData=file.split(',',1)
-    # # print(encData)
+    print(encData)
     decData=base64.b64decode(encData[1])
     # decData=b'\x00\x00'
     # #print(decData)
@@ -911,6 +913,16 @@ def live_comment_feed():
 @socketio.on("disconnect")
 def handle_disconnect():
     # Disconnect websocket when user leaves elephantFeed page
+    for user in list(activeUsers):
+        if (activeUsers[user] == request.sid):
+            userStates.pop(user, None)
+            activeUsers.pop(user, None)
+            inGame.pop(user, None)
+
+    sendList = json.dumps(userStates)
+    # Client: Updates lobby.
+    emit("sendUser", {"users": sendList}, broadcast=True)
+
     print("Disconnected!")
 
 @app.route("/unlike", methods = {"POST"})
@@ -1102,6 +1114,173 @@ def deleteDB():
     cursor = mydb.cursor(prepared=True)
     statement = "DROP DATABASE credentials"
     cursor.execute(statement)
+
+#Websocket Users -> READY Status
+userStates = {}
+activeUsers = {}
+#InSession -> Indicates if there is a game in progress.
+inSession = False
+
+#joinClient: Handles when a user enters the lobby.
+@socketio.on('create')
+def joinClient(username):
+    print(username + " has joined!")
+    user = json.loads(username)
+    activeUsers[user] = request.sid
+    userStates[user] = "NOT READY"
+    sendList = json.dumps(userStates)
+
+    #Client: Updates lobby.
+    emit("sendUser", {"users": sendList}, broadcast=True)
+
+#readyOrNot: Handles user clicking READY.
+@socketio.on('userReady')
+def readyOrNot(username, state):
+    print(username + " is ready!")
+    user = request.sid
+
+    global inSession
+    #If game is not taking place, accept ready.
+    if (inSession == False) :
+        userStates[username] = state
+        sendList = json.dumps(userStates)
+
+        #Client: Updates lobby.
+        emit("sendUser", {"users": sendList}, broadcast=True)
+
+    #If game is taking place, make user wait.
+    if (inSession == True) :
+
+        #Client: Sends wait message.
+        emit("wait", to = user)
+
+import time
+#inGame: username -> sessionID, for users in game.
+inGame = {}
+
+#readySetGo: Handles countdown timer in lobby.
+@socketio.on('startTimer')
+def readySetGo():
+    print("Game is starting!")
+
+    #Countdown from 15 to start game.
+    for sec in range(10,-1,-1):
+        constructTime = str(sec)
+        print("Time left till start: " + constructTime)
+
+        #Client: Client can see how much time is left till game starts.
+        emit("countdown", json.dumps(constructTime), broadcast=True)
+        socketio.sleep(1)
+
+    global userStates
+
+    #inGame: Stores users that are in game.
+    global inGame
+    for user in userStates.keys():
+        inGame[user] = userStates[user]
+
+    #userStates: Clears so new users can wait in lobby after game starts.
+    userStates.clear()
+
+    #Client: Those in lobby will be pushed to the dressing room.
+    emit("sendFashionMaker", broadcast= True)
+
+
+#fight: Handles countdown timer in Dressing Room.
+@socketio.on('startCompetition')
+def fight():
+
+    #Indicate that there is a game in session on server.
+    global inSession
+    inSession = True
+
+    #Countdown from 60 till end game.
+    for sec in range(60,-1,-1):
+        constructTime = str(sec)
+        print("Time left till game ends: " + constructTime)
+        emit("countdownCompetition", json.dumps(constructTime), broadcast=True)
+        socketio.sleep(1)
+
+    #Client: Opens submit screen for forced submission.
+    emit("submitForCompetition", broadcas=True)
+
+#count: Keeps track of how many users have submitted their elephants.
+countUsers = 0
+
+#collect: Handles/counts client submission to determine when to update inSession.
+@socketio.on('collectUsers')
+def collect():
+    global countUsers
+    countUsers = countUsers + 1
+    print(countUsers)
+
+    global inGame
+    print(len(inGame))
+
+    #If all submissions are received.
+    if(countUsers == len(inGame)):
+        global inSession
+        inSession = False
+        inGame.clear()
+
+
+#Route for party route, elephant-maker-compete.
+@app.route("/elephant-maker-compete")
+def elephantMakerCompete():
+
+    body = ""
+
+    #Create cursor.
+    cursor = mydb.cursor(prepared=True)
+
+    if 'authToken' in request.cookies:
+        #Grab authentication token from cookies.
+        authToken = request.cookies["authToken"]
+
+        # Hash the authToken cookie.
+        hashedToken = hashlib.sha256(authToken.encode()).hexdigest()
+        # hashedToken = hashlib.sha256()
+        # hashedToken.update(bytes.fromhex(authToken))
+        # hashedToken = hashedToken.hexdigest()
+
+        # Find username associated with authToken
+        statement = "SELECT username FROM authTokens WHERE hashedToken = %s"
+        t = hashedToken
+        cursor.execute(statement, (t,))
+        result = cursor.fetchall()
+
+        #If there is a match to a username.
+        if (len(result) == 1):
+            # Grab username.
+            record = result[0][0]
+
+            statement = "SELECT profilePicture FROM logins WHERE username = %s"
+            cursor.execute(statement, (record,))
+            result = cursor.fetchall()
+            pfp = result[0][0]
+
+            # Create body: elephant-maker.html with username injected to be served in response.
+            body = createMakerCompetePage(record, pfp)
+
+            # Make and return the home page response.
+            response = make_response()
+            response.data = body.encode('utf-8')
+            response.content_type = "text/html; charset=utf-8"
+            response.content_length = len(body.encode('utf-8'))
+
+            mydb.commit()
+            cursor.close()
+
+            return response
+
+        mydb.commit()
+        cursor.close()
+        return render_template("login.html")
+    else:
+        return render_template("register.html")
+
+#Elephants are saved in the form:
+#[('title', '<title>'), ('file', '<submitted elephants url>')]
 
 if __name__=='__main__':
     socketio.run(app, host='0.0.0.0', port=8080, use_reloader=False, log_output=False)

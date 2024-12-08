@@ -1,4 +1,3 @@
-
 //Submission stuff
 const shadow = document.getElementById("shadow");
 const submitDialog = document.getElementById("dialog-submit");

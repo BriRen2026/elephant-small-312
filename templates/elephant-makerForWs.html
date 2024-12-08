@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Elephant Title</title>
     <link rel="stylesheet" href="/static/css/maker-style.css">
+	  <link rel="stylesheet" href="/static/css/home.css">
 	<link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -19,7 +20,7 @@
   </head>
 
   <body>
-	<!--------------Header---------------------->
+		<!-----{ HEADER }----->
 	  <header>
 		<div class="header"> <!--Here for styling Not useless-->
 			<div class="header-contents">
@@ -27,6 +28,11 @@
 					<img src="/static/images/elephant-small.jpg" style="cursor: pointer" class="container-child" onclick="elephantSound()">
 					<p class="container-child"><a href="/" id="link"> Elephant Fashion Brawl </a></p>
 				</div>
+
+					<!-- Timer Element for Competition -->
+				<div class="number" id = "competitionTimer" style="display: none;"></div>
+
+
 				<!--When logged in, set display: flex"-->
 				<div class="logged-in" style="display: flex;">
 					<a class="item" href="/elephant-feed" style="padding-right: 5px;">View Posted Elephants</a>
@@ -50,13 +56,16 @@
 		</div>
 	  </header>
 
-<!--    <main>-->
+		<!-----{ END HEADER }----->
+
+		<!-----{ DRESSING ROOM }----->
+
 <!--		<div id="elephant-pic-src"><img id="ep-img-src" src="/static/images/elephant.png" width="700" height="700"></div>-->
 		<img id="ep-img-src" src="/static/images/elephant.png" hidden>
 <!--		<script>-->
 <!--			document.getElementById("ep-img-src").style.visibility="hidden";-->
 <!--		</script>-->
-		<div class="grid-container">
+		<div id = "maker" class="grid-container" style = "display: none;">
 
 			<div class="grid-col1" id="currentlyWearing">
 				<p id="section-header-left" style="color: pink;"> - </p>
@@ -89,7 +98,6 @@
 						<div id="shadow">
 						<form name="elephantSubmitForm" action="/submit-elephant" method="post" enctype="multipart/form-data" id="elephant-submit-form">
 							<dialog id="dialog-submit">
-								<button id="close" onclick="closeDialog()" type="button">X</button>
 								<h1>Post Your Elephant</h1>
 								Title:<br/>
 								<label>
@@ -278,7 +286,27 @@
 			<img id="baseballbat-icon" style="background-size: contain; background-image:url('/static/images/icons/baseballbat-icon.png'); background-repeat: no-repeat; background-position: center center;">
 
 		</div>
-<!--    </main>-->
+
+		<!-----{ LOBBY }----->
+
+	<!-- Button to enter lobby + establish web socket connection -->
+  <button class = "item" id = "competeButton" onclick="socketCreate()" style="display: inline-block"> Enter Lobby </button>
+
+      <!-- Lobby Screen -->
+
+		<div class="number" id = "timer" ></div>
+		<div class="lobbyBox" id = "room" style="width: 50%; display: none;">
+
+
+				<h2 class="fs-5">Lobby</h2>
+
+						<ul id="allUsers" ></ul>
+		</div>
+
+			<button id = "readyButton" class="ready-button" onclick = "" style = "display: none;">READY</button>
+
+	<!-----{ END LOBBY }----->
+
 
 	<footer>
 		<div class="footer-container">
@@ -311,6 +339,7 @@
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js"></script>
 <!--	<script type="text/javascript" src="/static/javascript/load-images.js" defer></script>-->
 	<script src="/static/javascript/fashion-game.js" defer></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 <!--  	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>-->
 <!--	<script type="text/javascript" charset="utf-8">-->
 <!--		  const socket = io({autoConnect: false});-->

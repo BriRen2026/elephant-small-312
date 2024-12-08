@@ -16,10 +16,10 @@ body {
 	background-color:#d5eaed;
 }
 
-/*main{*/
-/*	width: 60%;*/
-/*	margin: 0 auto;*/
-/*}*/
+main{
+	width: 60%;
+	margin: 0 auto;
+}
 
 /*--------------------------Header---------------*/
 
@@ -162,7 +162,6 @@ input[type=submit] {
 
 .grid-col2{
 	margin: 50px 0px;
-	width: 350px;
 }
 
 .grid-col3{
@@ -394,14 +393,19 @@ input[type=submit] {
     display: inline-block;
 }
 
-canvas {
-	display: block;
-	transform: none;
-	z-index: 2;
+#myCanvas {
+	border: 4px dashed;
+	padding-bottom: 350px;
 }
 
-main {
-	/*position: sticky;*/
-	margin-right: 200px;
+.lobbyBox {
+
+  	height: 50%;
+  	padding: 20px;
+  	border: 10px solid pink;
+	background-color: white;
+	text-align: center;
+	margin: 20px;
+  	width: 50%;
 
 }

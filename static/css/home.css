@@ -88,6 +88,36 @@ input[type=submit]:hover{
 	background-color: #8d7296;
 }
 
+.ready-button{
+	background-color: #04AA6D;
+	border: 2px solid #017d4f;
+	padding: 15px 32px;
+	color: white;
+	text-align: center;
+  	display: inline-block;
+  	font-size: 16px;
+	align-content: center;
+
+}
+
+.ready-button:hover {
+  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.unready-button{
+	background-color: grey;
+	border: 2px solid darkslategray;
+	padding: 15px 32px;
+	color: black;
+	text-align: center;
+  	display: inline-block;
+  	font-size: 16px;
+	box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+}
+
+.number {
+	font-size: 30px;
+}
 
 @media (max-width: 576px){
 	body{padding-bottom:110px 0;}

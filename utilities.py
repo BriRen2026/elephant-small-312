@@ -95,6 +95,25 @@ def createMakerPage(username, pfp):
 
         return fileVer1
 
+#Create a string body for a response: Serve the elephant-makerForWs.html with the param -> username, pfp.
+def createMakerCompetePage(username, pfp):
+    #Read homeLoggedIn.html template.
+    with open("templates/elephant-makerForWs.html", "r") as file:
+        f = file.read()
+
+        #Inject username.
+        editUsername = f.split('{username}')
+        fileVer1 = editUsername[0]
+        editUsername.pop(0)
+
+        #For every division in editUsername after split, insert the username.
+        for section in editUsername:
+            fileVer1 = fileVer1 + username + section
+
+        fileVer1 = fileVer1.replace("{{pfp}}", pfp)
+
+        return fileVer1
+
 #Create a string body for a response: Serve the homeLoggedIn.html with the param -> username.
 def createFeedPage(username, pfp):
     #Read homeLoggedIn.html template.

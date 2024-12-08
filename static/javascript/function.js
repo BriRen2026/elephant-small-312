@@ -1,3 +1,26 @@
+//Submission stuff
+const shadow2 = document.getElementById("shadow");
+const submitDialog2 = document.getElementById("dialog-submit");
+//Opens dialog boxes for form submissions
+
+//Opens submit elephant dialog box
+function openDialog2(){
+	submitDialog2.style.display = "block";
+	shadow2.style.display = "block";
+	shadow2.style.visibility = "visible";
+}
+
+//saves canvas to dataURL and sets value of file in submit POST form (name="file")
+// *backend eventually converts to byte array for file writing/stored path in sql
+function saveCanvasToImage2() {
+    let c=document.getElementById("defaultCanvas0");
+    let cd=c.toDataURL('image/png');
+    // console.log(cd);
+    let ec=document.getElementById("elephantImg");
+    ec.setAttribute("value",cd);
+    // console.log("*** "+localStorage.getItem("cimg"));
+    // console.log(ec.value);
+}
 
 
 function elephantSound(){
@@ -168,4 +191,111 @@ function openComments(parent){
 	// 	// Sends data in real time to 'commentData' socket route in app.py
 	// 	socket.emit('commentData', JSON.stringify(commentData));
 	// });
+}
+
+//sleep: Sleeper function to pause execution.
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
+
+//socketCreate: Creates socket connection when user enters lobby.
+function socketCreate(){
+
+	//Connect to server through web socket, sending username.
+	const socket = io();
+	let username = document.getElementById("header-user").innerText;
+	socket.connect();
+	socket.emit("create", JSON.stringify(username));
+
+	//Show lobby screen and hide enter lobby button.
+	document.getElementById("room").style.display = "block";
+	document.getElementById("readyButton").style.display = "inline-block";
+	document.getElementById("competeButton").style.display = "none";
+
+	//Socket listens for "send user" -> update lobby.
+	socket.on("sendUser", function(input) {
+
+		let newUserList = JSON.parse(input["users"]);
+		let allState = "READY"
+		let count = 0
+
+		let newUL = document.createElement("ul")
+		let ul = document.getElementById("allUsers");
+
+		for (let user in newUserList) {
+			let state = newUserList[user];
+			count = count + 1;
+
+			if (state === "NOT READY"){
+				allState = "NOT READY";
+			}
+
+			let li = document.createElement("li");
+			li.appendChild(document.createTextNode(user + " is " + state));
+			li.id = user;
+			newUL.appendChild(li);
+			newUL.id = "allUsers";
+			ul.replaceWith(newUL);
+			}
+
+		ul.replaceWith(newUL);
+
+		//If all players are ready and there are at least two players, start countdown timer to start party.
+		if (allState === "READY" && count >= 2){
+			socket.emit("startTimer");
+		}
+
+	})
+
+	//Countdown Lobby Timer.
+	socket.on("countdown", function(input){
+		let timeElement = document.getElementById("timer");
+		timeElement.innerText = JSON.parse(input);
+	})
+
+	//Countdown Dressing Timer.
+	socket.on("countdownCompetition", function(input){
+		let timeElement = document.getElementById("competitionTimer");
+		timeElement.innerText = JSON.parse(input);
+	})
+
+	//Display Dressing Room.
+	socket.on("sendFashionMaker", function(input){
+		document.getElementById("maker").style.display = "flex";
+		document.getElementById("room").style.display = "none";
+		document.getElementById("timer").style.display = "none";
+		document.getElementById("competitionTimer").style.display = "block";
+		document.getElementById("readyButton").style.display = "none";
+		socket.emit("startCompetition")
+	})
+
+	//Listens for the readyButton to be clicked. When clicked, it updates the lobby for all users.
+	document.getElementById("readyButton").addEventListener("click", function() {
+		state = document.getElementById("readyButton").innerText;
+
+		if (state === "READY") {
+		socket.emit("userReady", username, "READY");
+	}
+		document.getElementById("readyButton").className = "unready-button";
+		document.getElementById("readyButton").innerText = "WAITING"
+	})
+
+	//Ends dressing and forces user to update description and submit to feed. After, client sends an indication of finish to server.
+	socket.on("submitForCompetition", function(input){
+		 openDialog2();
+		 saveCanvasToImage2();
+		 document.getElementById("outfit-button-submit").addEventListener("click", function (){
+			 console.log("submit")
+			 socket.emit("collectUsers")
+		 })
+
+	})
+
+	//If there is a party game in progress, a user is forced to wait until it is over.
+	socket.on("wait", async function(){
+		document.getElementById("readyButton").className = "unready-button";
+		document.getElementById("readyButton").innerText = "Please Wait! Game in progress!"
+		await sleep(2000)
+		document.getElementById("readyButton").className = "ready-button";
+		document.getElementById("readyButton").innerText = "READY"
+	})
+
 }
