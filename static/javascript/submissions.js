@@ -110,7 +110,7 @@ function selectElephant(img){
 	// submitForm.elements["file"].setAttribute("value",decodeURIComponent(changeToThis.src));
 	// saveForm.elements["file"].setAttribute("value",decodeURIComponent(changeToThis.src));
 	let ep=document.getElementById("ep-img-src");
-	ep.src=img.src;
+	ep.setAttribute("data-ep-img",img.src);
 }
 
 // Ignore this code: following Jesse's method for homeworks (no need and ws has different structure)
@@ -138,21 +138,3 @@ function selectElephant(img){
 // 		console.log("delayed submission");
 // 	}, 1000);
 // }
-
-function customForm() {
-	let form=document.getElementById("elephant-submit-form");
-	form.addEventListener('submit',function(event) {
-		event.preventDefault();
-		let formObj=new FormData();
-		let title=document.getElementById('title').value;
-		let desc=document.getElementById("description").value;
-		let user=document.getElementById("username").value;
-		formObj.append('title',title);
-		formObj.append('description',desc);
-		formObj.append('username',user);
-		fetch('/submit-elephant', {
-			method: "POST",
-			body: "formObj"
-		});
-	});
-}
