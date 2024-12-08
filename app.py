@@ -563,7 +563,6 @@ def receive_comment_data(comment_data):
 
 @app.route("/submit-elephant", methods=["POST"])
 def submit_elephant():
-    print("LOOK HERE",request.form)
 
     #Create cursor.
     cursor = mydb.cursor(prepared=True)

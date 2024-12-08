@@ -383,6 +383,7 @@
 		function dataUrItoBlob(dataUri) {
 			var binary = atob(dataUri.split(',')[1]);
 			var mimeString = dataUri.split(',')[0].split(':')[1].split(';')[0];
+			console.log("MIME STRING",mimeString);
 			var array = [];
 			for (var i = 0; i < binary.length; i++) {
 				array.push(binary.charCodeAt(i));
@@ -395,7 +396,7 @@
 		function saveCanvasToImage() {
 			let c=document.getElementById("defaultCanvas0");
 			console.log(c);
-			let cd=c.toDataURL('image/png');
+			let cd=c.toDataURL('image/jpeg');
 			console.log(cd);
 			// console.log("canv dataurl!",cd);
 			// console.log(cd);
