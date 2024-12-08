@@ -592,6 +592,7 @@ def submit_elephant():
     # decData=b'\x00\x00'
     # #print(decData)
     blobData=file.read()
+    print("BLOB: ",len(blobData))
     # print("blobdata",blobData)
     # blobBytes=bytearray(blobData)
     # print("blobBytes",blobBytes)
