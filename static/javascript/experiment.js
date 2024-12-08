@@ -51,33 +51,16 @@ let allBckgrnds=new Map();
 
 function preload() {
     i=loadImage("/static/images/sleek-mammoth.jpeg");
-    e=loadImage("/static/images/elephant.png");
-    allBckgrnds.set("static/images/elephant.png",e);
-    o=loadImage("/static/images/old-elephant.jpg");
-    allBckgrnds.set("static/images/old-elephant.jpg",o);
 }
 
 function setup() {
     createCanvas(350,350);
+    image(i,0,0,350,350);
 }
 
 function draw() {
     console.log("draw happens");
     // clear();
-    if (changed) {
-        changed=false;
-        image(i,0,0);
-    }
-    setBackground();
+
 }
 
-function setBackground() {
-    let bckgrnd=document.getElementById("grab");
-    let fragments=bckgrnd.src.split("http://localhost:8080/");
-    i=allBckgrnds.get(fragments[1]);
-    changed=true;
-}
-
-function change(ixx) {
-    document.getElementById("grab").src=ixx.src;
-}

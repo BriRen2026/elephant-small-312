@@ -85,9 +85,10 @@
 
 					<!----------------------------------------SUBMIT ELEPHANT------------------------------------------------->
 
-						<button class="dialog-button-submit" id="dialog-submit-elephant" onclick="openDialog(); saveCanvasToImage()">Submit Elephant (Post Feature)</button>
+						<button class="dialog-button-submit" id="dialog-submit-elephant" onclick="openDialog()">Submit Elephant (Post Feature)</button>
 						<div id="shadow">
-						<form name="elephantSubmitForm" action="/submit-elephant" method="post" enctype="multipart/form-data" id="elephant-submit-form">
+<!--							action="/submit-elephant" method="post" enctype="multipart/form-data" id="elephant-submit-form"-->
+						<form id="fdSelect" name="elephantSubmitForm">
 							<dialog id="dialog-submit">
 								<button id="close" onclick="closeDialog()" type="button">X</button>
 								<h1>Post Your Elephant</h1>
@@ -99,15 +100,16 @@
 								Description (250 Characters):
 								<br/>
 								<label>
-									  <textarea id="description-val" type="text" name="description" rows="5" cols="50" maxlength="250" placeholder="Give your elephant a description"></textarea>
+									  <textarea id="description-val" name="description" rows="5" cols="50" maxlength="250" placeholder="Give your elephant a description"></textarea>
 								</label>
 								<br/> <!-- As a placeholder, saving the url to our static elephant image-->
 									  <!-- In the future, I imagine the saving of elements to paths -->
-									<input id="elephantImg" type="text" name="file" hidden/>
+<!--									<input id="elephantImg" type="file" hidden/>-->
 									<input id="username" type="text" name="username" value="{username}" hidden/>
 								<!-- Close dialog and submit at the same time -->
 
-								<input type="submit" class="container-child" id="outfit-button-submit" value="Submit Outfit"/>
+<!--								<input type="submit" class="container-child" id="outfit-button-submit" value="Submit Outfit"/>-->
+								<button type="submit" class="container-child" id="outfit-button-submit">Submit Outfit</button>
 							</dialog>
 						</form>
 						</div>
@@ -122,9 +124,9 @@
 				<div class="filter-container">
 					<p class="container-child" id="filter-item" onclick="elephantSelector()">Elephant</p>
 					<p class="container-child" id="filter-item" onclick="headSelector()">Head</p>
-					<p class="container-child" id="filter-item" onclick="trunkSelector()">Trunk</p>
-					<p class="container-child" id="filter-item" onclick="bodySelector()">Body</p>
-					<p class="container-child" id="filter-item" onclick="shoeSelector()">Feet</p>
+					<p class="container-child" id="filter-item" onclick="trunkSelector()">Face</p>
+					<p class="container-child" id="filter-item" onclick="bodySelector()">Pets</p>
+					<p class="container-child" id="filter-item" onclick="shoeSelector()">Shoes</p>
 					<p class="container-child" id="filter-item" onclick="accessorySelector()">Accessories</p>
 				</div>
 
@@ -136,12 +138,12 @@
 							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/elephant.png" draggable="false" onclick="selectElephant(this)"/></button></div>
 							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/old-elephant.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>
 							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/phanpy.png" draggable="false" onclick="selectElephant(this)"/></button></div>
-							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/shaped-elephant.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>
+<!--							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/shaped-elephant.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>-->
 						</div>
 						<div class= "row">
-							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/crafty-elephant.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>
-							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/cute-elephant.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>
-							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/greattusk.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>
+<!--							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/crafty-elephant.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>-->
+<!--							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/cute-elephant.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>-->
+<!--							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/greattusk.jpg" draggable="false" onclick="selectElephant(this)"/></button></div>-->
 							<div class="column-item-elephant"><button class="selector-img"><img src="/static/images/sleek-mammoth.jpeg" draggable="false" onclick="selectElephant(this)"/></button></div>
 						</div>
 					</div>
@@ -347,4 +349,58 @@
 <!--	  </script>-->
 
   </body>
+<!--  	formData/fetch sourced from https://www.youtube.com/watch?v=EnWqnyUZ65Y-->
+	<script>
+		//sourced from https://gist.github.com/Kashkovsky/093fc4174cf52fccf81477a9bbf5ecd1#file-datatoblob-js
+		function dataUrItoBlob(dataUri) {
+			var binary = atob(dataUri.split(',')[1]);
+			var mimeString = dataUri.split(',')[0].split(':')[1].split(';')[0];
+			var array = [];
+			for (var i = 0; i < binary.length; i++) {
+				array.push(binary.charCodeAt(i));
+			}
+			return new Blob([new Uint8Array(array)], {type: mimeString});
+		}
+
+		//saves canvas to dataURL and sets value of file in submit POST form (name="file")
+		// *backend eventually converts to byte array for file writing/stored path in sql
+		function saveCanvasToImage() {
+			let c=document.getElementById("defaultCanvas0");
+			console.log(c);
+			let cd=c.toDataURL('image/png');
+			console.log(cd);
+			// console.log("canv dataurl!",cd);
+			// console.log(cd);
+			// let ec=document.getElementById("elephantImg");
+			// ec.setAttribute("value",cd);
+			// console.log(ec.value);
+			let blob=dataUrItoBlob(cd);
+			console.log("blob!",blob);
+			return blob;
+		}
+
+		let form=document.getElementById("fdSelect");
+		form.addEventListener('submit',(ev) => {
+			console.log("WHERE ARE WE");
+			console.log(document.getElementById("defaultCanvas0"),"<<<???");
+			ev.preventDefault();
+			let b=saveCanvasToImage();
+			console.log(b);
+			let formData=new FormData(form);
+			formData.append('file',b,"blobblob");
+			for (let item of formData) {
+				console.log(item[0],item[1]);
+			}
+			fetch("/submit-elephant", {
+				method: "POST",
+				body: formData,
+			})
+					.then(response => {
+						if (response.redirected) {
+							// console.log("???",response.url);
+							window.location.href=response.url;
+						}
+					})
+		});
+	</script>
 </html>

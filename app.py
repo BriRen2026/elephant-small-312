@@ -561,6 +561,7 @@ def receive_comment_data(comment_data):
 
 @app.route("/submit-elephant", methods=["POST"])
 def submit_elephant():
+    print("LOOK HERE",request.form)
 
     #Create cursor.
     cursor = mydb.cursor(prepared=True)
@@ -575,19 +576,27 @@ def submit_elephant():
     print("Title: "+title)
     description = html.escape(request.form.get('description'))[:250]
     print("Description: "+description)
-    file = html.escape(request.form.get('file'))
-    print("FILE: "+file)
+    file = request.files['file']
+    print("FILE: ",file)
 
 
 
     stamp = str(datetime.datetime.now())
 
     #converts html canvas datauri to bytearray for image
-    encData=file.split(',',1)
-    print(encData)
-    decData=base64.b64decode(encData[1])
+    # encData=file.split(',',1)
+    # print(encData)
+    # decData=base64.b64decode(encData[1])
     # decData=b'\x00\x00'
     # #print(decData)
+    blobData=file.read()
+    # print("blobdata",blobData)
+    # blobBytes=bytearray(blobData)
+    # print("blobBytes",blobBytes)
+    # encData=base64.b64encode(bytes(blobBytes))
+    # print("enc",encData)
+    # decData=base64.b64decode(encData)
+    # print("dec",decData)
 
     #Set initial likes to 0.
     likes = 0
@@ -605,7 +614,8 @@ def submit_elephant():
     uuidFileId=str(uuidObj)
     path="static/canvasPost/"+"canv"+uuidFileId
     with open(path,"wb") as f:
-        f.write(decData)
+        f.write(blobData)
+        # f.write(b'\x00\x00\x00')
     f.close()
 
     #Insert post into posts table.
@@ -629,7 +639,8 @@ def submit_elephant():
     mydb.commit()
     cursor.close()
 
-    return redirect("/elephant-feed", code = 302)
+    print("RIGHT BEFORE REDIRECT")
+    return redirect('/elephant-feed',code=302)
 
 # HTML for elephant post (need to structure each post individually in a loop)
 # IMPORTANT: variable below is NOT being used anymore (pot for hashedIDs)

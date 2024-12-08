@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>where are we right now</title>
-  	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.11.2/p5.js"></script>
-  	<script src="static/javascript/planckmin.js"></script>
-  	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5play/3.24.13/p5play.js"></script>
+  	<script src="/static/javascript/p5meld.js"></script>
     <img id="grab" src="/static/images/sleek-mammoth.jpeg" hidden>
 </head>
 <body>
@@ -13,5 +11,61 @@
   <img src="/static/images/elephant.png" width="50" height="50" draggable="false" onclick="change(this)">
   <img src="/static/images/old-elephant.jpg" width="50" height="50" draggable="false" onclick="change(this)">
   <script src="/static/javascript/experiment.js"></script>
+
+    <form id="fdSelect" name="elephantSubmitForm">
+        <button type="submit">Submit Outfit</button>
+    </form>
 </body>
+<script>
+		//sourced from https://gist.github.com/Kashkovsky/093fc4174cf52fccf81477a9bbf5ecd1#file-datatoblob-js
+		function dataUrItoBlob(dataUri) {
+			var binary = atob(dataUri.split(',')[1]);
+			var mimeString = dataUri.split(',')[0].split(':')[1].split(';')[0];
+			var array = [];
+			for (var i = 0; i < binary.length; i++) {
+				array.push(binary.charCodeAt(i));
+			}
+			return new Blob([new Uint8Array(array)], {type: mimeString});
+		}
+
+		//saves canvas to dataURL and sets value of file in submit POST form (name="file")
+		// *backend eventually converts to byte array for file writing/stored path in sql
+		function saveCanvasToImage() {
+			let c=document.getElementById("defaultCanvas0");
+			let cd=c.toDataURL('image/png');
+            console.log("canv dataurl!",cd);
+			// console.log(cd);
+			// let ec=document.getElementById("elephantImg");
+			// ec.setAttribute("value",cd);
+			// console.log(ec.value);
+			let blob=dataUrItoBlob(cd);
+			console.log("blob!",blob);
+			return blob;
+		}
+
+		let form=document.getElementById("fdSelect");
+		form.addEventListener('submit',(ev) => {
+			ev.preventDefault();
+			let b=saveCanvasToImage();
+            console.log(b);
+			let formData=new FormData(form);
+            formData.append('title',"x");
+            formData.append('description','x');
+			formData.append('file',b,"blobblob");
+            formData.append('username','x');
+			for (let item of formData) {
+				console.log(item[0],item[1]);
+			}
+			fetch("/submit-elephant", {
+				method: "POST",
+				body: formData,
+			})
+					.then(response => {
+						if (response.redirected) {
+							// console.log("???",response.url);
+							window.location.href=response.url;
+						}
+					})
+		});
+	</script>
 </html>

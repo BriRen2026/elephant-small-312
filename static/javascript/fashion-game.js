@@ -30,19 +30,19 @@ function preload() {
     elephant=loadImage("static/images/elephant.png");
     old=loadImage("static/images/old-elephant.jpg");
     phan=loadImage("static/images/phanpy.png");
-    play=loadImage("static/images/shaped-elephant.jpg");
-    scrung=loadImage("static/images/crafty-elephant.jpg");
-    cute=loadImage("static/images/cute-elephant.jpg");
-    baby=loadImage("static/images/greattusk.jpg");
+    // play=loadImage("static/images/shaped-elephant.jpg");
+    // scrung=loadImage("static/images/crafty-elephant.jpg");
+    // cute=loadImage("static/images/cute-elephant.jpg");
+    // baby=loadImage("static/images/greattusk.jpg");
     mammoth=loadImage("static/images/sleek-mammoth.jpeg");
     allBckgrnds.set("static/images/sleek-mammoth.jpeg",mammoth);
     allBckgrnds.set("static/images/old-elephant.jpg",old);
     allBckgrnds.set("static/images/elephant.png",elephant);
     allBckgrnds.set("static/images/phanpy.png",phan);
-    allBckgrnds.set("static/images/shaped-elephant.jpg",play);
-    allBckgrnds.set("static/images/crafty-elephant.jpg",scrung);
-    allBckgrnds.set("static/images/cute-elephant.jpg",cute);
-    allBckgrnds.set("static/images/greattusk.jpg",baby);
+    // allBckgrnds.set("static/images/shaped-elephant.jpg",play);
+    // allBckgrnds.set("static/images/crafty-elephant.jpg",scrung);
+    // allBckgrnds.set("static/images/cute-elephant.jpg",cute);
+    // allBckgrnds.set("static/images/greattusk.jpg",baby);
     // console.log(allBckgrnds,"????????");
 }
 
@@ -249,31 +249,26 @@ function deleteViaIcon(element) {
 //     document.getElementById("elephantImg").setAttribute("value",localStorage.getItem("blobURL"));
 // }
 //
-// function uriToBlob() {
-//     let uri=document.getElementById("q5Canvas0").toDataURL();
-//     let byteStr=atob(uri.split(',')[1]);
-//     let mimeStr=uri.split(',')[0].split(':')[1].split(';')[0];
-//     let arrayBuf=new ArrayBuffer(byteStr.length);
-//     let intArr=new Uint8Array(arrayBuf);
-//     for (let i=0; i<byteStr.length; i++) {
-//         intArr[i]=byteStr.charCodeAt(i);
+
+// //sourced from https://gist.github.com/Kashkovsky/093fc4174cf52fccf81477a9bbf5ecd1#file-datatoblob-js
+// function dataUrItoBlob(dataUri) {
+//     var binary = atob(dataUri.split(',')[1]);
+//     var mimeString = dataUri.split(',')[0].split(':')[1].split(';')[0];
+//     var array = [];
+//     for (var i = 0; i < binary.length; i++) {
+//         array.push(binary.charCodeAt(i));
 //     }
-//     // console.log("blob! "+blob);
-//     return new Blob([arrayBuf], {type: mimeStr});
+//     return new Blob([new Uint8Array(array)], {type: mimeString});
 // }
-
-//saves canvas to dataURL and sets value of file in submit POST form (name="file")
-// *backend eventually converts to byte array for file writing/stored path in sql
-function saveCanvasToImage() {
-    let c=document.getElementById("defaultCanvas0");
-    let cd=c.toDataURL('image/png');
-    // console.log(cd);
-    let ec=document.getElementById("elephantImg");
-    ec.setAttribute("value",cd);
-    // console.log("*** "+localStorage.getItem("cimg"));
-    // console.log(ec.value);
-}
-
-function addPage() {
-
-}
+//
+// //saves canvas to dataURL and sets value of file in submit POST form (name="file")
+// // *backend eventually converts to byte array for file writing/stored path in sql
+// function saveCanvasToImage() {
+//     let c=document.getElementById("defaultCanvas0");
+//     let cd=c.toDataURL('image/png');
+//     // console.log(cd);
+//     let ec=document.getElementById("elephantImg");
+//     ec.setAttribute("value",cd);
+//     // console.log("*** "+localStorage.getItem("cimg"));
+//     // console.log(ec.value);
+// }
