@@ -94,7 +94,7 @@ mydb = mysql.connector.connect(host = "mysql", user = "root", password = "ilovee
 gk = GateKeeper(app,
                 ip_header="X-Real-IP",
                 ban_rule={"count": 1, "window": 2, "duration": 30},   #Ban for 30 seconds after receving 1 report in a 2 second window
-                rate_limit_rules=[{"count": 50, "window": 10}],       #Global Rate-limit requests. 20reqs/10seconds
+                rate_limit_rules=[{"count": 50, "window": 3}],       #Global Rate-limit requests. 20reqs/10seconds
                 excluded_methods=["HEAD"])
 
 #Routes for all the front end stuff
@@ -427,6 +427,8 @@ def logOut():
     #Redirect to home page.
     return response
 
+# global rate limit doesn't apply
+# 100 requests in 3 second window should be suspiscious. 30-40 requests made on page load
 @app.route("/elephant-maker")
 def elephantMaker():
 
@@ -941,7 +943,7 @@ def unlike():
     data = json.loads(request.data)
     username = data["username"][:30]
     postid = data["id"]
-    print("User ",username," is liking postID: ",postid)
+    #print("User ",username," is liking postID: ",postid)
 
     cursor = mydb.cursor(prepared=True)
 
@@ -951,31 +953,31 @@ def unlike():
     statement2 = "SELECT username FROM likes WHERE username = %s AND postid = %s"
     cursor.execute(statement2, (username, postid))
     result = str(cursor.fetchall())
-    print("Did the user like this post?: ", result)
+    #print("Did the user like this post?: ", result)
 
     #if the user has liked this post, we can allow them to unlike
     if result != "[]":
-        print("User has liked this post already, allow them to unlike")
+        #print("User has liked this post already, allow them to unlike")
         statement3 = "DELETE FROM likes WHERE username = %s AND postid = %s"
         cursor.execute(statement3,(username,postid))
         #Update like count on post
         statement4 = "UPDATE posts SET likes = likes-1 WHERE id = %s"
         cursor.execute(statement4, (postid,))
     else:
-        print("YOU CANNOT UNLIKE THIS!!!")
-        abort(400)
+        print("YOU CANNOT LIKE AGAIN!!!!!!!!!!!!!!!!!!!!!!!")
+        return "Cannot Like Again", 400
 
     mydb.commit()
     cursor.close()
 
-    return redirect("/elephant-feed", code = 302)
+    return "OK", 200
 
 @app.route("/like", methods = {"POST"})
 def like():
     data = json.loads(request.data)
     username = data["username"][:30]
     postid = data["id"]
-    print("User ",username," is liking postID: ",postid)
+    #print("User ",username," is liking postID: ",postid)
 
     cursor = mydb.cursor(prepared=True)
 
@@ -985,10 +987,10 @@ def like():
     statement2 = "SELECT username FROM likes WHERE username = %s AND postid = %s"
     cursor.execute(statement2, (username,postid))
     result = str(cursor.fetchall())
-    print("Did the user like this post?: ",result)
+    #print("Did the user like this post?: ",result)
 
     if result == "[]":
-        print("User did not like this post already")
+        #print("User did not like this post already")
         statement = "INSERT INTO likes(username, postid) VALUES (%s, %s)"
         values = (username, postid)
         cursor.execute(statement,values)
@@ -998,14 +1000,13 @@ def like():
 
     else:
         print("YOU CANNOT LIKE AGAIN!!!!!!!!!!!!!!!!!!!!!!!")
-        abort(400)
+        return "Cannot Unlike Again", 400
 
 
     mydb.commit()
     cursor.close()
 
-    return redirect("/elephant-feed", code = 302)
-
+    return "OK", 200
 
 @app.route("/profile")
 def profile():

@@ -1,3 +1,9 @@
+
+function elephantSound(){
+	const sound = new Audio("/static/elephant.mp3");
+	sound.play();
+}
+
 //Submission stuff
 const shadow = document.getElementById("shadow");
 const submitDialog = document.getElementById("dialog-submit");
