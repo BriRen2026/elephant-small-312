@@ -3,7 +3,7 @@
 Implementation of IP Rate Limiting using the flask-gatekeeper library. 
 # Testing Procedure:
 1. Go to any page and refresh a bunch :-)
-2. When calculating the amount of refreshes needed to reach the 50req/10sec limit, ensure that you are only looking at the requests to elephantsmall.com and not the total requests made. For example, certain requests (like for bootstrap) are made to external sites and wouldn't count towards the request limit for elephantsmall.com
+2. When calculating the amount of refreshes needed to reach the 50req/10sec limit, ensure that you are only looking at the requests to elephantsmall.com and not the total requests made. For example, certain requests like bootstrap, fontawesome icons, or google fonts are made to external sites and wouldn't count towards the request limit for elephantsmall.com
 
 # PROJECT PART 3 OBJECTIVE 3
 # Description:
