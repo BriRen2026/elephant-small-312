@@ -1063,13 +1063,19 @@ def change_pfp():
 
         data = request.files['pfp']
         file_bytes = data.read(2048) #First few bytes of the file will contain the mime type
+
         # Determine the MIME type
         mime = magic.from_buffer(file_bytes, mime=True)
         # Reset file pointer to the beginning
         data.seek(0)
         print("Mime type of uploaded file: ",str(mime))
 
-        #only accept IMAGES and GIFS
+        # Added by Zane, will fix empty pfp issue maybe??
+        if mime == "application/x-empty":
+            return redirect("/profile", code = 302)
+        ###########
+
+        # only accept IMAGES and GIFS
         if mime == "image/gif" or mime == "image/jpeg" or mime == "image/png":
             filename = str(uuid.uuid4())
             pfp = data.read()
