@@ -1,3 +1,21 @@
+# PROJECT PART 3 OBJECTIVE 1
+# Description:
+This feature will require at least 2 devices to work properly. This feature is an extension of Objective 3
+# Testing Procedure:
+1. Start your server using docker compose up
+2. Open a browser (Firefox or Chrome) and navigate to http://localhost:8080/
+3. At the top right of the home page, click "Register" to make a new account. Enter a valid username and password (both must non-empty strings and username must be different from any other previously used usernames). When your registration is validated, you will be automatically logged in.
+4. Click the "Competitive" button under the "Design an Elephant!" section of the home page.
+5. Click the "Enter Lobby" button
+6. Click "Ready"
+7. On another device, repeat steps 2-6.
+8. Once both devices have selected "Ready", a countdown from 10 will begin. Once this timer reaches 0, you will have 60 seconds to dress up an elephant.
+9. Feel free to dress up the elephant or wait out the timer. To dress up an elephant, follow the below instructions:
+     * 9a. Click one of four elephant images to choose which elephant you want to dress up.
+     * 9b. Navigate to any of the five menus (Head, Face, Pets, Shoes, Accessories). Choose one of the fashion items; drag and drop it onto the image of your chosen elephant.
+     * 9c. After the fashion item has been dropped on the elephant, drag it to your desired location on the canvas.
+10. After 60 seconds, the timer will run out and you will be forced to post your elephant. Give it a title and description if desired and press "Post Elephant". You will then be redirected to view your elephant on the elephant feed. If your device posted before the other, refresh to see the other device's posted elephant :-)
+
 # PROJECT PART 3 OBJECTIVE 2
 # Description:
 Implementation of IP Rate Limiting using the flask-gatekeeper library. 
@@ -8,6 +26,9 @@ Implementation of IP Rate Limiting using the flask-gatekeeper library.
 # PROJECT PART 3 OBJECTIVE 3
 # Description:
 This feature incorporates a drag-and-drop elephant dress-up game (created using an HTML canvas and the p5.js library). As opposed to simply uploading pictures of elephants, you can now style them before submitting! After you select an elephant image, you can navigate to five different fashion item menus to drag/drop them onto your elephant! Fashionable elephants can then be uploaded to the elephant feed for other users to like/comment on.
+
+DISCLAIMER: The IP Ban Requirement makes this feature a bit difficult to use since many images are generated on page load. However, it's definitely possible! Before navigating to the View Your Closet Button, it'll be helpful to give yourself enough time to let the timer reset.
+
 # Testing Procedure:
 1. Start your server using docker compose up
 2. Open a browser (Firefox or Chrome) and navigate to http://localhost:8080/
