@@ -1,6 +1,6 @@
 # PROJECT PART 3 OBJECTIVE 1
 # Description:
-This feature will require at least 2 devices to work properly. This feature is an extension of Objective 3
+This feature will require at least 2 devices to work properly.
 # Testing Procedure:
 1. Start your server using docker compose up
 2. Open a browser (Firefox or Chrome) and navigate to http://localhost:8080/
