@@ -366,23 +366,23 @@
 		// *backend eventually converts to byte array for file writing/stored path in sql
 		function saveCanvasToImage() {
 			let c=document.getElementById("defaultCanvas0");
-			console.log(c);
+			// console.log(c);
 			let cd=c.toDataURL('image/jpeg');
-			console.log(cd);
+			// console.log(cd);
 			// console.log("canv dataurl!",cd);
 			// console.log(cd);
 			// let ec=document.getElementById("elephantImg");
 			// ec.setAttribute("value",cd);
 			// console.log(ec.value);
 			let blob=dataUrItoBlob(cd);
-			console.log("blob!",blob);
+			// console.log("blob!",blob);
 			return blob;
 		}
 
 		let form=document.getElementById("fdSelect");
 		form.addEventListener('submit',(ev) => {
-			console.log("WHERE ARE WE");
-			console.log(document.getElementById("defaultCanvas0"),"<<<???");
+			// console.log("WHERE ARE WE");
+			// console.log(document.getElementById("defaultCanvas0"),"<<<???");
 			ev.preventDefault();
 			let b=saveCanvasToImage();
 			console.log(b);

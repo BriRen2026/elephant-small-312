@@ -94,7 +94,7 @@ mydb = mysql.connector.connect(host = "mysql", user = "root", password = "ilovee
 gk = GateKeeper(app,
                 ip_header="X-Real-IP",
                 ban_rule={"count": 1, "window": 2, "duration": 30},   #Ban for 30 seconds after receving 1 report in a 2 second window
-                rate_limit_rules=[{"count": 50, "window": 3}],       #Global Rate-limit requests. 20reqs/10seconds
+                rate_limit_rules=[{"count": 50, "window": 10}],       #Global Rate-limit requests. 20reqs/10seconds
                 excluded_methods=["HEAD"])
 
 #Routes for all the front end stuff

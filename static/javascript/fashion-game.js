@@ -118,9 +118,9 @@ function makeCanvasDroppable() {
 function setBackground() {
     //console.log(document.getElementById("elephant-pic-src"));
     let bckgrnd=document.getElementById("ep-img-src");
-    console.log("bckgrnd",bckgrnd);
+    // console.log("bckgrnd",bckgrnd);
     let fragments=bckgrnd.getAttribute("data-ep-img").split("/static/images");
-    console.log("frag",fragments);
+    // console.log("frag",fragments);
     // console.log("bckgrnd "+bckgrnd);
     // backgroundImg=loadImage(bckgrnd.src);
     // console.log(bckgrnd.src);
