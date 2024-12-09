@@ -1,3 +1,5 @@
+Our domain: elephantsmall.com
+
 # PROJECT PART 3 OBJECTIVE 1
 # Description:
 This feature will require at least 2 devices to work properly.
