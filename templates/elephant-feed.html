@@ -111,7 +111,12 @@
 					let parent = document.getElementById(postTag);
 					let comments = parent.querySelector("#comments");
 
+
 					comments.innerHTML += newComment["comment"];
+
+					if (comments.innerHTML.includes("No Comments")) {
+						comments.innerHTML = comments.innerHTML.replace("No Comments", "");
+					}
 				}
 			});
 
