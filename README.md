@@ -1,3 +1,10 @@
+# PROJECT PART 3 OBJECTIVE 2
+# Description:
+Implementation of IP Rate Limiting using the flask-gatekeeper library. 
+# Testing Procedure:
+1. Go to any page and refresh a bunch :-)
+2. When calculating the amount of refreshes needed to reach the 50req/10sec limit, ensure that you are only looking at the requests to elephantsmall.com and not the total requests made. For example, certain requests (like for bootstrap) are made to external sites and wouldn't count towards the request limit for elephantsmall.com
+
 # PROJECT PART 3 OBJECTIVE 3
 # Description:
 This feature incorporates a drag-and-drop elephant dress-up game (created using an HTML canvas and the p5.js library). As opposed to simply uploading pictures of elephants, you can now style them before submitting! After you select an elephant image, you can navigate to five different fashion item menus to drag/drop them onto your elephant! Fashionable elephants can then be uploaded to the elephant feed for other users to like/comment on.
