@@ -33,7 +33,7 @@ const shoeacc=document.getElementById("shoe-selector");
 const accacc=document.getElementById("accessory-selector");
 
 function elephantSelector(){
-	console.log("Show elephants");
+	// console.log("Show elephants");
 	elephants.style.display = "block";
 	headacc.style.display = "none";
 	trunkacc.style.display = "none";
@@ -43,7 +43,7 @@ function elephantSelector(){
 }
 
 function headSelector(){
-	console.log("Show heads");
+	// console.log("Show heads");
 	elephants.style.display = "none";
 	headacc.style.display = "block";
 	trunkacc.style.display = "none";
@@ -53,7 +53,7 @@ function headSelector(){
 }
 
 function trunkSelector(){
-	console.log("Show trunk");
+	// console.log("Show trunk");
 	elephants.style.display = "none";
 	headacc.style.display = "none";
 	trunkacc.style.display = "block";
@@ -63,7 +63,7 @@ function trunkSelector(){
 }
 
 function bodySelector(){
-	console.log("Show body");
+	// console.log("Show body");
 	elephants.style.display = "none";
 	headacc.style.display = "none";
 	trunkacc.style.display = "none";
@@ -73,7 +73,7 @@ function bodySelector(){
 }
 
 function shoeSelector(){
-	console.log("Show shoes");
+	// console.log("Show shoes");
 	elephants.style.display = "none";
 	headacc.style.display = "none";
 	trunkacc.style.display = "none";
@@ -83,7 +83,7 @@ function shoeSelector(){
 }
 
 function accessorySelector(){
-	console.log("Show accessories");
+	// console.log("Show accessories");
 	elephants.style.display = "none";
 	headacc.style.display = "none";
 	trunkacc.style.display = "none";

@@ -100,7 +100,7 @@ gk = GateKeeper(app,
 #Routes for all the front end stuff
 @app.route('/static/css/<filename>')
 def css(filename):
-    print("Serving css: ",filename)
+    ## print("Serving css: ",filename)
     return send_from_directory('static',"css/"+filename)
 
 @app.route('/static/images/<filename>')
@@ -202,7 +202,7 @@ def addRecent(body):
     result = cursor.fetchall()
     cursor.close()
 
-    print("Result of finding latest post: ",result)
+    ## print("Result of finding latest post: ",result)
     #If there's no recent post,
     if str(result) == "[]":
         body=body.replace("{{recent}}","/static/images/none.png")
@@ -288,13 +288,13 @@ def registerForm():
 
         #If password & repassword don't match, or password is not strong enough, return register form.
         else:
-            print("Passwords don't match!")
+            ## print("Passwords don't match!")
             cursor.close()
             return render_template("register.html")
 
     #If the usernane is already taken, return register form.
     else:
-        print("Username is already taken!")
+        ## print("Username is already taken!")
         cursor.close()
         return render_template("register.html")
 
@@ -488,7 +488,7 @@ def elephantMaker():
 
 @app.route("/save-elephant", methods=["POST"])
 def save_elephant():
-    print("Form: ",request.form)
+    ## print("Form: ",request.form)
     #Save form data to SQL database
 
     #Redirect back to the elephant maker page
@@ -530,12 +530,12 @@ def receive_comment_data(comment_data):
     # if request.is_secure:
     #     print("WebSocket connections are secure!!!")
     parsed_data = json.loads(comment_data)
-    print("Comment Data: " + str(parsed_data))
+    ## print("Comment Data: " + str(parsed_data))
 
     username = parsed_data["username"][:30]
     comment = html.escape(parsed_data["comment"])[:250]
     post_id = parsed_data["post_id"]
-    print(username," tried leaving a comment on postID ",post_id," which says: ",comment)
+    ## print(username," tried leaving a comment on postID ",post_id," which says: ",comment)
 
     cursor = mydb.cursor(prepared=True)
 
@@ -572,13 +572,13 @@ def submit_elephant():
 
     #Parse data from form: username, title, description, file name (NO LONGER DOING EVENTS).
     username = html.escape(request.form.get('username'))[:30]
-    print("Username: " + username)
+    ## print("Username: " + username)
     title = html.escape(request.form.get('title'))[:35]
-    print("Title: "+title)
+    ## print("Title: "+title)
     description = html.escape(request.form.get('description'))[:250]
-    print("Description: "+description)
+    ## print("Description: "+description)
     file = request.files['file']
-    print("FILE: ",file)
+    ## print("FILE: ",file)
 
 
 
@@ -591,7 +591,7 @@ def submit_elephant():
     # decData=b'\x00\x00'
     # #print(decData)
     blobData=file.read()
-    print("BLOB: ",len(blobData))
+    ## print("BLOB: ",len(blobData))
     # print("blobdata",blobData)
     # blobBytes=bytearray(blobData)
     # print("blobBytes",blobBytes)
@@ -641,7 +641,7 @@ def submit_elephant():
     mydb.commit()
     cursor.close()
 
-    print("RIGHT BEFORE REDIRECT")
+    ## print("RIGHT BEFORE REDIRECT")
     return redirect('/elephant-feed',code=302)
 
 # HTML for elephant post (need to structure each post individually in a loop)
@@ -761,7 +761,7 @@ def elephantFeed():
             displayLike = "SELECT * FROM likes WHERE username = %s AND postid = %s"
             cursor.execute(displayLike, (username, str(post[5])))
             result = str(cursor.fetchall())
-            print("Has user liked before?: ",result)
+            ## print("Has user liked before?: ",result)
 
             #< button type = "button" onclick = "likeElephant('elephant-post.{{post_num}}')" class ="button-like" style="display: block; background: none; border: 0;" > < i class ="fa-regular fa-heart"  id="like-child" > < / i > < / button >
             #< button type = "button" onclick = "unlikeElephant('elephant-post.{{post_num}}')" class ="button-unlike" style="display: block; background: none; border: 0;" > < i class ="fa-solid fa-heart"  id="like-child" > < / i > < / button >
@@ -779,12 +779,12 @@ def elephantFeed():
 
             # IF user has not liked the post, display: block the likeHTML and display:none the unlikeHTML
             if result == "[]":
-                print("User has not liked the post")
+                ## print("User has not liked the post")
                 curr_post = curr_post.replace("{{like-status}}",likeHTMLBlock+unlikeHTMLNone)
 
             #IF user has liked the post, display: none the likeHTML and display:block the unlikeHTML
             else:
-                print("User has liked the post")
+                ## print("User has liked the post")
                 curr_post = curr_post.replace("{{like-status}}",unlikeHTMLBlock+likeHTMLNone)
 
 
@@ -846,13 +846,13 @@ def elephantFeed():
     #Delete above print statement and replace with commented out line
 
 # When user navigates to elephant feed, this event triggers in js of elephant-feed.html
-@socketio.on("connect")
-def live_comment_feed():
+#@socketio.on("connect")
+#def live_comment_feed():
     # Add logic here to receive and display submitted elephant posts live (while loop?)
     # Comment: while loop was not needed (check receive_post_data function below)
     # if request.is_secure:
     #     print("WebSocket connections are secure!!!")
-    print("Hit connection path!")
+#    print("Hit connection path!")
 
 # @socketio.on("postData")
 # def receive_post_data(post_data):
@@ -936,7 +936,7 @@ def handle_disconnect():
     # Client: Updates lobby.
     emit("sendUser", {"users": sendList}, broadcast=True)
 
-    print("Disconnected!")
+    ## print("Disconnected!")
 
 @app.route("/unlike", methods = {"POST"})
 def unlike():
@@ -964,7 +964,7 @@ def unlike():
         statement4 = "UPDATE posts SET likes = likes-1 WHERE id = %s"
         cursor.execute(statement4, (postid,))
     else:
-        print("YOU CANNOT LIKE AGAIN!!!!!!!!!!!!!!!!!!!!!!!")
+        ## print("YOU CANNOT LIKE AGAIN!!!!!!!!!!!!!!!!!!!!!!!")
         return "Cannot Like Again", 400
 
     mydb.commit()
@@ -999,7 +999,7 @@ def like():
         cursor.execute(statement4, (postid,))
 
     else:
-        print("YOU CANNOT LIKE AGAIN!!!!!!!!!!!!!!!!!!!!!!!")
+        ## print("YOU CANNOT LIKE AGAIN!!!!!!!!!!!!!!!!!!!!!!!")
         return "Cannot Unlike Again", 400
 
 
@@ -1045,7 +1045,7 @@ def profile():
     mydb.commit()
     cursor.close()
 
-    print("Body :" + response.data.decode('utf-8'))
+    ## print("Body :" + response.data.decode('utf-8'))
     return response
 
 #Gets mime type via file signature (Doesn't trust user input)
@@ -1068,7 +1068,7 @@ def change_pfp():
         mime = magic.from_buffer(file_bytes, mime=True)
         # Reset file pointer to the beginning
         data.seek(0)
-        print("Mime type of uploaded file: ",str(mime))
+        ## print("Mime type of uploaded file: ",str(mime))
 
         # Added by Zane, will fix empty pfp issue maybe??
         if mime == "application/x-empty":
@@ -1105,17 +1105,17 @@ def change_pfp():
                 if len(previousResult) == 1:
                     if os.path.exists(previousResult[0][0][1:]): #Make sure we only delete it if it exists (dc forcerecreate may remove)
                         if previousResult[0][0] != "/static/images/test-profile-picture.png": #Don't delete the test-profile-picture
-                            print("Before removing: ",os.listdir("static/pfp"))
+                            ## print("Before removing: ",os.listdir("static/pfp"))
                             os.remove(previousResult[0][0][1:])
-                            print("Previous pfp deleted from storage")
-                            print("After removing: ",os.listdir("static/pfp"))
+                            ## print("Previous pfp deleted from storage")
+                            ## print("After removing: ",os.listdir("static/pfp"))
 
                 #Update the value stored in logins to be the new directory for a user's profile picture
                 statement = "UPDATE logins SET profilePicture=%s WHERE username = %s"
                 cursor.execute(statement, ("/static/pfp/" + filename, username))
 
         else:
-            print("Unallowed File Type")
+            ## print("Unallowed File Type")
             return "<h1>403</h1>Allowed File Types: .jpg, .png, .gif",403
 
     # Redirect to home page
@@ -1142,7 +1142,7 @@ inSession = False
 #joinClient: Handles when a user enters the lobby.
 @socketio.on('create')
 def joinClient(username):
-    print(username + " has joined!")
+    ## print(username + " has joined!")
     user = json.loads(username)
     activeUsers[user] = request.sid
     userStates[user] = "NOT READY"
@@ -1154,7 +1154,7 @@ def joinClient(username):
 #readyOrNot: Handles user clicking READY.
 @socketio.on('userReady')
 def readyOrNot(username, state):
-    print(username + " is ready!")
+    ## print(username + " is ready!")
     user = request.sid
 
     global inSession
@@ -1179,12 +1179,12 @@ inGame = {}
 #readySetGo: Handles countdown timer in lobby.
 @socketio.on('startTimer')
 def readySetGo():
-    print("Game is starting!")
+    ## print("Game is starting!")
 
     #Countdown from 15 to start game.
     for sec in range(10,-1,-1):
         constructTime = str(sec)
-        print("Time left till start: " + constructTime)
+        ## print("Time left till start: " + constructTime)
 
         #Client: Client can see how much time is left till game starts.
         emit("countdown", json.dumps(constructTime), broadcast=True)
@@ -1215,7 +1215,7 @@ def fight():
     #Countdown from 60 till end game.
     for sec in range(60,-1,-1):
         constructTime = str(sec)
-        print("Time left till game ends: " + constructTime)
+        ## print("Time left till game ends: " + constructTime)
         emit("countdownCompetition", json.dumps(constructTime), broadcast=True)
         socketio.sleep(1)
 
@@ -1230,10 +1230,10 @@ countUsers = 0
 def collect():
     global countUsers
     countUsers = countUsers + 1
-    print(countUsers)
+    ## print(countUsers)
 
     global inGame
-    print(len(inGame))
+    ## print(len(inGame))
 
     #If all submissions are received.
     if(countUsers == len(inGame)):

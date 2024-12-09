@@ -80,11 +80,11 @@ function canvasDrop() {
         let i=0;
         // console.log("iconCol children",iconCol.children);
         for (let icon of iconCol.children) {
-            console.log("i**",i);
-            console.log(icon.childNodes);
-            console.log("%%",icon.childNodes[0].src);
+            // console.log("i**",i);
+            // console.log(icon.childNodes);
+            // console.log("%%",icon.childNodes[0].src);
             if (icon.childNodes[0].src.includes("-small")) {
-                console.log("found open slot");
+                // console.log("found open slot");
                 icon.childNodes[0].src=currSprite.style.backgroundImage.slice(4,-1).replace(/"/g,"");
                 spriteIcons.set(sprite,i);
                 iconSprites.set(icon.childNodes[0].id,sprite);
@@ -193,7 +193,7 @@ function draw() {
             sprite.velocity.y=0;
         }
         if (sprite.x>350 || sprite.y>350) {
-            console.log("out of bounds");
+            // console.log("out of bounds");
             // console.log(spriteIcons.get(sprite).toString());
             // iconSprites.delete(spriteIcons.get(sprite).toString());
             // spriteIcons.delete(sprite);

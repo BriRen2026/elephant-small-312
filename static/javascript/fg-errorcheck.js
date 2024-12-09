@@ -100,23 +100,23 @@ function setBackground(el) {
     let es=el.src;
     if (es.includes("/e")) {
         currBckg=one;
-        console.log(currBckg);
+        // console.log(currBckg);
     } else if (es.includes("/o")) {
         currBckg=two;
-        console.log(currBckg);
+        // console.log(currBckg);
     } else if (es.includes("/ph")) {
         currBckg=three;
-        console.log(currBckg);
+        // console.log(currBckg);
     }
 }
 
 //build canvas and place in correct column on elephant maker page
 //invokes makeCanvasDroppable so that canvasDrop works
 function setup() {
-    console.log(one.get());
-    console.log(two.get());
-    console.log(three.get());
-    console.log("^");
+    // console.log(one.get());
+    // console.log(two.get());
+    // console.log(three.get());
+    // console.log("^");
     createCanvas(350,350);
     frameRate(60);
     noLoop();
@@ -160,7 +160,7 @@ function draw() {
         // console.log("for");
         //console.log(sprite);
         if (sprite.mouseIsPressed) {
-            console.log("SPRITE IS BEING DRAGGED!!!");
+            // console.log("SPRITE IS BEING DRAGGED!!!");
             sprite.moveTowards(mouse.x+sprite.mouse.x,mouse.y+sprite.mouse.y,1);
             sprite.update();
         } else {

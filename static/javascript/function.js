@@ -31,25 +31,25 @@ function elephantSound(){
 
 function likeElephant(parent) {
 	const parent2 = document.getElementById(parent);
-	console.log(parent)
-	console.log(parent2)
+	// console.log(parent)
+	// console.log(parent2)
 	//Button starts in unliked state.
 	//button-like is the non-solid heart. When you click it, it should become the button-unlike so its in a state where you can unlike after liking
 	let id = parent2.querySelector("#post_id").value
-	console.log(id)
+	// console.log(id)
 	let like = parent2.querySelector('.button-like');
 	let unlike = parent2.querySelector('.button-unlike');
 
 	//Visually Increment the amount of likes
 	let amountOfLikes = parent2.querySelector('#like-counter'); //Shows "<Num> Likes"
 	let likes = amountOfLikes.innerHTML;
-	console.log("Likes:",likes);
+	// console.log("Likes:",likes);
 	let likesArray = likes.split(" "); //Split on the space -> ["", "<Num>" "Likes"]
-  	console.log("Array: ",likesArray);
+  	// console.log("Array: ",likesArray);
 	let likeNum = likesArray[0];
-	console.log("Got Num: ",likeNum); // "<Num>"
+	// console.log("Got Num: ",likeNum); // "<Num>"
 	likeNum = parseInt(likeNum) + 1; //<Num> + 1
-	console.log("New LikeNum: ",likeNum);
+	// console.log("New LikeNum: ",likeNum);
   	amountOfLikes.innerHTML = likeNum+" Likes"; //Update javascript on front end
 
 	//Get username of the liker and postID of the post liked
@@ -65,7 +65,7 @@ function likeElephant(parent) {
 }
 
 function unlikeElephant(parent){
-	console.log("Pressed Unlike Button");
+	// console.log("Pressed Unlike Button");
 	const parent2 = document.getElementById(parent);
 	let id = parent2.querySelector("#post_id").value
 	//Button starts in liked state.
@@ -77,14 +77,14 @@ function unlikeElephant(parent){
 	//Decrement the amount of likes
 	let amountOfLikes = parent2.querySelector('#like-counter');
 	let likes = amountOfLikes.innerHTML;
-	console.log("Likes:",likes);
+	// console.log("Likes:",likes);
 	//To string innerHTML
 	let likesArray = likes.split(" "); //Split on the space -> ["", "<Num>" "Likes"]
-  	console.log("Array: ",likesArray);
+  	// console.log("Array: ",likesArray);
 	let likeNum = likesArray[0];
-	console.log("Got Num: ",likeNum); // "<Num>"
+	// console.log("Got Num: ",likeNum); // "<Num>"
 	likeNum = parseInt(likeNum) - 1; //<Num> + 1
-	console.log("New LikeNum: ",likeNum);
+	// console.log("New LikeNum: ",likeNum);
   	amountOfLikes.innerHTML = likeNum+" Likes"; //Update javascript on front end
 
 	//Should remove the username from who has liked it
@@ -103,7 +103,7 @@ function unlikeElephant(parent){
 var count = 0;
 
 function openDesc(parent){
-	console.log("Open Description: ",count);
+	// console.log("Open Description: ",count);
 	const parent2 = document.getElementById(parent);
 	let hide = parent2.querySelector('#view-description');
 	let description = parent2.querySelector('#description');
@@ -121,7 +121,7 @@ function openDesc(parent){
 	hide.addEventListener("click", function(){
 		if (hide.innerHTML === "Close Description"){
 			if (count >= 1) {
-				console.log("Close Description: ",count);
+				// console.log("Close Description: ",count);
 				description.style.display = "none";
 				hide.innerHTML = 'View Description';
 				count=0;
@@ -144,7 +144,7 @@ function iconHoverOff(element) {
 var commentsCount = 0;
 
 function openComments(parent){
-	console.log("Open Comments: ",commentsCount);
+	// console.log("Open Comments: ",commentsCount);
 	const parent2 = document.getElementById(parent);
 	let hide = parent2.querySelector('#view-comments');
 	let comments = parent2.querySelector('#comments');
@@ -162,7 +162,7 @@ function openComments(parent){
 	hide.addEventListener("click", function(){
 		if (hide.innerHTML === "Close Comments"){
 			if (commentsCount >= 1) {
-				console.log("Close Comments: ",commentsCount);
+				// console.log("Close Comments: ",commentsCount);
 				comments.style.display = "none";
 				hide.innerHTML = 'View Comments';
 				commentsCount=0;
@@ -283,7 +283,7 @@ function socketCreate(){
 		 openDialog2();
 		 saveCanvasToImage2();
 		 document.getElementById("outfit-button-submit").addEventListener("click", function (){
-			 console.log("submit")
+			 // console.log("submit")
 			 socket.emit("collectUsers")
 		 })
 

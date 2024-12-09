@@ -59,7 +59,7 @@ function setup() {
 }
 
 function draw() {
-    console.log("draw happens");
+    //console.log("draw happens");
     // clear();
 
 }

@@ -88,7 +88,10 @@ class GateKeeper:
         ban_response = Response("ip {} banned for {}s".format(
             ban_infos["ip"], ban_infos["retry"]), status=429)
         ban_response.headers["Retry-After"] = "30"
-        return ban_response
+
+        ban_response = "ip {} banned for {}s".format(ban_infos["ip"], ban_infos["retry"])
+
+        return "<h1>429: Too Many Requests</h1><br>"+str(ban_response), 429
 
     def _rate_limit_func(self, rate_limit_infos):
         """internal func for creating a http response when the client is being rate limited.
@@ -177,7 +180,7 @@ class GateKeeper:
         for rule in self.rate_limit_rules:
             rule_entries = [
                 e for e in self.ips[ip].rate_entries if e >= time_now - rule["window"]]
-            print("Current Reqs Made: "+str(len(rule_entries))+"/"+str(rule["count"]))
+            #print("Current Reqs Made: "+str(len(rule_entries))+"/"+str(rule["count"]))
             if len(rule_entries) >= rule["count"]:
                 retry_in = int(
                     (rule_entries[0] + rule["window"]) - time_now) or 0

@@ -13,7 +13,7 @@ function preload() {
 
 preload();
 
-console.log("in file"+bckgrndImgs);
+// console.log("in file"+bckgrndImgs);
 
 function setup() {
     noLoop();

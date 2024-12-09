@@ -35,8 +35,8 @@ function canvasDrop() {
     // console.log("!!!! "+spriteCount);
     if (spriteCount<=10) {
         // console.log("why are we here");
-         console.log("X="+mouse.x);
-        console.log("Y="+mouse.y);
+         // console.log("X="+mouse.x);
+        // console.log("Y="+mouse.y);
         let sprite=new Sprite(150,150);
         // Changed to background image because it decreases load time of /elephant-maker by THREE SECONDS ( a lot ).
         //console.log("Background image of sprite: ",currSprite.style.backgroundImage.slice(4, -1).replace(/"/g, ""))
@@ -67,7 +67,7 @@ function drop(ev) {
   ev.preventDefault();
   const data = ev.dataTransfer.getData("text");
   // console.log("data!");
-  console.log("Data: ",data);
+  // console.log("Data: ",data);
   canvasDrop();
 }
 
