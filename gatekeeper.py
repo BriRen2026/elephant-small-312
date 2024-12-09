@@ -91,7 +91,7 @@ class GateKeeper:
 
         ban_response = "ip {} banned for {}s".format(ban_infos["ip"], ban_infos["retry"])
 
-        return "<h1>429: Too Many Requests</h1><br>"+str(ban_response), 429
+        return "<link rel='icon' href='data:,'><h1>429: Too Many Requests</h1><br>"+str(ban_response), 429
 
     def _rate_limit_func(self, rate_limit_infos):
         """internal func for creating a http response when the client is being rate limited.
